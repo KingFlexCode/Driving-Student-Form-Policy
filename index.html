@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Avian Driving School — Registration</title>
+  <style> body{font:16px/1.4 system-ui; margin:0; background:#0f172a; color:#f8fafc}
+  .wrap{max-width:960px;margin:0 auto;padding:24px}
+  .card{background:#111318;border:1px solid #1f2937;border-radius:16px;padding:20px}</style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Avian Driving School — Student Registration</h1>
+    <form
+      id="regForm"
+      name="Avian Registration"
+      method="POST"
+      action="/success.html"
+      data-netlify="true"
+      enctype="multipart/form-data"
+      netlify
+      class="card"
+    >
+      <input type="hidden" name="form-name" value="Avian Registration" />
+      <p style="display:none"><label>Don’t fill this out: <input name="bot-field"/></label></p>
+
+      <label>First Name* <input name="firstName" required></label><br/>
+      <label>Last Name* <input name="lastName" required></label><br/>
+      <label>Email* <input type="email" name="email" required></label><br/>
+      <label>Phone* <input type="tel" name="phone" required></label><br/>
+
+      <label>Street Address* <input name="address1" required></label><br/>
+      <label>Address 2 <input name="address2"></label><br/>
+      <label>City* <input name="city" required></label><br/>
+      <label>State* <input name="state" minlength="2" maxlength="2" required></label><br/>
+      <label>ZIP* <input name="zip" pattern="\d{5}" required></label><br/>
+
+      <label>Permit/License #* <input name="permitNo" required></label><br/>
+      <label>Issue Date* <input type="date" name="issueDate" required></label>
+      <label>Expiration Date* <input type="date" name="expDate" required></label><br/>
+
+      <label>Package/Service* 
+        <select name="package" required>
+          <option value="" disabled selected>Please select</option>
+          <option value="399">Car Package 2 — $399</option>
+          <option value="649">Car Package 3 — $649</option>
+          <option value="135">Road Test Car — $135</option>
+          <!-- add the rest as needed -->
+        </select>
+      </label><br/>
+
+      <label>5-Hour Class (date/time)* <input type="datetime-local" name="fiveHourSlot" required></label><br/>
+      <label>Permit Source* 
+        <select name="permitSource" required>
+          <option value="" disabled selected>Please select</option>
+          <option>Online</option><option>On-site (DMV)</option>
+        </select>
+      </label><br/>
+      <label>Need help with signs?* 
+        <select name="signHelp" required><option>Yes</option><option>No</option></select>
+      </label><br/>
+
+      <label>ID (Front)* <input type="file" name="idFront" accept="image/*,application/pdf" required></label><br/>
+      <label>ID (Back)*  <input type="file" name="idBack"  accept="image/*,application/pdf" required></label><br/>
+
+      <!-- Signature (canvas -> base64) -->
+      <input type="hidden" name="signatureData" id="signatureData" />
+      <div style="background:#fff;border-radius:8px;overflow:hidden;border:1px solid #1f2937;margin:8px 0">
+        <canvas id="sig" style="width:100%;height:200px;display:block"></canvas>
+      </div>
+      <button type="button" id="clearSig">Clear Signature</button>
+
+      <p><label><input type="checkbox" name="agreeTOS" required> I agree to the Terms of Service.</label></p>
+      <p><label><input type="checkbox" name="agreePrivacy" required> I agree to the Privacy Policy.</label></p>
+      <p><label><input type="checkbox" name="ack6mo" required> I understand all purchases are valid for 6 months and unused lessons expire.</label></p>
+
+      <button type="submit">Submit Registration</button>
+    </form>
+  </div>
+
+  <script>
+    // Signature pad
+    const canvas = document.getElementById('sig');
+    const ctx = canvas.getContext('2d');
+    function size(){ const r = window.devicePixelRatio||1; canvas.width=canvas.clientWidth*r;canvas.height=200*r;ctx.scale(r,r);ctx.lineWidth=2;ctx.lineCap='round';ctx.strokeStyle='#111827';}
+    window.addEventListener('resize', size); size();
+    let draw=false,lx=0,ly=0;
+    function s(x,y){draw=true;lx=x;ly=y}
+    function d(x,y){if(!draw) return; ctx.beginPath();ctx.moveTo(lx,ly);ctx.lineTo(x,y);ctx.stroke();lx=x;ly=y}
+    function e(){draw=false; document.getElementById('signatureData').value = canvas.toDataURL('image/png');}
+    canvas.addEventListener('mousedown',ev=>s(ev.offsetX,ev.offsetY));
+    canvas.addEventListener('mousemove',ev=>d(ev.offsetX,ev.offsetY));
+    canvas.addEventListener('mouseup',e); canvas.addEventListener('mouseleave',e);
+    canvas.addEventListener('touchstart',ev=>{const t=ev.touches[0],r=canvas.getBoundingClientRect();s(t.clientX-r.left,t.clientY-r.top)},{passive:true});
+    canvas.addEventListener('touchmove',ev=>{const t=ev.touches[0],r=canvas.getBoundingClientRect();d(t.clientX-r.left,t.clientY-r.top)},{passive:true});
+    canvas.addEventListener('touchend',e);
+    document.getElementById('clearSig').onclick=()=>{ctx.clearRect(0,0,canvas.width,canvas.height);document.getElementById('signatureData').value='';};
+
+    // Require signature
+    document.getElementById('regForm').addEventListener('submit', (ev)=>{
+      if(!document.getElementById('signatureData').value){ev.preventDefault();alert('Please sign in the box.');}
+    });
+  </script>
+</body>
+</html>
