@@ -1,4 +1,7 @@
 {
+  "name": "avian-driving-form",
+  "private": true,
+  "version": "1.0.0",
   "dependencies": {
     "googleapis": "^131.0.0"
   }
