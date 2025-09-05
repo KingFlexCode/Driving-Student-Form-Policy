@@ -3,6 +3,11 @@ exports.handler = async (event) => {
   console.log('after-submit INVOKED at', new Date().toISOString());
   console.log('headers.x-netlify-event =', event.headers && event.headers['x-netlify-event']);
   console.log('raw body length =', (event.body || '').length);
+  const SERVICE_ACCOUNT = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT || '{}');
+ 
+  console.log('svc email:', SERVICE_ACCOUNT.client_email);
+  console.log('project_id in key:', SERVICE_ACCOUNT.project_id);
+
   // ...rest of your code
 };
 // netlify/functions/after-submit.js
