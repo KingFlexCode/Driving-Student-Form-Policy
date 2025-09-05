@@ -13,7 +13,6 @@
     button{padding:12px 16px;border-radius:10px;border:0;background:#ffcc00;color:#0d1324;font-weight:700;cursor:pointer;margin-top:12px}
     .sig{background:#fff;border-radius:8px;border:1px solid #1f2937;overflow:hidden;margin:8px 0}
     canvas{display:block;width:100%;height:180px}
-
     /* Ensure Places dropdown sits on top of your card UI */
     .pac-container { z-index: 3000 !important; }
   </style>
@@ -29,78 +28,78 @@
       action="/success.html"
       data-netlify="true"
       enctype="multipart/form-data"
-      class="card">
-
+      class="card"
+    >
       <!-- Required hidden input -->
       <input type="hidden" name="form-name" value="Avian Registration" />
       <!-- Optional honeypot -->
       <p style="display:none"><label>Don’t fill this out: <input name="bot-field" /></label></p>
 
-      <label>First Name*</label>
-      <input name="firstName" required />
+      <label for="firstName">First Name*</label>
+      <input id="firstName" name="firstName" required />
 
-      <label>Last Name*</label>
-      <input name="lastName" required />
+      <label for="lastName">Last Name*</label>
+      <input id="lastName" name="lastName" required />
 
-      <label>Email*</label>
-      <input type="email" name="email" required />
+      <label for="email">Email*</label>
+      <input id="email" type="email" name="email" required />
 
-      <label>Phone*</label>
-      <input name="phone" required />
+      <label for="phone">Phone*</label>
+      <input id="phone" name="phone" required />
 
       <label for="address1">Street Address*</label>
       <input id="address1" name="address1" required autocomplete="street-address" />
 
-      <label>Address 2</label>
-      <input name="address2" />
+      <label for="address2">Address 2</label>
+      <input id="address2" name="address2" autocomplete="address-line2" />
 
-      <label>City*</label>
-      <input name="city" required autocomplete="street-address" />
+      <label for="city">City*</label>
+      <input id="city" name="city" required autocomplete="address-level2" />
 
-      <label>State*</label>
-      <input name="state" minlength="2" maxlength="2" required autocomplete="street-address" />
+      <label for="state">State*</label>
+      <input id="state" name="state" minlength="2" maxlength="2" required autocomplete="address-level1" />
 
-      <label>ZIP*</label>
-      <input name="zip" pattern="\d{5}" required autocomplete="street-address" />
+      <label for="zip">ZIP*</label>
+      <input id="zip" name="zip" pattern="\d{5}" required autocomplete="postal-code" />
 
-      <label>Permit/License #*</label>
-      <input name="permitNo" required />
+      <label for="permitNo">Permit/License #*</label>
+      <input id="permitNo" name="permitNo" required />
 
-      <label>Issue Date*</label>
-      <input type="date" name="issueDate" required />
+      <label for="issueDate">Issue Date*</label>
+      <input id="issueDate" type="date" name="issueDate" required />
 
-      <label>Expiration Date*</label>
-      <input type="date" name="expDate" required />
+      <label for="expDate">Expiration Date*</label>
+      <input id="expDate" type="date" name="expDate" required />
 
-      <label>Package/Service*</label>
-      <select name="package" required>
+      <label for="package">Package/Service*</label>
+      <select id="package" name="package" required>
         <option value="" disabled selected>Please select</option>
         <option value="399">Car Package 2 — $399</option>
         <option value="649">Car Package 3 — $649</option>
         <option value="135">Road Test Car — $135</option>
       </select>
 
-      <label>5-Hour Class (date/time)*</label>
-      <input type="datetime-local" name="fiveHourSlot" required />
+      <label for="fiveHourSlot">5-Hour Class (date/time)*</label>
+      <input id="fiveHourSlot" type="datetime-local" name="fiveHourSlot" required />
 
-      <label>Permit Source*</label>
-      <select name="permitSource" required>
+      <label for="permitSource">Permit Source*</label>
+      <select id="permitSource" name="permitSource" required>
         <option value="" disabled selected>Please select</option>
         <option>Online</option>
         <option>On-site (DMV)</option>
       </select>
 
-      <label>Need help with signs?*</label>
-      <select name="signHelp" required>
+      <label for="signHelp">Need help with signs?*</label>
+      <select id="signHelp" name="signHelp" required>
         <option>Yes</option>
         <option>No</option>
       </select>
 
-      <label>ID (Front)*</label>
-      <input type="file" name="idFront" accept="image/*" capture="environment" required />
+      <label for="idFront">ID (Front)*</label>
+      <input id="idFront" type="file" name="idFront" accept="image/*" capture="environment" required />
 
-      <label>ID (Back)*</label>
-      <input type="file" name="idBack" accept="image/*" capture="environment" required />
+      <label for="idBack">ID (Back)*</label>
+      <input id="idBack" type="file" name="idBack" accept="image/*" capture="environment" required />
 
       <!-- Signature -->
       <input type="hidden" name="signatureData" id="signatureData" />
@@ -117,65 +116,73 @@
 
   <!-- Signature pad -->
   <script>
-    const c = document.getElementById('sig'), ctx = c.getContext('2d');
-    function size(){ const r = window.devicePixelRatio||1; c.width=c.clientWidth*r; c.height=180*r; ctx.setTransform(r,0,0,r,0,0); ctx.lineWidth=2; ctx.lineCap='round'; ctx.strokeStyle='#111827'; }
-    window.addEventListener('resize', size); size();
-    let drawing=false,x=0,y=0;
+    const canvas = document.getElementById('sig');
+    const ctx = canvas.getContext('2d');
+    function resizeSig(){
+      const r = window.devicePixelRatio || 1;
+      canvas.width = canvas.clientWidth * r;
+      canvas.height = 180 * r;
+      ctx.setTransform(r,0,0,r,0,0);
+      ctx.lineWidth = 2; ctx.lineCap = 'round'; ctx.strokeStyle = '#111827';
+    }
+    window.addEventListener('resize', resizeSig); resizeSig();
+    let drawing=false, x=0, y=0;
     const set=(a,b)=>{drawing=true;x=a;y=b};
-    const draw=(a,b)=>{ if(!drawing)return; ctx.beginPath(); ctx.moveTo(x,y); ctx.lineTo(a,b); ctx.stroke(); x=a;y=b; };
-    const end=()=>{ drawing=false; document.getElementById('signatureData').value=c.toDataURL('image/png'); };
-    c.addEventListener('mousedown',e=>set(e.offsetX,e.offsetY));
-    c.addEventListener('mousemove',e=>draw(e.offsetX,e.offsetY));
-    c.addEventListener('mouseup',end); c.addEventListener('mouseleave',end);
-    c.addEventListener('touchstart',e=>{const t=e.touches[0],r=c.getBoundingClientRect();set(t.clientX-r.left,t.clientY-r.top)},{passive:true});
-    c.addEventListener('touchmove',e=>{const t=e.touches[0],r=c.getBoundingClientRect();draw(t.clientX-r.left,t.clientY-r.top)},{passive:true});
-    c.addEventListener('touchend',end);
-    document.getElementById('clearSig').onclick=()=>{ctx.clearRect(0,0,c.width,c.height);document.getElementById('signatureData').value=''};
+    const draw=(a,b)=>{ if(!drawing) return; ctx.beginPath(); ctx.moveTo(x,y); ctx.lineTo(a,b); ctx.stroke(); x=a; y=b; };
+    const end=()=>{ drawing=false; document.getElementById('signatureData').value = canvas.toDataURL('image/png'); };
+    canvas.addEventListener('mousedown',e=>set(e.offsetX,e.offsetY));
+    canvas.addEventListener('mousemove',e=>draw(e.offsetX,e.offsetY));
+    canvas.addEventListener('mouseup',end); canvas.addEventListener('mouseleave',end);
+    canvas.addEventListener('touchstart',e=>{const t=e.touches[0],r=canvas.getBoundingClientRect();set(t.clientX-r.left,t.clientY-r.top)},{passive:true});
+    canvas.addEventListener('touchmove',e=>{const t=e.touches[0],r=canvas.getBoundingClientRect();draw(t.clientX-r.left,t.clientY-r.top)},{passive:true});
+    canvas.addEventListener('touchend',end);
+    document.getElementById('clearSig').onclick=()=>{ctx.clearRect(0,0,canvas.width,canvas.height);document.getElementById('signatureData').value=''};
     const form = document.querySelector('form[name="Avian Registration"]');
-    form.addEventListener('submit',e=>{ if(!document.getElementById('signatureData').value){ e.preventDefault(); alert('Please sign in the box.'); }});
+    form.addEventListener('submit', (e) => {
+      if (!document.getElementById('signatureData').value) {
+        e.preventDefault(); alert('Please sign in the box.');
+      }
+    });
   </script>
 
-  <!-- Image compression + size limits -->
+  <!-- Image compression + 3.5 MB size limit -->
   <script>
     const MAX_WIDTH  = 1600;
     const MAX_HEIGHT = 1600;
     const JPEG_QUALITY = 0.76;
-    const MAX_BYTES_AFTER = 1.5 * 1024 * 1024; // 1.5 MB per image
+    const MAX_BYTES_AFTER = 3.5 * 1024 * 1024; // 3.5 MB per image
 
     function fileToDataURL(file){
-      return new Promise((resolve,reject)=>{ const r=new FileReader(); r.onload=()=>resolve(r.result); r.onerror=reject; r.readAsDataURL(file); });
+      return new Promise((resolve,reject)=>{
+        const r=new FileReader();
+        r.onload=()=>resolve(r.result);
+        r.onerror=reject;
+        r.readAsDataURL(file);
+      });
     }
-    async function downscaleToJpeg(file,maxW=MAX_WIDTH,maxH=MAX_HEIGHT,quality=JPEG_QUALITY){
+    async function downscaleToJpeg(file, maxW=MAX_WIDTH, maxH=MAX_HEIGHT, quality=JPEG_QUALITY){
       const dataUrl = await fileToDataURL(file);
-      if(!/^data:image\//.test(dataUrl)) return file; // skip non-images
+      if (!/^data:image\//.test(dataUrl)) return file; // skip non-images
       const img = await new Promise((res,rej)=>{ const i=new Image(); i.onload=()=>res(i); i.onerror=rej; i.src=dataUrl; });
       const ratio = Math.min(maxW/img.width, maxH/img.height, 1);
       const w = Math.round(img.width*ratio), h = Math.round(img.height*ratio);
-      const canvas = document.createElement('canvas'); canvas.width=w; canvas.height=h;
-      const ctx = canvas.getContext('2d'); ctx.imageSmoothingEnabled=true; ctx.imageSmoothingQuality='high'; ctx.drawImage(img,0,0,w,h);
-      const blob = await new Promise(res=>canvas.toBlob(res,'image/jpeg',quality));
-      if(!blob) return file;
-      const name=(file.name.replace(/\.[^.]+$/,'')||'upload')+'.jpg';
-      return new File([blob], name, {type:'image/jpeg', lastModified:Date.now()});
+      const c = document.createElement('canvas'); c.width=w; c.height=h;
+      const cx = c.getContext('2d'); cx.imageSmoothingEnabled=true; cx.imageSmoothingQuality='high'; cx.drawImage(img,0,0,w,h);
+      const blob = await new Promise(res=>c.toBlob(res,'image/jpeg',quality));
+      if (!blob) return file;
+      const name = (file.name.replace(/\.[^.]+$/, '') || 'upload') + '.jpg';
+      return new File([blob], name, { type:'image/jpeg', lastModified: Date.now() });
     }
     async function processInputImages(inputEl){
-      if(!inputEl?.files?.length) return true;
+      if (!inputEl?.files?.length) return true;
       const dt = new DataTransfer();
-      for(const original of Array.from(inputEl.files)){
-        const isImage = original.type.startsWith('image/');
-        const isPdf = original.type === 'application/pdf';
-
-        // Optionally reject large PDFs:
-        if(isPdf && original.size > MAX_BYTES_AFTER){
-          alert('PDF too large. Please upload a clear photo under 1.5 MB.');
-          inputEl.value=''; return false;
-        }
-
+      for (const original of Array.from(inputEl.files)){
         let processed = original;
-        if(isImage && original.size > 400*1024){
-          try{ processed = await downscaleToJpeg(original); }catch(e){ console.warn('Compression failed, keeping original:', e); }
+        if (original.type.startsWith('image/') && original.size > 400*1024){
+          try { processed = await downscaleToJpeg(original); }
+          catch(e){ console.warn('Compression failed, keeping original:', e); }
         }
-        if(processed.size > MAX_BYTES_AFTER){
+        if (processed.size > MAX_BYTES_AFTER){
           alert(`Please upload images under ${(MAX_BYTES_AFTER/1024/1024).toFixed(1)} MB. "${processed.name}" is ${(processed.size/1024/1024).toFixed(2)} MB.`);
           inputEl.value=''; return false;
         }
@@ -184,19 +191,16 @@
       inputEl.files = dt.files;
       return true;
     }
-
-    const idFrontInput = document.querySelector('input[name="idFront"]');
-    const idBackInput  = document.querySelector('input[name="idBack"]');
-
+    const idFrontInput = document.getElementById('idFront');
+    const idBackInput  = document.getElementById('idBack');
     [idFrontInput, idBackInput].forEach(el=>{
-      if(!el) return;
+      if (!el) return;
       el.addEventListener('change', async ()=>{ await processInputImages(el); });
     });
-
     form.addEventListener('submit', async (e)=>{
       const okFront = await processInputImages(idFrontInput);
       const okBack  = await processInputImages(idBackInput);
-      if(!okFront || !okBack){ e.preventDefault(); }
+      if (!okFront || !okBack) e.preventDefault();
     });
   </script>
 
@@ -208,29 +212,21 @@
         console.warn('address1 input not found');
         return;
       }
-
       // Build Autocomplete restricted to US addresses
       const ac = new google.maps.places.Autocomplete(input, {
         types: ['address'],
         componentRestrictions: { country: ['us'] },
-        // Limit fields to reduce payload and warnings
         fields: ['address_components', 'geometry']
       });
-
       ac.addListener('place_changed', () => {
         const place = ac.getPlace();
         if (!place || !place.address_components) return;
-
-        // Extract city/state/zip
+        // Map components by type
         const byType = {};
-        place.address_components.forEach(c => {
-          c.types.forEach(t => (byType[t] = c));
-        });
-
+        place.address_components.forEach(c => c.types.forEach(t => (byType[t] = c)));
         const city  = (byType.locality || byType.sublocality || byType.postal_town)?.long_name || '';
         const state = (byType.administrative_area_level_1)?.short_name || '';
         const zip   = (byType.postal_code)?.long_name || '';
-
         if (city)  document.getElementById('city').value  = city;
         if (state) document.getElementById('state').value = state;
         if (zip)   document.getElementById('zip').value   = zip;
@@ -238,11 +234,11 @@
     }
   </script>
 
-<!-- Load Google Maps JS + Places and call our init via callback -->
-<script
-  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAVCNj2VPiRQpoZHIxoEAAbtW_m5LlZcaY&libraries=places"
-  async
-  defer
-></script>
+  <!-- Load Google Maps JS + Places and call our init via callback -->
+  <script
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAVCNj2VPiRQpoZHIxoEAAbtW_m5LlZcaY&libraries=places&callback=initAutocomplete"
+    async
+    defer
+  ></script>
 </body>
 </html>
