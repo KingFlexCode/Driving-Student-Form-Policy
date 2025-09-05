@@ -1,3 +1,10 @@
+// Debug logs to after-submit (to be sure)
+exports.handler = async (event) => {
+  console.log('after-submit INVOKED at', new Date().toISOString());
+  console.log('headers.x-netlify-event =', event.headers && event.headers['x-netlify-event']);
+  console.log('raw body length =', (event.body || '').length);
+  // ...rest of your code
+};
 // netlify/functions/after-submit.js
 // Appends Netlify Form submissions to Google Sheets, including file URLs from Netlify storage.
 const { google } = require('googleapis');
