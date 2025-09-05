@@ -197,7 +197,51 @@
     });
   </script>
 
-  <!-- Google Map address auto suggestion -->
-  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAVCNj2VPiRQpoZHIxoEAAbtW_m5LlZcaY&libraries=places"></script>
+  <!-- 1) Define initAutocomplete FIRST -->
+<script>
+  function initAutocomplete() {
+    const input = document.getElementById('address1');
+    if (!input) {
+      console.warn('address1 input not found');
+      return;
+    }
+
+    // Improve browser autofill hint
+    input.setAttribute('autocomplete', 'street-address');
+
+    // Create Autocomplete restricted to US and only return needed fields
+    const autocomplete = new google.maps.places.Autocomplete(input, {
+      fields: ['address_components', 'geometry'],
+      componentRestrictions: { country: ['us'] },
+      types: ['address']
+    });
+
+    autocomplete.addListener('place_changed', () => {
+      const place = autocomplete.getPlace();
+      if (!place || !place.address_components) return;
+
+      // Pull city/state/zip
+      const comp = { city: '', state: '', zip: '' };
+      for (const c of place.address_components) {
+        if (c.types.includes('locality')) comp.city = c.long_name;                        // city
+        if (c.types.includes('administrative_area_level_1')) comp.state = c.short_name;   // state (2-letter)
+        if (c.types.includes('postal_code')) comp.zip = c.long_name;                      // zip
+      }
+
+      if (comp.city)  document.getElementById('city').value  = comp.city;
+      if (comp.state) document.getElementById('state').value = comp.state;
+      if (comp.zip)   document.getElementById('zip').value   = comp.zip;
+    });
+  }
+</script>
+
+<!-- 2) Load Google Maps JS with Places, call our init via callback -->
+<!-- Google Map address auto suggestion -->
+<script
+  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAVCNj2VPiRQpoZHIxoEAAbtW_m5LlZcaY&libraries=places"
+  async
+  defer
+></script>
+
 </body>
 </html>
