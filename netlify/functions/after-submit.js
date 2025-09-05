@@ -1,4 +1,7 @@
-// netlify/functions/after-submit.js (CommonJS)
+// netlify/functions/after-submit.js
+// Handles Netlify Forms webhook/event payload and appends a row to Google Sheets.
+// Uses urls posted as hidden fields: idFrontUrl, idBackUrl (files go to Drive).
+
 const { google } = require('googleapis');
 
 const SHEET_ID = process.env.SHEET_ID;
@@ -14,25 +17,30 @@ function sheetsClient() {
   return google.sheets({ version: 'v4', auth: jwt });
 }
 
-// Works for both Netlify event + webhook payloads
+// Works for both event + webhook payloads
 function parseSubmission(event) {
   try {
     const body = JSON.parse(event.body || '{}');
     const payload = body.payload || {};
     const data = payload.data || {};
-    const files = payload.files || [];
-    return { data, files };
+    return { data };
   } catch (e) {
-    return { data: {}, files: [] };
+    console.error('parseSubmission error:', e);
+    return { data: {} };
   }
 }
 
 exports.handler = async (event) => {
   try {
     console.log('after-submit invoked');
-    const { data, files } = parseSubmission(event);
 
-    // Build row (adjust to your sheet columns)
+    const { data } = parseSubmission(event);
+
+    // URLs created by upload-to-drive.js and injected as hidden inputs
+    const frontUrl = data.idFrontUrl || '';
+    const backUrl  = data.idBackUrl  || '';
+
+    // Build row in the order your sheet expects
     const row = [
       new Date().toISOString(),
       data.firstName || '',
@@ -51,14 +59,13 @@ exports.handler = async (event) => {
       data.fiveHourSlot || '',
       data.permitSource || '',
       data.signHelp || '',
-      (files.find(f => f.name === 'idFront') || {}).url || '',
-      (files.find(f => f.name === 'idBack')  || {}).url || '',
+      frontUrl,                 // Drive link (front)
+      backUrl,                  // Drive link (back)
       (data.signatureData || '').slice(0, 60) + (data.signatureData ? '…' : '')
     ];
 
-    // Append to "Form Responses" sheet (tab must exist)
     const sheets = sheetsClient();
-    const range = 'Form Responses!A1';
+    const range = 'Form Responses!A1'; // ensure this tab exists
     const res = await sheets.spreadsheets.values.append({
       spreadsheetId: SHEET_ID,
       range,
