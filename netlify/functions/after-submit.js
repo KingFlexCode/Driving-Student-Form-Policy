@@ -1,5 +1,5 @@
-// netlify/functions/after-submit.js
-import { google } from 'googleapis';
+// netlify/functions/after-submit.js (CommonJS)
+const { google } = require('googleapis');
 
 const SHEET_ID = process.env.SHEET_ID;
 const SERVICE_ACCOUNT = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT || '{}');
@@ -14,32 +14,25 @@ function sheetsClient() {
   return google.sheets({ version: 'v4', auth: jwt });
 }
 
-// Normalize submission from either:
-// A) Netlify Event: header x-netlify-event === 'submission-created' (body: { payload: {...} })
-// B) Form Webhook: standard Netlify POST (body: { payload: {...} })
+// Works for both Netlify event + webhook payloads
 function parseSubmission(event) {
   try {
     const body = JSON.parse(event.body || '{}');
-    // Both event + webhook use body.payload
     const payload = body.payload || {};
     const data = payload.data || {};
-    const files = payload.files || []; // array of { name, url, ... } when files present
-    return { data, files, raw: body };
+    const files = payload.files || [];
+    return { data, files };
   } catch (e) {
-    return { data: {}, files: [], raw: {} };
+    return { data: {}, files: [] };
   }
 }
 
-export const handler = async (event) => {
+exports.handler = async (event) => {
   try {
-    console.log('after-submit invoked. headers:', JSON.stringify(event.headers || {}));
+    console.log('after-submit invoked');
     const { data, files } = parseSubmission(event);
 
-    // Quick sanity log
-    console.log('parsed fields:', Object.keys(data));
-    console.log('files meta:', files);
-
-    // Build row (adjust column order to match your sheet)
+    // Build row (adjust to your sheet columns)
     const row = [
       new Date().toISOString(),
       data.firstName || '',
@@ -63,9 +56,9 @@ export const handler = async (event) => {
       (data.signatureData || '').slice(0, 60) + (data.signatureData ? '…' : '')
     ];
 
-    // Append to "Form Responses" sheet
+    // Append to "Form Responses" sheet (tab must exist)
     const sheets = sheetsClient();
-    const range = 'Form Responses!A1'; // make sure this tab exists
+    const range = 'Form Responses!A1';
     const res = await sheets.spreadsheets.values.append({
       spreadsheetId: SHEET_ID,
       range,
@@ -73,10 +66,11 @@ export const handler = async (event) => {
       requestBody: { values: [row] },
     });
 
-    console.log('append result:', res.status, res.statusText);
+    console.log('append status:', res.status || 'ok');
     return { statusCode: 200, body: 'OK' };
   } catch (err) {
     console.error('after-submit error:', err);
     return { statusCode: 500, body: 'Error processing submission.' };
   }
 };
+
