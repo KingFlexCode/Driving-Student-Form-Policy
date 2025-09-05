@@ -45,20 +45,20 @@
       <label>Phone*</label>
       <input name="phone" required />
 
-      <label>Street Address*</label>
-      <input name="address1" required />
+      <label for="address1">Street Address*</label>
+      <input id="address1" name="address1" required autocomplete="street-address" />
 
       <label>Address 2</label>
       <input name="address2" />
 
       <label>City*</label>
-      <input name="city" required />
+      <input name="city" required autocomplete="street-address" />
 
       <label>State*</label>
-      <input name="state" minlength="2" maxlength="2" required />
+      <input name="state" minlength="2" maxlength="2" required autocomplete="street-address" />
 
       <label>ZIP*</label>
-      <input name="zip" pattern="\d{5}" required />
+      <input name="zip" pattern="\d{5}" required autocomplete="street-address" />
 
       <label>Permit/License #*</label>
       <input name="permitNo" required />
@@ -197,51 +197,49 @@
     });
   </script>
 
-  <!-- 1) Define initAutocomplete FIRST -->
-<script>
-  function initAutocomplete() {
-    const input = document.getElementById('address1');
-    if (!input) {
-      console.warn('address1 input not found');
-      return;
-    }
-
-    // Improve browser autofill hint
-    input.setAttribute('autocomplete', 'street-address');
-
-    // Create Autocomplete restricted to US and only return needed fields
-    const autocomplete = new google.maps.places.Autocomplete(input, {
-      fields: ['address_components', 'geometry'],
-      componentRestrictions: { country: ['us'] },
-      types: ['address']
-    });
-
-    autocomplete.addListener('place_changed', () => {
-      const place = autocomplete.getPlace();
-      if (!place || !place.address_components) return;
-
-      // Pull city/state/zip
-      const comp = { city: '', state: '', zip: '' };
-      for (const c of place.address_components) {
-        if (c.types.includes('locality')) comp.city = c.long_name;                        // city
-        if (c.types.includes('administrative_area_level_1')) comp.state = c.short_name;   // state (2-letter)
-        if (c.types.includes('postal_code')) comp.zip = c.long_name;                      // zip
+  <!-- Autocomplete initializer -->
+  <script>
+    function initAutocomplete() {
+      const input = document.getElementById('address1');
+      if (!input) {
+        console.warn('address1 input not found');
+        return;
       }
 
-      if (comp.city)  document.getElementById('city').value  = comp.city;
-      if (comp.state) document.getElementById('state').value = comp.state;
-      if (comp.zip)   document.getElementById('zip').value   = comp.zip;
-    });
-  }
-</script>
+      // Build Autocomplete restricted to US addresses
+      const ac = new google.maps.places.Autocomplete(input, {
+        types: ['address'],
+        componentRestrictions: { country: ['us'] },
+        // Limit fields to reduce payload and warnings
+        fields: ['address_components', 'geometry']
+      });
 
-<!-- 2) Load Google Maps JS with Places, call our init via callback -->
-<!-- Google Map address auto suggestion -->
+      ac.addListener('place_changed', () => {
+        const place = ac.getPlace();
+        if (!place || !place.address_components) return;
+
+        // Extract city/state/zip
+        const byType = {};
+        place.address_components.forEach(c => {
+          c.types.forEach(t => (byType[t] = c));
+        });
+
+        const city  = (byType.locality || byType.sublocality || byType.postal_town)?.long_name || '';
+        const state = (byType.administrative_area_level_1)?.short_name || '';
+        const zip   = (byType.postal_code)?.long_name || '';
+
+        if (city)  document.getElementById('city').value  = city;
+        if (state) document.getElementById('state').value = state;
+        if (zip)   document.getElementById('zip').value   = zip;
+      });
+    }
+  </script>
+
+<!-- Load Google Maps JS + Places and call our init via callback -->
 <script
   src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAVCNj2VPiRQpoZHIxoEAAbtW_m5LlZcaY&libraries=places"
   async
   defer
 ></script>
-
 </body>
 </html>
