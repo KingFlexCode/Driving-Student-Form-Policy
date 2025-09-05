@@ -73,4 +73,3 @@ exports.handler = async (event) => {
     return { statusCode: 500, body: 'Error processing submission.' };
   }
 };
-
