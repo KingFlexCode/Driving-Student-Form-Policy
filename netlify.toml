@@ -1,3 +1,7 @@
 [build]
-  publish = "."              # your site root
+  publish = "."
   functions = "netlify/functions"
+
+[[events]]
+  type = "submission_created"
+  function = "after-submit"
