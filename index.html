@@ -26,40 +26,51 @@
       action="/success.html"
       data-netlify="true"
       enctype="multipart/form-data"
-      netlify
-      class="card"
-    >
-      <!-- required hidden input -->
+      class="card">
+      
+      <!-- Required hidden input -->
       <input type="hidden" name="form-name" value="Avian Registration" />
-      <!-- optional honeypot -->
-      <p style="display:none"><label>Don’t fill this out: <input name="bot-field"/></label></p>
+
+      <!-- Optional honeypot -->
+      <p style="display:none">
+        <label>Don’t fill this out: <input name="bot-field" /></label>
+      </p>
 
       <label>First Name*</label>
-      <input name="firstName" required>
+      <input name="firstName" required />
+
       <label>Last Name*</label>
-      <input name="lastName" required>
+      <input name="lastName" required />
+
       <label>Email*</label>
-      <input type="email" name="email" required>
+      <input type="email" name="email" required />
+
       <label>Phone*</label>
-      <input name="phone" required>
+      <input name="phone" required />
 
       <label>Street Address*</label>
-      <input name="address1" required>
+      <input name="address1" required />
+
       <label>Address 2</label>
-      <input name="address2">
+      <input name="address2" />
+
       <label>City*</label>
-      <input name="city" required>
+      <input name="city" required />
+
       <label>State*</label>
-      <input name="state" minlength="2" maxlength="2" required>
+      <input name="state" minlength="2" maxlength="2" required />
+
       <label>ZIP*</label>
-      <input name="zip" pattern="\d{5}" required>
+      <input name="zip" pattern="\d{5}" required />
 
       <label>Permit/License #*</label>
-      <input name="permitNo" required>
+      <input name="permitNo" required />
+
       <label>Issue Date*</label>
-      <input type="date" name="issueDate" required>
+      <input type="date" name="issueDate" required />
+
       <label>Expiration Date*</label>
-      <input type="date" name="expDate" required>
+      <input type="date" name="expDate" required />
 
       <label>Package/Service*</label>
       <select name="package" required>
@@ -70,30 +81,50 @@
       </select>
 
       <label>5-Hour Class (date/time)*</label>
-      <input type="datetime-local" name="fiveHourSlot" required>
+      <input type="datetime-local" name="fiveHourSlot" required />
 
       <label>Permit Source*</label>
       <select name="permitSource" required>
         <option value="" disabled selected>Please select</option>
-        <option>Online</option><option>On-site (DMV)</option>
+        <option>Online</option>
+        <option>On-site (DMV)</option>
       </select>
 
       <label>Need help with signs?*</label>
-      <select name="signHelp" required><option>Yes</option><option>No</option></select>
+      <select name="signHelp" required>
+        <option>Yes</option>
+        <option>No</option>
+      </select>
 
       <label>ID (Front)*</label>
-      <input type="file" name="idFront" accept="image/*,application/pdf" required>
-      <label>ID (Back)*</label>
-      <input type="file" name="idBack" accept="image/*,application/pdf" required>
+      <input type="file" name="idFront" accept="image/*,application/pdf" required />
 
-      <!-- Signature (canvas -> base64) -->
+      <label>ID (Back)*</label>
+      <input type="file" name="idBack" accept="image/*,application/pdf" required />
+
+      <!-- Signature -->
       <input type="hidden" name="signatureData" id="signatureData" />
       <div class="sig"><canvas id="sig"></canvas></div>
       <button type="button" id="clearSig">Clear Signature</button>
 
-      <p><label><input type="checkbox" name="agreeTOS" required> I agree to the Terms of Service.</label></p>
-      <p><label><input type="checkbox" name="agreePrivacy" required> I agree to the Privacy Policy.</label></p>
-      <p><label><input type="checkbox" name="ack6mo" required> I understand all purchases are valid for 6 months and unused lessons expire.</label></p>
+      <p>
+        <label>
+          <input type="checkbox" name="agreeTOS" required /> I agree to the Terms
+          of Service.
+        </label>
+      </p>
+      <p>
+        <label>
+          <input type="checkbox" name="agreePrivacy" required /> I agree to the
+          Privacy Policy.
+        </label>
+      </p>
+      <p>
+        <label>
+          <input type="checkbox" name="ack6mo" required /> I understand all
+          purchases are valid for 6 months and unused lessons expire.
+        </label>
+      </p>
 
       <button type="submit">Submit Registration</button>
     </form>

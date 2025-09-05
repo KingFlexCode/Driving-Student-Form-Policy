@@ -1,7 +1,5 @@
 // netlify/functions/after-submit.js
-// Handles Netlify Forms webhook/event payload and appends a row to Google Sheets.
-// Uses urls posted as hidden fields: idFrontUrl, idBackUrl (files go to Drive).
-
+// Appends Netlify Form submissions to Google Sheets, including file URLs from Netlify storage.
 const { google } = require('googleapis');
 
 const SHEET_ID = process.env.SHEET_ID;
@@ -17,16 +15,18 @@ function sheetsClient() {
   return google.sheets({ version: 'v4', auth: jwt });
 }
 
-// Works for both event + webhook payloads
+// Works for both event + webhook payloads (Netlify sends body.payload.{data,files})
 function parseSubmission(event) {
   try {
     const body = JSON.parse(event.body || '{}');
     const payload = body.payload || {};
-    const data = payload.data || {};
-    return { data };
+    return {
+      data: payload.data || {},
+      files: Array.isArray(payload.files) ? payload.files : [],
+    };
   } catch (e) {
     console.error('parseSubmission error:', e);
-    return { data: {} };
+    return { data: {}, files: [] };
   }
 }
 
@@ -34,13 +34,15 @@ exports.handler = async (event) => {
   try {
     console.log('after-submit invoked');
 
-    const { data } = parseSubmission(event);
+    const { data, files } = parseSubmission(event);
 
-    // URLs created by upload-to-drive.js and injected as hidden inputs
-    const frontUrl = data.idFrontUrl || '';
-    const backUrl  = data.idBackUrl  || '';
+    // Find Netlify-hosted file URLs by input name:
+    const front = files.find(f => f.name === 'idFront');
+    const back  = files.find(f => f.name === 'idBack');
+    const frontUrl = front?.url || '';
+    const backUrl  = back?.url  || '';
 
-    // Build row in the order your sheet expects
+    // Build row (match your sheet column order)
     const row = [
       new Date().toISOString(),
       data.firstName || '',
@@ -59,13 +61,13 @@ exports.handler = async (event) => {
       data.fiveHourSlot || '',
       data.permitSource || '',
       data.signHelp || '',
-      frontUrl,                 // Drive link (front)
-      backUrl,                  // Drive link (back)
+      frontUrl,                          // Netlify file URL (front)
+      backUrl,                           // Netlify file URL (back)
       (data.signatureData || '').slice(0, 60) + (data.signatureData ? '…' : '')
     ];
 
     const sheets = sheetsClient();
-    const range = 'Form Responses!A1'; // ensure this tab exists
+    const range = 'Form Responses!A1'; // tab must be named exactly this
     const res = await sheets.spreadsheets.values.append({
       spreadsheetId: SHEET_ID,
       range,
