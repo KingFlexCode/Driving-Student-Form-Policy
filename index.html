@@ -19,7 +19,7 @@
   <div class="wrap">
     <h1>Avian Driving School — Student Registration</h1>
 
-    <!-- IMPORTANT: Netlify must see this markup at build time -->
+    <!-- Netlify must see this at build time -->
     <form
       name="Avian Registration"
       method="POST"
@@ -27,14 +27,11 @@
       data-netlify="true"
       enctype="multipart/form-data"
       class="card">
-      
+
       <!-- Required hidden input -->
       <input type="hidden" name="form-name" value="Avian Registration" />
-
       <!-- Optional honeypot -->
-      <p style="display:none">
-        <label>Don’t fill this out: <input name="bot-field" /></label>
-      </p>
+      <p style="display:none"><label>Don’t fill this out: <input name="bot-field" /></label></p>
 
       <label>First Name*</label>
       <input name="firstName" required />
@@ -97,138 +94,110 @@
       </select>
 
       <label>ID (Front)*</label>
-      <input type="file" name="idFront" accept="image/*,application/pdf" required />
+      <input type="file" name="idFront" accept="image/*" capture="environment" required />
 
       <label>ID (Back)*</label>
-      <input type="file" name="idBack" accept="image/*,application/pdf" required />
+      <input type="file" name="idBack" accept="image/*" capture="environment" required />
 
       <!-- Signature -->
       <input type="hidden" name="signatureData" id="signatureData" />
       <div class="sig"><canvas id="sig"></canvas></div>
       <button type="button" id="clearSig">Clear Signature</button>
 
-      <p>
-        <label>
-          <input type="checkbox" name="agreeTOS" required /> I agree to the Terms
-          of Service.
-        </label>
-      </p>
-      <p>
-        <label>
-          <input type="checkbox" name="agreePrivacy" required /> I agree to the
-          Privacy Policy.
-        </label>
-      </p>
-      <p>
-        <label>
-          <input type="checkbox" name="ack6mo" required /> I understand all
-          purchases are valid for 6 months and unused lessons expire.
-        </label>
-      </p>
+      <p><label><input type="checkbox" name="agreeTOS" required /> I agree to the Terms of Service.</label></p>
+      <p><label><input type="checkbox" name="agreePrivacy" required /> I agree to the Privacy Policy.</label></p>
+      <p><label><input type="checkbox" name="ack6mo" required /> I understand all purchases are valid for 6 months and unused lessons expire.</label></p>
 
       <button type="submit">Submit Registration</button>
     </form>
   </div>
+
+  <!-- Signature pad -->
   <script>
-    // simple signature pad
-    const c=document.getElementById('sig'), ctx=c.getContext('2d');
-    function size(){const r=window.devicePixelRatio||1;c.width=c.clientWidth*r;c.height=180*r;ctx.scale(r,r);ctx.lineWidth=2;ctx.lineCap='round';ctx.strokeStyle='#111827'}
+    const c = document.getElementById('sig'), ctx = c.getContext('2d');
+    function size(){ const r = window.devicePixelRatio||1; c.width=c.clientWidth*r; c.height=180*r; ctx.setTransform(r,0,0,r,0,0); ctx.lineWidth=2; ctx.lineCap='round'; ctx.strokeStyle='#111827'; }
     window.addEventListener('resize', size); size();
-    let d=false,x=0,y=0; const set=(a,b)=>{d=true;x=a;y=b}; const draw=(a,b)=>{if(!d)return;ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(a,b);ctx.stroke();x=a;y=b}; const end=()=>{d=false;document.getElementById('signatureData').value=c.toDataURL('image/png')}
-    c.addEventListener('mousedown',e=>set(e.offsetX,e.offsetY)); c.addEventListener('mousemove',e=>draw(e.offsetX,e.offsetY)); c.addEventListener('mouseup',end); c.addEventListener('mouseleave',end);
+    let drawing=false,x=0,y=0;
+    const set=(a,b)=>{drawing=true;x=a;y=b};
+    const draw=(a,b)=>{ if(!drawing)return; ctx.beginPath(); ctx.moveTo(x,y); ctx.lineTo(a,b); ctx.stroke(); x=a;y=b; };
+    const end=()=>{ drawing=false; document.getElementById('signatureData').value=c.toDataURL('image/png'); };
+    c.addEventListener('mousedown',e=>set(e.offsetX,e.offsetY));
+    c.addEventListener('mousemove',e=>draw(e.offsetX,e.offsetY));
+    c.addEventListener('mouseup',end); c.addEventListener('mouseleave',end);
     c.addEventListener('touchstart',e=>{const t=e.touches[0],r=c.getBoundingClientRect();set(t.clientX-r.left,t.clientY-r.top)},{passive:true});
     c.addEventListener('touchmove',e=>{const t=e.touches[0],r=c.getBoundingClientRect();draw(t.clientX-r.left,t.clientY-r.top)},{passive:true});
     c.addEventListener('touchend',end);
     document.getElementById('clearSig').onclick=()=>{ctx.clearRect(0,0,c.width,c.height);document.getElementById('signatureData').value=''};
-    document.querySelector('form').addEventListener('submit',e=>{ if(!document.getElementById('signatureData').value){ e.preventDefault(); alert('Please sign in the box.'); }});
-    </script>
-  <script>
-    // --- compression helpers (same idea as before) ---
-    async function compressImageFile(file, {maxW=1600, maxH=1600, quality=0.75} = {}) {
-      if (!file || !file.type.startsWith('image/')) return file;
-      if (file.size < 400 * 1024) return file; // already small
-      const dataUrl = await new Promise((res, rej) => {
-        const r = new FileReader();
-        r.onload = () => res(r.result);
-        r.onerror = rej;
-        r.readAsDataURL(file);
-      });
-      const img = await new Promise((res, rej) => {
-        const i = new Image();
-        i.onload = () => res(i);
-        i.onerror = rej;
-        i.src = dataUrl;
-      });
-      const ratio = Math.min(maxW / img.width, maxH / img.height, 1);
-      const w = Math.round(img.width * ratio), h = Math.round(img.height * ratio);
-      const canvas = document.createElement('canvas');
-      canvas.width = w; canvas.height = h;
-      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-      const blob = await new Promise(res => canvas.toBlob(res, 'image/jpeg', quality));
-      return new File([blob], (file.name.replace(/\.[^.]+$/, '') || 'upload') + '.jpg', { type: 'image/jpeg' });
-    }
-
-    async function dataUrlToParts(file) {
-      // returns { filename, contentType, base64 }
-      const compressed = await compressImageFile(file);
-      const dataUrl = await new Promise((res, rej) => {
-        const r = new FileReader();
-        r.onload = () => res(r.result);
-        r.onerror = rej;
-        r.readAsDataURL(compressed);
-      });
-      const [, meta, base64] = dataUrl.match(/^data:([^;]+);base64,(.+)$/) || [];
-      return { filename: compressed.name, contentType: meta || 'application/octet-stream', base64 };
-    }
-
-    async function uploadToDrive(file) {
-      const payload = await dataUrlToParts(file);
-      const resp = await fetch('/.netlify/functions/upload-to-drive', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      });
-      if (!resp.ok) throw new Error('Drive upload failed');
-      return resp.json(); // { ok, webViewLink, webContentLink, id }
-    }
-
     const form = document.querySelector('form[name="Avian Registration"]');
-    form.addEventListener('submit', async (e) => {
-      // ensure signature is captured
-      const sig = document.getElementById('signatureData');
-      if (!sig || !sig.value) { e.preventDefault(); alert('Please sign in the box.'); return; }
+    form.addEventListener('submit',e=>{ if(!document.getElementById('signatureData').value){ e.preventDefault(); alert('Please sign in the box.'); }});
+  </script>
 
-      // find file inputs
-      const front = form.querySelector('input[name="idFront"]');
-      const back  = form.querySelector('input[name="idBack"]');
+  <!-- Image compression + size limits -->
+  <script>
+    const MAX_WIDTH  = 1600;
+    const MAX_HEIGHT = 1600;
+    const JPEG_QUALITY = 0.76;
+    const MAX_BYTES_AFTER = 1.5 * 1024 * 1024; // 1.5 MB per image
 
-      // If files exist, upload them to Drive first
-      try {
-        if (front?.files?.[0]) {
-          const r1 = await uploadToDrive(front.files[0]);
-          // add hidden URL field
-          const h1 = document.createElement('input');
-          h1.type = 'hidden'; h1.name = 'idFrontUrl'; h1.value = r1.webViewLink || r1.webContentLink || '';
-          form.appendChild(h1);
-          // clear the file input so Netlify doesn't store it
-          front.value = '';
+    function fileToDataURL(file){
+      return new Promise((resolve,reject)=>{ const r=new FileReader(); r.onload=()=>resolve(r.result); r.onerror=reject; r.readAsDataURL(file); });
+    }
+    async function downscaleToJpeg(file,maxW=MAX_WIDTH,maxH=MAX_HEIGHT,quality=JPEG_QUALITY){
+      const dataUrl = await fileToDataURL(file);
+      if(!/^data:image\//.test(dataUrl)) return file; // skip non-images
+      const img = await new Promise((res,rej)=>{ const i=new Image(); i.onload=()=>res(i); i.onerror=rej; i.src=dataUrl; });
+      const ratio = Math.min(maxW/img.width, maxH/img.height, 1);
+      const w = Math.round(img.width*ratio), h = Math.round(img.height*ratio);
+      const canvas = document.createElement('canvas'); canvas.width=w; canvas.height=h;
+      const ctx = canvas.getContext('2d'); ctx.imageSmoothingEnabled=true; ctx.imageSmoothingQuality='high'; ctx.drawImage(img,0,0,w,h);
+      const blob = await new Promise(res=>canvas.toBlob(res,'image/jpeg',quality));
+      if(!blob) return file;
+      const name=(file.name.replace(/\.[^.]+$/,'')||'upload')+'.jpg';
+      return new File([blob], name, {type:'image/jpeg', lastModified:Date.now()});
+    }
+    async function processInputImages(inputEl){
+      if(!inputEl?.files?.length) return true;
+      const dt = new DataTransfer();
+      for(const original of Array.from(inputEl.files)){
+        const isImage = original.type.startsWith('image/');
+        const isPdf = original.type === 'application/pdf';
+
+        // Optionally reject large PDFs:
+        if(isPdf && original.size > MAX_BYTES_AFTER){
+          alert('PDF too large. Please upload a clear photo under 1.5 MB.');
+          inputEl.value=''; return false;
         }
-        if (back?.files?.[0]) {
-          const r2 = await uploadToDrive(back.files[0]);
-          const h2 = document.createElement('input');
-          h2.type = 'hidden'; h2.name = 'idBackUrl'; h2.value = r2.webViewLink || r2.webContentLink || '';
-          form.appendChild(h2);
-          back.value = '';
+
+        let processed = original;
+        if(isImage && original.size > 400*1024){
+          try{ processed = await downscaleToJpeg(original); }catch(e){ console.warn('Compression failed, keeping original:', e); }
         }
-      } catch (err) {
-        e.preventDefault();
-        alert('Upload failed. Please try smaller/clearer images.');
-        console.error(err);
-        return;
+        if(processed.size > MAX_BYTES_AFTER){
+          alert(`Please upload images under ${(MAX_BYTES_AFTER/1024/1024).toFixed(1)} MB. "${processed.name}" is ${(processed.size/1024/1024).toFixed(2)} MB.`);
+          inputEl.value=''; return false;
+        }
+        dt.items.add(processed);
       }
+      inputEl.files = dt.files;
+      return true;
+    }
 
-      // continue submitting to Netlify Forms (text fields only)
+    const idFrontInput = document.querySelector('input[name="idFront"]');
+    const idBackInput  = document.querySelector('input[name="idBack"]');
+
+    [idFrontInput, idBackInput].forEach(el=>{
+      if(!el) return;
+      el.addEventListener('change', async ()=>{ await processInputImages(el); });
     });
-    </script>
+
+    form.addEventListener('submit', async (e)=>{
+      const okFront = await processInputImages(idFrontInput);
+      const okBack  = await processInputImages(idBackInput);
+      if(!okFront || !okBack){ e.preventDefault(); }
+    });
+  </script>
+
+  <!-- Google Map address auto suggestion -->
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAVCNj2VPiRQpoZHIxoEAAbtW_m5LlZcaY&libraries=places"></script>
 </body>
 </html>
