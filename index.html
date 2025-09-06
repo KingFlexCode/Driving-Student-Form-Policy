@@ -38,16 +38,16 @@
       <p style="display:none"><label>Don’t fill this out: <input name="bot-field" autocomplete="off"/></label></p>
 
       <label for="firstName">First Name*</label>
-      <input id="firstName" name="firstName" required autocomplete="given-name"/>
+      <input id="firstName" name="firstName" required autocomplete="given-name" value="Amir"/>
 
       <label for="lastName">Last Name*</label>
-      <input id="lastName" name="lastName" required autocomplete="family-name"/>
+      <input id="lastName" name="lastName" required autocomplete="family-name" value="Aleman"/>
 
       <label for="email">Email*</label>
-      <input id="email" type="email" name="email" required autocomplete="email"/>
+      <input id="email" type="email" name="email" required autocomplete="email" value="tes-me@gmail.com"/>
 
       <label for="phone">Phone*</label>
-      <input id="phone" name="phone" required autocomplete="tel"/>
+      <input id="phone" name="phone" required autocomplete="tel" value="6464445566"/>
 
       <!-- Address (single input; suggestions fill the fields below on selection) -->
       <label for="address1">Street Address*</label>
@@ -66,16 +66,16 @@
       <input id="zip" name="zip" pattern="\d{5}" required inputmode="numeric" autocomplete="postal-code"/>
 
       <label for="permitNo">Permit/License #*</label>
-      <input id="permitNo" name="permitNo" required/>
+      <input id="permitNo" name="permitNo" required value="111-000-111"/>
 
       <label for="dob">Date of Birth*</label>
-      <input id="dob" type="date" name="dob" required/>
+      <input id="dob" type="date" name="dob" required value="04/01/1990"/>
 
       <label for="issueDate">Issue Date*</label>
-      <input id="issueDate" type="date" name="issueDate" required/>
+      <input id="issueDate" type="date" name="issueDate" required value="01/01/2024"/>
 
       <label for="expDate">Expiration Date*</label>
-      <input id="expDate" type="date" name="expDate" required/>
+      <input id="expDate" type="date" name="expDate" required value="01/01/2029"/>
 
       <label for="package">Package/Service*</label>
       <select id="package" name="package" required>
@@ -86,10 +86,10 @@
       </select>
 
       <label for="fiveHourSlot">5-Hour Class (date/time)*</label>
-      <input id="fiveHourSlot" type="datetime-local" name="fiveHourSlot" required/>
+      <input id="fiveHourSlot" type="datetime-local" name="fiveHourSlot" required valu="01/01/2029"/>
 
       <label for="permitSource">Permit Source*</label>
-      <select id="permitSource" name="permitSource" required>
+      <select id="permitSource" name="permitSource" required value="online">
         <option value="" disabled selected>Please select</option>
         <option>Online</option>
         <option>On-site (DMV)</option>
