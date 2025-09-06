@@ -17,4 +17,3 @@ exports.handler = async () => {
     return { statusCode: 500, body: 'Error sending test' };
   }
 };
-
