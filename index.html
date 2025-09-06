@@ -13,7 +13,11 @@
     button{padding:12px 16px;border-radius:10px;border:0;background:#ffcc00;color:#0d1324;font-weight:700;cursor:pointer;margin-top:12px}
     .sig{background:#fff;border-radius:8px;border:1px solid #1f2937;overflow:hidden;margin:8px 0}
     canvas{display:block;width:100%;height:180px}
-    .sr-only{position:absolute;left:-9999px}
+    /* keep the Places dropdown above the card UI */
+    .pac-container{z-index:3000!important}
+
+    /* a11y helper (visually hidden) */
+    .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
   </style>
 </head>
 <body>
@@ -35,76 +39,70 @@
       <!-- Required hidden input -->
       <input type="hidden" name="form-name" value="Avian Registration" />
       <!-- Optional honeypot -->
-      <p style="display:none">
-        <label>Don’t fill this out:
-          <input name="bot-field" autocomplete="off"/>
-        </label>
-      </p>
+      <p style="display:none"><label>Don’t fill this out: <input name="bot-field" autocomplete="off"/></label></p>
 
       <label for="firstName">First Name*</label>
-      <input id="firstName" name="firstName" required autocomplete="given-name" value="Amir"/>
+      <input id="firstName" name="firstName" required autocomplete="given-name"/>
 
       <label for="lastName">Last Name*</label>
-      <input id="lastName" name="lastName" required autocomplete="family-name" value="Aleman"/>
+      <input id="lastName" name="lastName" required autocomplete="family-name"/>
 
       <label for="email">Email*</label>
-      <input id="email" type="email" name="email" required autocomplete="email" value="tes-me@gmail.com"/>
+      <input id="email" type="email" name="email" required autocomplete="email"/>
 
       <label for="phone">Phone*</label>
-      <input id="phone" name="phone" required autocomplete="tel" value="6464445566"/>
+      <input id="phone" name="phone" required autocomplete="tel"/>
 
-      <!-- Address -->
+      <!-- Address (single input; suggestions fill the fields below on selection) -->
       <label for="address1">Street Address*</label>
-      <input id="address1" name="address1" required autocomplete="street-address" value="1 Fordham Plaza"/>
+      <input id="address1" name="address1" required autocomplete="street-address"/>
 
       <label for="address2">Address 2</label>
-      <input id="address2" name="address2" autocomplete="address-line2" value="Suite 100"/>
+      <input id="address2" name="address2" autocomplete="address-line2"/>
 
       <label for="city">City*</label>
-      <input id="city" name="city" required autocomplete="address-level2" value="Bronx"/>
+      <input id="city" name="city" required autocomplete="address-level2"/>
 
       <label for="state">State* (2 letters)</label>
-      <input id="state" name="state" minlength="2" maxlength="2" required autocomplete="address-level1" value="NY"/>
+      <input id="state" name="state" minlength="2" maxlength="2" required autocomplete="address-level1"/>
 
       <label for="zip">ZIP*</label>
-      <input id="zip" name="zip" pattern="\d{5}" required inputmode="numeric" autocomplete="postal-code" value="10458"/>
+      <input id="zip" name="zip" pattern="\d{5}" required inputmode="numeric" autocomplete="postal-code"/>
 
       <label for="permitNo">Permit/License #*</label>
-      <input id="permitNo" name="permitNo" required value="111-000-111"/>
+      <input id="permitNo" name="permitNo" required/>
 
       <label for="dob">Date of Birth*</label>
-      <!-- YYYY-MM-DD -->
-      <input id="dob" type="date" name="dob" required value="1990-04-01"/>
+      <input id="dob" type="date" name="dob" required />
 
       <label for="issueDate">Issue Date*</label>
-      <input id="issueDate" type="date" name="issueDate" required value="2024-01-01"/>
+      <input id="issueDate" type="date" name="issueDate" required/>
 
       <label for="expDate">Expiration Date*</label>
-      <input id="expDate" type="date" name="expDate" required value="2029-01-01"/>
+      <input id="expDate" type="date" name="expDate" required/>
 
       <label for="package">Package/Service*</label>
       <select id="package" name="package" required>
-        <option value="" disabled>Please select</option>
-        <option value="399" selected>Car Package 2 — $399</option>
+        <option value="" disabled selected>Please select</option>
+        <option value="399">Car Package 2 — $399</option>
         <option value="649">Car Package 3 — $649</option>
         <option value="135">Road Test Car — $135</option>
       </select>
 
       <label for="fiveHourSlot">5-Hour Class (date/time)*</label>
-      <!-- YYYY-MM-DDTHH:MM (24h or 12h by browser locale) -->
-      <input id="fiveHourSlot" type="datetime-local" name="fiveHourSlot" required value="2025-09-10T13:30"/>
+      <input id="fiveHourSlot" type="datetime-local" name="fiveHourSlot" required/>
 
       <label for="permitSource">Permit Source*</label>
       <select id="permitSource" name="permitSource" required>
-        <option value="" disabled>Please select</option>
-        <option selected>Online</option>
+        <option value="" disabled selected>Please select</option>
+        <option>Online</option>
         <option>On-site (DMV)</option>
       </select>
 
       <label for="signHelp">Need help with signs?*</label>
       <select id="signHelp" name="signHelp" required>
         <option>Yes</option>
-        <option selected>No</option>
+        <option>No</option>
       </select>
 
       <label for="idFront">ID (Front)*</label>
@@ -121,9 +119,9 @@
       </div>
       <button type="button" id="clearSig" aria-label="Clear signature">Clear Signature</button>
 
-      <p><label><input type="checkbox" name="agreeTOS" required aria-required="true" checked/> I agree to the Terms of Service.</label></p>
-      <p><label><input type="checkbox" name="agreePrivacy" required aria-required="true" checked/> I agree to the Privacy Policy.</label></p>
-      <p><label><input type="checkbox" name="ack6mo" required aria-required="true" checked/> I understand all purchases are valid for 6 months and unused lessons expire.</label></p>
+      <p><label><input type="checkbox" name="agreeTOS" required aria-required="true"/> I agree to the Terms of Service.</label></p>
+      <p><label><input type="checkbox" name="agreePrivacy" required aria-required="true"/> I agree to the Privacy Policy.</label></p>
+      <p><label><input type="checkbox" name="ack6mo" required aria-required="true"/> I understand all purchases are valid for 6 months and unused lessons expire.</label></p>
 
       <button type="submit">Submit Registration</button>
     </form>
@@ -173,16 +171,16 @@
     });
   </script>
 
-  <!-- Address suggestions: prefer PlaceAutocompleteElement, fallback to legacy Autocomplete -->
+  <!-- Address Autocomplete (legacy API) -->
   <script>
-    function initAutocomplete() {
+    function initAddressAutocomplete(){
       const input = document.getElementById('address1');
-      if (!input) return;
+      if (!input || !window.google || !google.maps || !google.maps.places) return;
 
       const ac = new google.maps.places.Autocomplete(input, {
         types: ['address'],
-        componentRestrictions: { country: 'us' },
-        fields: ['address_components', 'formatted_address']
+        componentRestrictions: { country: ['us'] },
+        fields: ['address_components', 'formatted_address', 'geometry']
       });
 
       ac.addListener('place_changed', () => {
@@ -191,6 +189,7 @@
 
         const byType = {};
         place.address_components.forEach(c => c.types.forEach(t => byType[t] = c));
+
         const city  = (byType.locality || byType.sublocality || byType.postal_town)?.long_name || '';
         const state = byType.administrative_area_level_1?.short_name || '';
         const zip   = byType.postal_code?.long_name || '';
@@ -201,7 +200,7 @@
       });
     }
   </script>
-  
+
   <!-- Google Maps JS (Places) — replace YOUR_API_KEY -->
   <script
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAVCNj2VPiRQpoZHIxoEAAbtW_m5LlZcaY&libraries=places&callback=initAutocomplete"
