@@ -1,8 +1,10 @@
 {
-  "name": "avian-driving-form",
-  "private": true,
+  "name": "avian-forms",
   "version": "1.0.0",
+  "private": true,
   "dependencies": {
-    "googleapis": "^131.0.0"
+    "googleapis": "^134.0.0",
+    "pdfkit": "^0.15.0",
+    "resend": "^3.2.0"
   }
 }
