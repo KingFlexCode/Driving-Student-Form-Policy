@@ -13,8 +13,20 @@
     button{padding:12px 16px;border-radius:10px;border:0;background:#ffcc00;color:#0d1324;font-weight:700;cursor:pointer;margin-top:12px}
     .sig{background:#fff;border-radius:8px;border:1px solid #1f2937;overflow:hidden;margin:8px 0}
     canvas{display:block;width:100%;height:180px}
-    /* Ensure Places dropdown sits on top of your card UI */
+
+    /* Ensure Places dropdown sits on top of your UI */
     .pac-container { z-index: 3000 !important; }
+    /* Style the web component like your inputs */
+    gmpx-place-autocomplete {
+      display:block;
+      width:100%;
+      padding:0;              /* the component renders its own input */
+      border-radius:8px;
+      --gmpx-color-surface: #0b1020;
+      --gmpx-color-on-surface: #f8fafc;
+      --gmpx-color-outline: #1f2937;
+      --gmpx-shape-corner-extra-large: 8px;
+    }
   </style>
 </head>
 <body>
@@ -29,47 +41,57 @@
       data-netlify="true"
       enctype="multipart/form-data"
       class="card"
+      aria-labelledby="form-title"
     >
+      <h2 id="form-title" class="sr-only" style="position:absolute;left:-9999px;">Registration Form</h2>
+
       <!-- Required hidden input -->
       <input type="hidden" name="form-name" value="Avian Registration" />
       <!-- Optional honeypot -->
-      <p style="display:none"><label>Don’t fill this out: <input name="bot-field" /></label></p>
+      <p style="display:none"><label>Don’t fill this out: <input name="bot-field" autocomplete="off"/></label></p>
 
       <label for="firstName">First Name*</label>
-      <input id="firstName" name="firstName" required />
+      <input id="firstName" name="firstName" required autocomplete="given-name"/>
 
       <label for="lastName">Last Name*</label>
-      <input id="lastName" name="lastName" required />
+      <input id="lastName" name="lastName" required autocomplete="family-name"/>
 
       <label for="email">Email*</label>
-      <input id="email" type="email" name="email" required />
+      <input id="email" type="email" name="email" required autocomplete="email"/>
 
       <label for="phone">Phone*</label>
-      <input id="phone" name="phone" required />
+      <input id="phone" name="phone" required autocomplete="tel"/>
 
+      <!-- New Google Places web component -->
       <label for="address1">Street Address*</label>
-      <input id="address1" name="address1" required autocomplete="street-address" />
+      <gmpx-place-autocomplete
+        id="address1"
+        name="address1"
+        autocomplete="street-address"
+        aria-label="Street Address"
+        style="margin-bottom:8px"
+      ></gmpx-place-autocomplete>
 
       <label for="address2">Address 2</label>
-      <input id="address2" name="address2" autocomplete="address-line2" />
+      <input id="address2" name="address2" autocomplete="address-line2"/>
 
       <label for="city">City*</label>
-      <input id="city" name="city" required autocomplete="address-level2" />
+      <input id="city" name="city" required autocomplete="address-level2"/>
 
-      <label for="state">State*</label>
-      <input id="state" name="state" minlength="2" maxlength="2" required autocomplete="address-level1" />
+      <label for="state">State* (2 letters)</label>
+      <input id="state" name="state" minlength="2" maxlength="2" required autocomplete="address-level1"/>
 
       <label for="zip">ZIP*</label>
-      <input id="zip" name="zip" pattern="\d{5}" required autocomplete="postal-code" />
+      <input id="zip" name="zip" pattern="\d{5}" required inputmode="numeric" autocomplete="postal-code"/>
 
       <label for="permitNo">Permit/License #*</label>
-      <input id="permitNo" name="permitNo" required />
+      <input id="permitNo" name="permitNo" required/>
 
       <label for="issueDate">Issue Date*</label>
-      <input id="issueDate" type="date" name="issueDate" required />
+      <input id="issueDate" type="date" name="issueDate" required/>
 
       <label for="expDate">Expiration Date*</label>
-      <input id="expDate" type="date" name="expDate" required />
+      <input id="expDate" type="date" name="expDate" required/>
 
       <label for="package">Package/Service*</label>
       <select id="package" name="package" required>
@@ -80,7 +102,7 @@
       </select>
 
       <label for="fiveHourSlot">5-Hour Class (date/time)*</label>
-      <input id="fiveHourSlot" type="datetime-local" name="fiveHourSlot" required />
+      <input id="fiveHourSlot" type="datetime-local" name="fiveHourSlot" required/>
 
       <label for="permitSource">Permit Source*</label>
       <select id="permitSource" name="permitSource" required>
@@ -96,19 +118,22 @@
       </select>
 
       <label for="idFront">ID (Front)*</label>
-      <input id="idFront" type="file" name="idFront" accept="image/*" capture="environment" required />
+      <input id="idFront" type="file" name="idFront" accept="image/*" capture="environment" required/>
 
       <label for="idBack">ID (Back)*</label>
-      <input id="idBack" type="file" name="idBack" accept="image/*" capture="environment" required />
+      <input id="idBack" type="file" name="idBack" accept="image/*" capture="environment" required/>
 
       <!-- Signature -->
       <input type="hidden" name="signatureData" id="signatureData" />
-      <div class="sig"><canvas id="sig"></canvas></div>
-      <button type="button" id="clearSig">Clear Signature</button>
+      <div class="sig" role="group" aria-labelledby="siglabel">
+        <span id="siglabel" class="sr-only" style="position:absolute;left:-9999px;">Signature field</span>
+        <canvas id="sig"></canvas>
+      </div>
+      <button type="button" id="clearSig" aria-label="Clear signature">Clear Signature</button>
 
-      <p><label><input type="checkbox" name="agreeTOS" required /> I agree to the Terms of Service.</label></p>
-      <p><label><input type="checkbox" name="agreePrivacy" required /> I agree to the Privacy Policy.</label></p>
-      <p><label><input type="checkbox" name="ack6mo" required /> I understand all purchases are valid for 6 months and unused lessons expire.</label></p>
+      <p><label><input type="checkbox" name="agreeTOS" required aria-required="true"/> I agree to the Terms of Service.</label></p>
+      <p><label><input type="checkbox" name="agreePrivacy" required aria-required="true"/> I agree to the Privacy Policy.</label></p>
+      <p><label><input type="checkbox" name="ack6mo" required aria-required="true"/> I understand all purchases are valid for 6 months and unused lessons expire.</label></p>
 
       <button type="submit">Submit Registration</button>
     </form>
@@ -116,125 +141,100 @@
 
   <!-- Signature pad -->
   <script>
-    const canvas = document.getElementById('sig');
-    const ctx = canvas.getContext('2d');
-    function resizeSig(){
-      const r = window.devicePixelRatio || 1;
-      canvas.width = canvas.clientWidth * r;
-      canvas.height = 180 * r;
-      ctx.setTransform(r,0,0,r,0,0);
-      ctx.lineWidth = 2; ctx.lineCap = 'round'; ctx.strokeStyle = '#111827';
-    }
-    window.addEventListener('resize', resizeSig); resizeSig();
-    let drawing=false, x=0, y=0;
+    const c = document.getElementById('sig'), ctx = c.getContext('2d');
+    function size(){ const r = window.devicePixelRatio||1; c.width=c.clientWidth*r; c.height=180*r; ctx.setTransform(r,0,0,r,0,0); ctx.lineWidth=2; ctx.lineCap='round'; ctx.strokeStyle='#111827'; }
+    window.addEventListener('resize', size); size();
+    let drawing=false,x=0,y=0;
     const set=(a,b)=>{drawing=true;x=a;y=b};
-    const draw=(a,b)=>{ if(!drawing) return; ctx.beginPath(); ctx.moveTo(x,y); ctx.lineTo(a,b); ctx.stroke(); x=a; y=b; };
-    const end=()=>{ drawing=false; document.getElementById('signatureData').value = canvas.toDataURL('image/png'); };
-    canvas.addEventListener('mousedown',e=>set(e.offsetX,e.offsetY));
-    canvas.addEventListener('mousemove',e=>draw(e.offsetX,e.offsetY));
-    canvas.addEventListener('mouseup',end); canvas.addEventListener('mouseleave',end);
-    canvas.addEventListener('touchstart',e=>{const t=e.touches[0],r=canvas.getBoundingClientRect();set(t.clientX-r.left,t.clientY-r.top)},{passive:true});
-    canvas.addEventListener('touchmove',e=>{const t=e.touches[0],r=canvas.getBoundingClientRect();draw(t.clientX-r.left,t.clientY-r.top)},{passive:true});
-    canvas.addEventListener('touchend',end);
-    document.getElementById('clearSig').onclick=()=>{ctx.clearRect(0,0,canvas.width,canvas.height);document.getElementById('signatureData').value=''};
+    const draw=(a,b)=>{ if(!drawing)return; ctx.beginPath(); ctx.moveTo(x,y); ctx.lineTo(a,b); ctx.stroke(); x=a;y=b; };
+    const end=()=>{ drawing=false; document.getElementById('signatureData').value=c.toDataURL('image/png'); };
+    c.addEventListener('mousedown',e=>set(e.offsetX,e.offsetY));
+    c.addEventListener('mousemove',e=>draw(e.offsetX,e.offsetY));
+    c.addEventListener('mouseup',end); c.addEventListener('mouseleave',end);
+    c.addEventListener('touchstart',e=>{const t=e.touches[0],r=c.getBoundingClientRect();set(t.clientX-r.left,t.clientY-r.top)},{passive:true});
+    c.addEventListener('touchmove',e=>{const t=e.touches[0],r=c.getBoundingClientRect();draw(t.clientX-r.left,t.clientY-r.top)},{passive:true});
+    c.addEventListener('touchend',end);
+    document.getElementById('clearSig').onclick=()=>{ctx.clearRect(0,0,c.width,c.height);document.getElementById('signatureData').value=''};
     const form = document.querySelector('form[name="Avian Registration"]');
-    form.addEventListener('submit', (e) => {
-      if (!document.getElementById('signatureData').value) {
-        e.preventDefault(); alert('Please sign in the box.');
-      }
-    });
+    form.addEventListener('submit',e=>{ if(!document.getElementById('signatureData').value){ e.preventDefault(); alert('Please sign in the box.'); }});
   </script>
 
-  <!-- Image compression + 3.5 MB size limit -->
+  <!-- File size limit: 3.5 MB per image (no compression) -->
   <script>
-    const MAX_WIDTH  = 1600;
-    const MAX_HEIGHT = 1600;
-    const JPEG_QUALITY = 0.76;
-    const MAX_BYTES_AFTER = 3.5 * 1024 * 1024; // 3.5 MB per image
-
-    function fileToDataURL(file){
-      return new Promise((resolve,reject)=>{
-        const r=new FileReader();
-        r.onload=()=>resolve(r.result);
-        r.onerror=reject;
-        r.readAsDataURL(file);
-      });
-    }
-    async function downscaleToJpeg(file, maxW=MAX_WIDTH, maxH=MAX_HEIGHT, quality=JPEG_QUALITY){
-      const dataUrl = await fileToDataURL(file);
-      if (!/^data:image\//.test(dataUrl)) return file; // skip non-images
-      const img = await new Promise((res,rej)=>{ const i=new Image(); i.onload=()=>res(i); i.onerror=rej; i.src=dataUrl; });
-      const ratio = Math.min(maxW/img.width, maxH/img.height, 1);
-      const w = Math.round(img.width*ratio), h = Math.round(img.height*ratio);
-      const c = document.createElement('canvas'); c.width=w; c.height=h;
-      const cx = c.getContext('2d'); cx.imageSmoothingEnabled=true; cx.imageSmoothingQuality='high'; cx.drawImage(img,0,0,w,h);
-      const blob = await new Promise(res=>c.toBlob(res,'image/jpeg',quality));
-      if (!blob) return file;
-      const name = (file.name.replace(/\.[^.]+$/, '') || 'upload') + '.jpg';
-      return new File([blob], name, { type:'image/jpeg', lastModified: Date.now() });
-    }
-    async function processInputImages(inputEl){
-      if (!inputEl?.files?.length) return true;
-      const dt = new DataTransfer();
-      for (const original of Array.from(inputEl.files)){
-        let processed = original;
-        if (original.type.startsWith('image/') && original.size > 400*1024){
-          try { processed = await downscaleToJpeg(original); }
-          catch(e){ console.warn('Compression failed, keeping original:', e); }
+    const MAX_BYTES = 3.5 * 1024 * 1024; // 3.5 MB
+    function enforceMaxSize(input){
+      if(!input?.files?.length) return true;
+      for(const f of input.files){
+        if(f.size > MAX_BYTES){
+          alert(`"${f.name}" is ${(f.size/1024/1024).toFixed(2)} MB. Please upload images under 3.5 MB.`);
+          input.value=''; // clear
+          return false;
         }
-        if (processed.size > MAX_BYTES_AFTER){
-          alert(`Please upload images under ${(MAX_BYTES_AFTER/1024/1024).toFixed(1)} MB. "${processed.name}" is ${(processed.size/1024/1024).toFixed(2)} MB.`);
-          inputEl.value=''; return false;
-        }
-        dt.items.add(processed);
       }
-      inputEl.files = dt.files;
       return true;
     }
     const idFrontInput = document.getElementById('idFront');
     const idBackInput  = document.getElementById('idBack');
     [idFrontInput, idBackInput].forEach(el=>{
-      if (!el) return;
-      el.addEventListener('change', async ()=>{ await processInputImages(el); });
+      el.addEventListener('change',()=>enforceMaxSize(el));
     });
-    form.addEventListener('submit', async (e)=>{
-      const okFront = await processInputImages(idFrontInput);
-      const okBack  = await processInputImages(idBackInput);
-      if (!okFront || !okBack) e.preventDefault();
+    document.querySelector('form[name="Avian Registration"]').addEventListener('submit',(e)=>{
+      if(!enforceMaxSize(idFrontInput) || !enforceMaxSize(idBackInput)) e.preventDefault();
     });
   </script>
 
-  <!-- Autocomplete initializer -->
+  <!-- Address autofill: use PlaceAutocompleteElement and fill City/State/ZIP -->
   <script>
-    function initAutocomplete() {
-      const input = document.getElementById('address1');
-      if (!input) {
-        console.warn('address1 input not found');
-        return;
-      }
-      // Build Autocomplete restricted to US addresses
-      const ac = new google.maps.places.Autocomplete(input, {
-        types: ['address'],
-        componentRestrictions: { country: ['us'] },
-        fields: ['address_components', 'geometry']
-      });
-      ac.addListener('place_changed', () => {
-        const place = ac.getPlace();
-        if (!place || !place.address_components) return;
-        // Map components by type
+    // Runs after Maps JS loads (see script tag below)
+    function initAddressAutofill(){
+      const el = document.getElementById('address1');
+      if(!el){ console.warn('address1 element not found'); return; }
+
+      const cityEl  = document.getElementById('city');
+      const stateEl = document.getElementById('state');
+      const zipEl   = document.getElementById('zip');
+
+      // Helper: extract components from a geocoder result
+      function fillFromComponents(components){
         const byType = {};
-        place.address_components.forEach(c => c.types.forEach(t => (byType[t] = c)));
+        components.forEach(c => c.types.forEach(t => byType[t] = c));
         const city  = (byType.locality || byType.sublocality || byType.postal_town)?.long_name || '';
-        const state = (byType.administrative_area_level_1)?.short_name || '';
-        const zip   = (byType.postal_code)?.long_name || '';
-        if (city)  document.getElementById('city').value  = city;
-        if (state) document.getElementById('state').value = state;
-        if (zip)   document.getElementById('zip').value   = zip;
+        const state = byType.administrative_area_level_1?.short_name || '';
+        const zip   = byType.postal_code?.long_name || '';
+        if(city)  cityEl.value  = city;
+        if(state) stateEl.value = state;
+        if(zip)   zipEl.value   = zip;
+      }
+
+      // When user picks a suggestion
+      el.addEventListener('gmpx-placechange', async () => {
+        // New component often exposes a "value" (formatted string).
+        const addrString = el.value || '';
+        if(!addrString) return;
+
+        // Try to use structured place object if present
+        const place = el.valuePlace || el.place || null;
+        if(place?.addressComponents){
+          fillFromComponents(place.addressComponents);
+          return;
+        }
+
+        // Fallback: geocode the selected address string
+        try {
+          const geocoder = new google.maps.Geocoder();
+          geocoder.geocode({ address: addrString }, (results, status) => {
+            if(status === 'OK' && results?.[0]){
+              fillFromComponents(results[0].address_components || []);
+            }
+          });
+        } catch(err) {
+          console.warn('Geocoder fallback failed:', err);
+        }
       });
     }
   </script>
 
-  <!-- Load Google Maps JS + Places and call our init via callback -->
+  <!-- Load Google Maps JS (v=beta) with Places library, then init -->
   <script
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAVCNj2VPiRQpoZHIxoEAAbtW_m5LlZcaY&libraries=places&callback=initAutocomplete"
     async
