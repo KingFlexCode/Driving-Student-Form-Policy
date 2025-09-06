@@ -175,49 +175,33 @@
 
   <!-- Address suggestions: prefer PlaceAutocompleteElement, fallback to legacy Autocomplete -->
   <script>
-    function initAddressAutocomplete() {
-      const addressInput = document.getElementById('address1');
-      const cityEl  = document.getElementById('city');
-      const stateEl = document.getElementById('state');
-      const zipEl   = document.getElementById('zip');
-      if (!addressInput || !cityEl || !stateEl || !zipEl) return;
+    function initAutocomplete() {
+      const input = document.getElementById('address1');
+      if (!input) return;
 
-      function fillAddressFields(components) {
+      const ac = new google.maps.places.Autocomplete(input, {
+        types: ['address'],
+        componentRestrictions: { country: 'us' },
+        fields: ['address_components', 'formatted_address']
+      });
+
+      ac.addListener('place_changed', () => {
+        const place = ac.getPlace();
+        if (!place || !place.address_components) return;
+
         const byType = {};
-        components.forEach(c => c.types.forEach(t => (byType[t] = c)));
+        place.address_components.forEach(c => c.types.forEach(t => byType[t] = c));
         const city  = (byType.locality || byType.sublocality || byType.postal_town)?.long_name || '';
         const state = byType.administrative_area_level_1?.short_name || '';
         const zip   = byType.postal_code?.long_name || '';
-        if (city)  cityEl.value  = city;
-        if (state) stateEl.value = state;
-        if (zip)   zipEl.value   = zip;
-      }
 
-      if (google?.maps?.places?.PlaceAutocompleteElement) {
-        const el = new google.maps.places.PlaceAutocompleteElement({
-          inputElement: addressInput,
-          componentRestrictions: { country: ['us'] },
-          fields: ['address_components','formatted_address','geometry']
-        });
-        el.addListener('gmpxplacechange', () => {
-          const place = el.value; // PlaceResult
-          if (place?.address_components) fillAddressFields(place.address_components);
-        });
-        return;
-      }
-
-      const ac = new google.maps.places.Autocomplete(addressInput, {
-        types: ['address'],
-        componentRestrictions: { country: ['us'] },
-        fields: ['address_components','formatted_address','geometry']
-      });
-      ac.addListener('place_changed', () => {
-        const place = ac.getPlace();
-        if (place?.address_components) fillAddressFields(place.address_components);
+        if (city)  document.getElementById('city').value  = city;
+        if (state) document.getElementById('state').value = state;
+        if (zip)   document.getElementById('zip').value   = zip;
       });
     }
   </script>
-
+  
   <!-- Google Maps JS (Places) — replace YOUR_API_KEY -->
   <script
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAVCNj2VPiRQpoZHIxoEAAbtW_m5LlZcaY&libraries=places&callback=initAutocomplete"
