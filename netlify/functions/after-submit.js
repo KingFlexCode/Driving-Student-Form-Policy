@@ -1,16 +1,18 @@
 // netlify/functions/after-submit.js
-// Append to Google Sheets + Generate PDF + Email via Resend
+// Robust parser for Netlify Form webhooks + Google Sheets + PDF + Resend
 
 const { google } = require('googleapis');
 const PDFDocument = require('pdfkit');
 const { Resend } = require('resend');
+const fs = require('fs');
+const path = require('path');
 
 const SHEET_ID = process.env.SHEET_ID;
 const SERVICE_ACCOUNT = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT || '{}');
 const RANGE = 'Form Responses!A1';
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-// ------- Helpers -------
+// ---------- helpers ----------
 function sheetsClient() {
   const jwt = new google.auth.JWT(
     SERVICE_ACCOUNT.client_email,
@@ -21,53 +23,97 @@ function sheetsClient() {
   return google.sheets({ version: 'v4', auth: jwt });
 }
 
-function safe(obj, path, def = '') {
-  try {
-    return path.split('.').reduce((o, k) => (o ? o[k] : undefined), obj) ?? def;
-  } catch {
-    return def;
-  }
-}
-
 function formatPhone(s) {
   const d = String(s || '').replace(/\D/g, '').slice(-10);
   if (d.length !== 10) return s || '';
   return `(${d.slice(0,3)}) ${d.slice(3,6)}-${d.slice(6)}`;
 }
 
-function parseSubmission(event) {
-  let body = {};
-  try { body = JSON.parse(event.body || '{}'); } catch {}
-  const payload = body.payload || {};
+/**
+ * Parse the body regardless of how Netlify posts it:
+ * - JSON: { payload: { data: {...}, files: [...] } }
+ * - URL-encoded: payload=<json>, or raw k=v&k2=v2
+ */
+function robustParseBody(event) {
+  const headers = event.headers || {};
+  const ctype = (headers['content-type'] || headers['Content-Type'] || '').toLowerCase();
+  const raw = event.body || '';
+
+  // Log a tiny preview so we can debug exact format (visible in Function logs)
+  try {
+    console.log('after-submit content-type:', ctype);
+    console.log('after-submit body preview:', raw.slice(0, 300));
+  } catch {}
+
+  let payload = null;
+
+  // 1) Pure JSON body
+  if (ctype.includes('application/json')) {
+    try {
+      const json = JSON.parse(raw);
+      // Netlify usually wraps in { payload: {...} }
+      if (json && typeof json === 'object') {
+        if (json.payload) payload = json.payload;
+        else payload = json; // fallback
+      }
+    } catch { /* fallthrough */ }
+  }
+
+  // 2) application/x-www-form-urlencoded (payload=<json> or key=value...)
+  if (!payload && ctype.includes('application/x-www-form-urlencoded')) {
+    const params = new URLSearchParams(raw);
+    const possiblePayload = params.get('payload');
+    if (possiblePayload) {
+      try {
+        payload = JSON.parse(possiblePayload);
+      } catch { /* fallthrough */ }
+    }
+    // If no "payload" param, build a simple key/value object from params
+    if (!payload) {
+      const data = {};
+      for (const [k, v] of params.entries()) data[k] = v;
+      payload = { data, files: [] };
+    }
+  }
+
+  // 3) Last-resort: body is literally "payload=<json>" without URL encoding
+  if (!payload && raw.startsWith('payload=')) {
+    try {
+      payload = JSON.parse(decodeURIComponent(raw.slice('payload='.length)));
+    } catch { /* fallthrough */ }
+  }
+
+  // Default safety
+  if (!payload) payload = { data: {}, files: [] };
+
   const data = payload.data || {};
   const files = payload.files || [];
 
   const fileByName = (n) => {
-    const f = files.find(x => x.name === n);
+    const f = files.find((x) => x.name === n);
     return f && f.url ? f.url : '';
+    // Netlify also sometimes gives `file` or `mime_type`; we only need URL.
   };
 
   return {
-    // All fields that came from your <form>
     data: {
-      firstName: data.firstName || '',
-      lastName:  data.lastName || '',
-      email:     data.email || '',
-      phone:     data.phone || '',
-      address1:  data.address1 || '',
-      address2:  data.address2 || '',
-      city:      data.city || '',
-      state:     data.state || '',
-      zip:       data.zip || '',
-      // NEW: date of birth (add <input type="date" name="dob"> to your form)
-      dob:       data.dob || '',
-      permitNo:  data.permitNo || '',
+      firstName: data.firstName || data.firstname || '',
+      lastName:  data.lastName  || data.lastname  || '',
+      email:     data.email     || '',
+      phone:     data.phone     || '',
+      address1:  data.address1  || '',
+      address2:  data.address2  || '',
+      city:      data.city      || '',
+      state:     data.state     || '',
+      zip:       data.zip       || '',
+      dob:       data.dob       || data.dateOfBirth || '',
+      permitNo:  data.permitNo  || data.permit    || '',
       issueDate: data.issueDate || '',
-      expDate:   data.expDate || '',
-      pkg:       data.package || '',
+      expDate:   data.expDate   || '',
+      pkg:       data.package   || '',
       fiveHour:  data.fiveHourSlot || '',
       permitSrc: data.permitSource || '',
-      signHelp:  data.signHelp || '',
+      signHelp:  data.signHelp  || '',
       signatureData: data.signatureData || '',
       agreeTOS:  !!data.agreeTOS,
       agreePrivacy: !!data.agreePrivacy,
@@ -80,7 +126,6 @@ function parseSubmission(event) {
   };
 }
 
-// Convert PDFKit stream → Buffer
 function pdfToBuffer(doc) {
   return new Promise((resolve, reject) => {
     const chunks = [];
@@ -91,20 +136,14 @@ function pdfToBuffer(doc) {
   });
 }
 
-// Fetch Netlify-hosted image → Buffer (skip if missing)
-async function fetchImageBuffer(url) {
-  if (!url) return null;
-  const res = await fetch(url);
-  if (!res.ok) return null;
-  const ab = await res.arrayBuffer();
-  return Buffer.from(ab);
+function getLogoPath() {
+  return path.join(__dirname, '..', '..', 'assets', 'avian_logo.png');
 }
 
-// Build a clean, student-facing PDF (no submission metadata)
 async function buildPdf({ data, fileUrls }) {
   const doc = new PDFDocument({ size: 'LETTER', margin: 50 });
 
-  const H1 = (t) => { doc.fontSize(20).text(t); doc.moveDown(0.5); };
+  const H1 = (t) => { doc.fontSize(20).text(t, { align: 'center' }); doc.moveDown(0.5); };
   const H2 = (t) => { doc.fontSize(14).text(t); line(); };
   const L  = (k, v='') => doc.fontSize(11).text(`${k}: ${v}`);
   const line = () => {
@@ -113,8 +152,19 @@ async function buildPdf({ data, fileUrls }) {
     doc.moveDown(0.35);
   };
 
-  // Header
-  H1('Avian Driving School — Student Information Sheet');
+  // Logo
+  try {
+    const logoPath = getLogoPath();
+    if (fs.existsSync(logoPath)) {
+      doc.image(logoPath, (doc.page.width - 160) / 2, 40, { width: 160 });
+      doc.moveDown(5);
+    }
+  } catch (e) {
+    console.warn('Logo not found or failed to load:', e.message);
+  }
+
+  // Title
+  H1('Student Information Sheet');
 
   // Student Information
   H2('Student Information');
@@ -152,7 +202,7 @@ async function buildPdf({ data, fileUrls }) {
   L('Acknowledged 6-month validity', data.ack6mo ? 'Yes' : 'No');
   doc.moveDown(0.5);
 
-  // Signature (if present)
+  // Signature
   if (data.signatureData) {
     try {
       const b64 = data.signatureData.replace(/^data:image\/\w+;base64,/, '');
@@ -160,18 +210,23 @@ async function buildPdf({ data, fileUrls }) {
       H2('Signature');
       doc.image(buf, { fit: [300, 120] });
       doc.moveDown(0.5);
-    } catch {
-      // ignore decode failures
-    }
+    } catch {}
   }
 
-  // ID Images page
-  const frontBuf = await fetchImageBuffer(fileUrls.idFrontUrl);
-  const backBuf  = await fetchImageBuffer(fileUrls.idBackUrl);
+  // ID Images page (if any)
+  const toBuf = async (url) => {
+    if (!url) return null;
+    const res = await fetch(url);
+    if (!res.ok) return null;
+    const ab = await res.arrayBuffer();
+    return Buffer.from(ab);
+  };
+  const frontBuf = await toBuf(fileUrls.idFrontUrl);
+  const backBuf  = await toBuf(fileUrls.idBackUrl);
+
   if (frontBuf || backBuf) {
     doc.addPage();
     H2('ID Images');
-    doc.fontSize(10).fillColor('#666').text('Images uploaded with the submission.').fillColor('#000').moveDown(0.5);
     if (frontBuf) { doc.fontSize(12).text('Front', { paragraphGap: 6 }); doc.image(frontBuf, { fit: [480, 360] }); doc.moveDown(0.5); }
     if (backBuf)  { doc.fontSize(12).text('Back',  { paragraphGap: 6 }); doc.image(backBuf,  { fit: [480, 360] }); doc.moveDown(0.5); }
   }
@@ -182,57 +237,53 @@ async function buildPdf({ data, fileUrls }) {
 exports.handler = async (event) => {
   console.log('after-submit invoked');
   try {
-    const { data, fileUrls } = parseSubmission(event);
+    const { data, fileUrls } = robustParseBody(event);
 
     // 1) Append to Google Sheets
     const sheets = sheetsClient();
-    const values = [[
-      new Date().toISOString(),
-      data.firstName, data.lastName, data.email, formatPhone(data.phone),
-      data.address1, data.address2, data.city, data.state, data.zip,
-      data.dob,                 // NEW column for DOB
-      data.permitNo, data.issueDate, data.expDate,
-      data.pkg, data.fiveHour, data.permitSrc, data.signHelp,
-      fileUrls.idFrontUrl, fileUrls.idBackUrl,
-      data.signatureData ? 'Captured' : '',
-      data.agreeTOS ? 'Yes' : 'No',
-      data.agreePrivacy ? 'Yes' : 'No',
-      data.ack6mo ? 'Yes' : 'No'
-    ]];
-
-    const appendRes = await sheets.spreadsheets.values.append({
+    await sheets.spreadsheets.values.append({
       spreadsheetId: SHEET_ID,
       range: RANGE,
       valueInputOption: 'USER_ENTERED',
-      requestBody: { values }
+      requestBody: { values: [[
+        new Date().toISOString(),
+        data.firstName, data.lastName, data.email, formatPhone(data.phone),
+        data.address1, data.address2, data.city, data.state, data.zip,
+        data.dob, data.permitNo, data.issueDate, data.expDate,
+        data.pkg, data.fiveHour, data.permitSrc, data.signHelp,
+        fileUrls.idFrontUrl, fileUrls.idBackUrl,
+        data.signatureData ? 'Captured' : '',
+        data.agreeTOS ? 'Yes' : 'No',
+        data.agreePrivacy ? 'Yes' : 'No',
+        data.ack6mo ? 'Yes' : 'No'
+      ]]}
     });
-    console.log('append status:', appendRes.status);
 
     // 2) Build PDF
     const pdfBuffer = await buildPdf({ data, fileUrls });
 
-    // 3) Email via Resend
+    // 3) Email via Resend (rich summary)
     const studentName = `${data.firstName} ${data.lastName}`.trim();
     const emailHtml = `
       <p>You have a new student registration.</p>
       <p>
         <strong>Name:</strong> ${studentName || 'N/A'}<br/>
-        <strong>Email:</strong> <a href="mailto:${data.email}">${data.email || 'N/A'}</a><br/>
+        <strong>Email:</strong> ${data.email ? `<a href="mailto:${data.email}">${data.email}</a>` : 'N/A'}<br/>
         <strong>Phone:</strong> ${formatPhone(data.phone) || 'N/A'}<br/>
         <strong>Permit #:</strong> ${data.permitNo || 'N/A'}<br/>
         <strong>Date of Birth:</strong> ${data.dob || 'N/A'}
       </p>
       <p>
-        ${(fileUrls.idFrontUrl ? `ID (Front): <a href="${fileUrls.idFrontUrl}">Download</a><br/>` : '')}
-        ${(fileUrls.idBackUrl  ? `ID (Back): <a href="${fileUrls.idBackUrl}">Download</a><br/>`  : '')}
+        ${fileUrls.idFrontUrl ? `ID (Front): <a href="${fileUrls.idFrontUrl}">Download</a><br/>` : ''}
+        ${fileUrls.idBackUrl  ? `ID (Back): <a href="${fileUrls.idBackUrl}">Download</a><br/>`  : ''}
       </p>
       <p>The PDF summary is attached.</p>
     `;
 
-    const emailRes = await resend.emails.send({
+    await resend.emails.send({
       from: 'Avian Forms <forms@aviandrivingschool.com>',
-      to:   ['info@aviandrivingschool.com'],
-      cc:   ['aviandrivingschool@gmail.com'],
+      to: ['info@aviandrivingschool.com'],
+      cc: ['aviandrivingschool@gmail.com'],
       subject: `New Student Registration: ${studentName || data.email || 'Unknown'}`,
       html: emailHtml,
       attachments: [{
@@ -241,11 +292,10 @@ exports.handler = async (event) => {
       }],
     });
 
-    console.log('email status:', (emailRes && emailRes.id) ? emailRes.id : 'ok');
     return { statusCode: 200, body: 'OK' };
   } catch (err) {
     console.error('after-submit error:', err);
-    // Still 200 so Netlify accepts the submission; check logs for details
-    return { statusCode: 200, body: 'Received (email/pdf error logged).' };
+    // keep 200 so Netlify marks the webhook handled
+    return { statusCode: 200, body: 'Received (error logged).' };
   }
 };
