@@ -35,7 +35,11 @@
       <!-- Required hidden input -->
       <input type="hidden" name="form-name" value="Avian Registration" />
       <!-- Optional honeypot -->
-      <p style="display:none"><label>Don’t fill this out: <input name="bot-field" autocomplete="off"/></label></p>
+      <p style="display:none">
+        <label>Don’t fill this out:
+          <input name="bot-field" autocomplete="off"/>
+        </label>
+      </p>
 
       <label for="firstName">First Name*</label>
       <input id="firstName" name="firstName" required autocomplete="given-name" value="Amir"/>
@@ -49,56 +53,58 @@
       <label for="phone">Phone*</label>
       <input id="phone" name="phone" required autocomplete="tel" value="6464445566"/>
 
-      <!-- Address (single input; suggestions fill the fields below on selection) -->
+      <!-- Address -->
       <label for="address1">Street Address*</label>
-      <input id="address1" name="address1" required autocomplete="street-address"/>
+      <input id="address1" name="address1" required autocomplete="street-address" value="1 Fordham Plaza"/>
 
       <label for="address2">Address 2</label>
-      <input id="address2" name="address2" autocomplete="address-line2"/>
+      <input id="address2" name="address2" autocomplete="address-line2" value="Suite 100"/>
 
       <label for="city">City*</label>
-      <input id="city" name="city" required autocomplete="address-level2"/>
+      <input id="city" name="city" required autocomplete="address-level2" value="Bronx"/>
 
       <label for="state">State* (2 letters)</label>
-      <input id="state" name="state" minlength="2" maxlength="2" required autocomplete="address-level1"/>
+      <input id="state" name="state" minlength="2" maxlength="2" required autocomplete="address-level1" value="NY"/>
 
       <label for="zip">ZIP*</label>
-      <input id="zip" name="zip" pattern="\d{5}" required inputmode="numeric" autocomplete="postal-code"/>
+      <input id="zip" name="zip" pattern="\d{5}" required inputmode="numeric" autocomplete="postal-code" value="10458"/>
 
       <label for="permitNo">Permit/License #*</label>
       <input id="permitNo" name="permitNo" required value="111-000-111"/>
 
       <label for="dob">Date of Birth*</label>
-      <input id="dob" type="date" name="dob" required value="04/01/1990"/>
+      <!-- YYYY-MM-DD -->
+      <input id="dob" type="date" name="dob" required value="1990-04-01"/>
 
       <label for="issueDate">Issue Date*</label>
-      <input id="issueDate" type="date" name="issueDate" required value="01/01/2024"/>
+      <input id="issueDate" type="date" name="issueDate" required value="2024-01-01"/>
 
       <label for="expDate">Expiration Date*</label>
-      <input id="expDate" type="date" name="expDate" required value="01/01/2029"/>
+      <input id="expDate" type="date" name="expDate" required value="2029-01-01"/>
 
       <label for="package">Package/Service*</label>
       <select id="package" name="package" required>
-        <option value="" disabled selected>Please select</option>
-        <option value="399">Car Package 2 — $399</option>
+        <option value="" disabled>Please select</option>
+        <option value="399" selected>Car Package 2 — $399</option>
         <option value="649">Car Package 3 — $649</option>
         <option value="135">Road Test Car — $135</option>
       </select>
 
       <label for="fiveHourSlot">5-Hour Class (date/time)*</label>
-      <input id="fiveHourSlot" type="datetime-local" name="fiveHourSlot" required valu="01/01/2029"/>
+      <!-- YYYY-MM-DDTHH:MM (24h or 12h by browser locale) -->
+      <input id="fiveHourSlot" type="datetime-local" name="fiveHourSlot" required value="2025-09-10T13:30"/>
 
       <label for="permitSource">Permit Source*</label>
-      <select id="permitSource" name="permitSource" required value="online">
-        <option value="" disabled selected>Please select</option>
-        <option>Online</option>
+      <select id="permitSource" name="permitSource" required>
+        <option value="" disabled>Please select</option>
+        <option selected>Online</option>
         <option>On-site (DMV)</option>
       </select>
 
       <label for="signHelp">Need help with signs?*</label>
       <select id="signHelp" name="signHelp" required>
         <option>Yes</option>
-        <option>No</option>
+        <option selected>No</option>
       </select>
 
       <label for="idFront">ID (Front)*</label>
@@ -115,9 +121,9 @@
       </div>
       <button type="button" id="clearSig" aria-label="Clear signature">Clear Signature</button>
 
-      <p><label><input type="checkbox" name="agreeTOS" required aria-required="true"/> I agree to the Terms of Service.</label></p>
-      <p><label><input type="checkbox" name="agreePrivacy" required aria-required="true"/> I agree to the Privacy Policy.</label></p>
-      <p><label><input type="checkbox" name="ack6mo" required aria-required="true"/> I understand all purchases are valid for 6 months and unused lessons expire.</label></p>
+      <p><label><input type="checkbox" name="agreeTOS" required aria-required="true" checked/> I agree to the Terms of Service.</label></p>
+      <p><label><input type="checkbox" name="agreePrivacy" required aria-required="true" checked/> I agree to the Privacy Policy.</label></p>
+      <p><label><input type="checkbox" name="ack6mo" required aria-required="true" checked/> I understand all purchases are valid for 6 months and unused lessons expire.</label></p>
 
       <button type="submit">Submit Registration</button>
     </form>
