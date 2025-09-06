@@ -5,3 +5,8 @@
 [[events]]
   type = "submission_created"
   function = "after-submit"
+
+  # netlify.toml
+[functions]
+  node_bundler = "zisi"
+  included_files = ["assets/avian_logo.png"]
