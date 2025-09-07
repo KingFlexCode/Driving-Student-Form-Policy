@@ -59,7 +59,7 @@
       <input id="phone" name="phone" required autocomplete="tel"/>
 
       <!-- Address (Google field visible; real Netlify field hidden) -->
-      <label for="address1-ac">Street Address*</label>
+      <label for="address1">Street Address*</label>
       <gmpx-place-autocomplete
         id="address1-ac"
         aria-label="Street Address"
@@ -67,7 +67,7 @@
       ></gmpx-place-autocomplete>
 
       <!-- Hidden field actually posted to Netlify -->
-      <input type="hidden" id="address1" name="address1" required />
+      <input id="address1" name="address1" required />
 
       <!-- Fallback text field (shown only if component fails) -->
       <input
