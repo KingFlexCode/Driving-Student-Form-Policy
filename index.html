@@ -3,7 +3,6 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <link rel="icon" href="/favicon.ico" />
   <title>Avian Driving School — Registration</title>
   <style>
     body{font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,Arial;background:#0f172a;color:#f8fafc;margin:0}
@@ -16,7 +15,6 @@
     canvas{display:block;width:100%;height:180px}
     .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 
-    /* Style the new Places element like your inputs */
     gmpx-place-autocomplete {
       display:block;
       --gmpx-color-surface:#0b1020;
@@ -24,9 +22,8 @@
       --gmpx-color-outline:#1f2937;
       --gmpx-shape-corner-extra-large:8px;
       border-radius:8px;
-      margin:0 0 8px 0;
+      margin-bottom:8px;
     }
-    /* Keep dropdown above your card */
     .pac-container{z-index:3000!important}
   </style>
 </head>
@@ -60,18 +57,15 @@
       <label for="phone">Phone*</label>
       <input id="phone" name="phone" required autocomplete="tel"/>
 
-      <!-- Address (new web component) -->
+      <!-- Address -->
       <label for="address1-ac">Street Address*</label>
-
-      <!-- 1) The Google Places web component users type into -->
       <gmpx-place-autocomplete
         id="address1-ac"
         aria-label="Street Address"
         autocomplete-options='{"componentRestrictions":{"country":["us"]}}'
-        style="margin-bottom:8px"
       ></gmpx-place-autocomplete>
 
-      <!-- 2) Visible read-only mirror that actually gets submitted -->
+      <!-- Mirror field for submission -->
       <input
         id="address1"
         name="address1"
@@ -79,14 +73,14 @@
         readonly
         placeholder="Start typing above to select an address"
       />
-      
+
       <label for="address2">Address 2</label>
       <input id="address2" name="address2" autocomplete="address-line2"/>
 
       <label for="city">City*</label>
       <input id="city" name="city" required autocomplete="address-level2"/>
 
-      <label for="state">State* (2 letters)</label>
+      <label for="state">State*</label>
       <input id="state" name="state" minlength="2" maxlength="2" required autocomplete="address-level1"/>
 
       <label for="zip">ZIP*</label>
@@ -170,7 +164,7 @@
     form.addEventListener('submit',e=>{ if(!document.getElementById('signatureData').value){ e.preventDefault(); alert('Please sign in the box.'); }});
   </script>
 
-  <!-- File size limit: 3.5 MB per image -->
+  <!-- File size limit -->
   <script>
     const MAX_BYTES = 3.5 * 1024 * 1024;
     function enforceMaxSize(input){
@@ -191,43 +185,27 @@
     });
   </script>
 
-  <!-- Load Google's Extended Component Library (defines <gmpx-*> tags) -->
+  <!-- Extended Component Library -->
   <script type="module" src="https://unpkg.com/@googlemaps/extended-component-library@0.6/dist/index.min.js"></script>
 
-  <!-- Glue code + component loader -->
+  <!-- Wire up autocomplete -->
   <script type="module">
-    async function wireUpPlaceElement() {
-      // Make sure the custom element is defined (provided by the Extended Component Library)
+    async function initPlaces() {
       await customElements.whenDefined('gmpx-place-autocomplete');
-
-      const el      = document.getElementById('address1-ac');
-      const mirror  = document.getElementById('address1'); // visible, readonly input
-      const cityEl  = document.getElementById('city');
+      const el = document.getElementById('address1-ac');
+      const mirror = document.getElementById('address1');
+      const cityEl = document.getElementById('city');
       const stateEl = document.getElementById('state');
-      const zipEl   = document.getElementById('zip');
+      const zipEl = document.getElementById('zip');
 
-      if (!el || !mirror) {
-        console.warn('Autocomplete element or #address1 mirror not found');
-        return;
-      }
+      if (!el || !mirror) return;
 
-      // While typing (no selection yet), mirror raw text so "required" passes
-      el.addEventListener('input', () => {
-        mirror.value = el.value || '';
-      });
+      el.addEventListener('input', () => { mirror.value = el.value || ''; });
 
-      // When a suggestion is actually chosen
       el.addEventListener('gmpx-placechange', () => {
         const place = el.valuePlace || null;
+        mirror.value = place?.formattedAddress || el.value || '';
 
-        // Put formatted address into the mirror input (this is what gets submitted)
-        mirror.value =
-          place?.formattedAddress ||
-          place?.formatted_address ||
-          el.value ||
-          '';
-
-        // Fill City/State/ZIP
         const comps = place?.addressComponents || [];
         const byType = {};
         comps.forEach(c => (c.types || []).forEach(t => (byType[t] = c)));
@@ -240,26 +218,15 @@
         if (state) stateEl.value = state;
         if (zip)   zipEl.value   = zip;
       });
-
-      console.log('Place Autocomplete wired ✓');
     }
-
-    // Expose for the API loader onload
-    window.__afterGmpxLoaded = wireUpPlaceElement;
+    window.__afterGmpxLoaded = initPlaces;
   </script>
 
-  <!-- Extended Component Library (defines <gmpx-*> elements) -->
-  <script type="module" src="https://unpkg.com/@googlemaps/extended-component-library@0.6/dist/index.min.js"></script>
-
-  <!-- Official API loader for components -->
+  <!-- API loader -->
   <gmpx-api-loader
     key="AIzaSyAVCNj2VPiRQpoZHIxoEAAbtW_m5LlZcaY"
     libraries="places"
     onload="__afterGmpxLoaded()">
   </gmpx-api-loader>
-
-</body>
-</html>
-
 </body>
 </html>
