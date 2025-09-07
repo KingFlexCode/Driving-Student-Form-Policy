@@ -3,10 +3,25 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Avian Driving School — Registration</title>
+  <title>Avian Driving School Student Registration Form</title>
   <style>
     body{font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,Arial;background:#0f172a;color:#f8fafc;margin:0}
-    .wrap{max-width:960px;margin:0 auto;padding:24px}
+    .wrap{max-width:960px;
+      margin:0 auto;
+      padding:24px;
+    }
+    .form-title{
+      display: block;
+    }
+    .form-title img{
+      display: block;
+      max-width:350px;
+      margin: 10px auto;
+    }
+    .form-title h1{
+      text-align: center;
+      margin: 10px auto;
+    }
     .card{background:#111318;border:1px solid #1f2937;border-radius:16px;padding:20px}
     label{
       display:block;
@@ -15,7 +30,7 @@
     input,select{
       width:100%;
       padding:10px;
-      margin: 0 10px;
+      margin-right: 10px;
       border-radius:8px;
       border:1px solid #1f2937;
       background:#0b1020;
@@ -39,10 +54,11 @@
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <h1>Avian Driving School</h1>
-    <h1>Student Registration</h1>
+  <header class="form-title">
+    <img src="assets/avian_header_logo_2.png">
+    <h1>Student Registration Form</h1></header>
 
+  <div class="wrap">
     <form
       name="Avian Registration"
       method="POST"
