@@ -14,17 +14,16 @@
     .sig{background:#fff;border-radius:8px;border:1px solid #1f2937;overflow:hidden;margin:8px 0}
     canvas{display:block;width:100%;height:180px}
     .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
-
-    /* Style the Google address component to match inputs */
+    /* ECL styling to blend with your inputs */
     gmpx-place-autocomplete{
       display:block;
-      margin-bottom:8px;
+      margin:0 0 8px 0;
       --gmpx-color-surface:#0b1020;
       --gmpx-color-on-surface:#f8fafc;
       --gmpx-color-outline:#1f2937;
       --gmpx-shape-corner-extra-large:8px;
     }
-    /* Google’s legacy dropdown class (kept just in case) */
+    /* Ensure dropdown overlays the card if needed (legacy Autocomplete only) */
     .pac-container{z-index:3000!important}
   </style>
 </head>
@@ -43,7 +42,9 @@
     >
       <h2 id="form-title" class="sr-only">Registration Form</h2>
 
+      <!-- REQUIRED for Netlify Forms -->
       <input type="hidden" name="form-name" value="Avian Registration" />
+      <!-- Honeypot -->
       <p style="display:none"><label>Don’t fill this out: <input name="bot-field" autocomplete="off"/></label></p>
 
       <label for="firstName">First Name*</label>
@@ -58,24 +59,14 @@
       <label for="phone">Phone*</label>
       <input id="phone" name="phone" required autocomplete="tel"/>
 
-      <!-- Address (Google field visible; real Netlify field hidden) -->
+      <!-- Address: keep a normal input the user can type into -->
       <label for="address1">Street Address*</label>
+      <input id="address1" name="address1" required autocomplete="street-address"/>
+      <!-- Bind the new Place Autocomplete element to that input -->
       <gmpx-place-autocomplete
-        id="address1-ac"
-        aria-label="Street Address"
+        for="address1"
         autocomplete-options='{"componentRestrictions":{"country":["us"]}}'
       ></gmpx-place-autocomplete>
-
-      <!-- Hidden field actually posted to Netlify -->
-      <input id="address1" name="address1" required />
-
-      <!-- Fallback text field (shown only if component fails) -->
-      <input
-        id="address1-fallback"
-        name="address1-fallback"
-        placeholder="Street address"
-        style="display:none"
-      />
 
       <label for="address2">Address 2</label>
       <input id="address2" name="address2" autocomplete="address-line2"/>
@@ -163,11 +154,12 @@
     c.addEventListener('touchmove',e=>{const t=e.touches[0],r=c.getBoundingClientRect();draw(t.clientX-r.left,t.clientY-r.top)},{passive:true});
     c.addEventListener('touchend',end);
     document.getElementById('clearSig').onclick=()=>{ctx.clearRect(0,0,c.width,c.height);document.getElementById('signatureData').value=''};
-    const form = document.querySelector('form[name="Avian Registration"]');
-    form.addEventListener('submit',e=>{ if(!document.getElementById('signatureData').value){ e.preventDefault(); alert('Please sign in the box.'); }});
+    document.querySelector('form[name="Avian Registration"]').addEventListener('submit',e=>{
+      if(!document.getElementById('signatureData').value){ e.preventDefault(); alert('Please sign in the box.'); }
+    });
   </script>
 
-  <!-- File size limit -->
+  <!-- File size limit: 3.5 MB per image -->
   <script>
     const MAX_BYTES = 3.5 * 1024 * 1024;
     function enforceMaxSize(input){
@@ -188,37 +180,29 @@
     });
   </script>
 
-  <!-- Google Extended Component Library (modules) -->
-  <script type="module" src="https://unpkg.com/@googlemaps/extended-component-library@0.6/dist/index.min.js"></script>
+  <!-- Fill City/State/ZIP when a suggestion is selected -->
+  <script>
+    function wireAddressFill(){
+      const acEl = document.querySelector('gmpx-place-autocomplete');
+      const cityEl  = document.getElementById('city');
+      const stateEl = document.getElementById('state');
+      const zipEl   = document.getElementById('zip');
 
-  <!-- Wire up the autocomplete + fallback -->
-  <script type="module">
-    async function initPlaces() {
-      // Wait for the element to be defined
-      await customElements.whenDefined('gmpx-place-autocomplete');
+      if(!acEl) return;
 
-      const ac     = document.getElementById('address1-ac');
-      const hidden = document.getElementById('address1');
-      const cityEl = document.getElementById('city');
-      const stateEl= document.getElementById('state');
-      const zipEl  = document.getElementById('zip');
-      const fb     = document.getElementById('address1-fallback');
-
-      if (!ac || !hidden) return;
-
-      // Keep the hidden Netlify field in sync while typing
-      ac.addEventListener('input', () => {
-        hidden.value = ac.value || '';
+      // Keep hidden value in sync as the user types (not strictly required)
+      const addrInput = document.getElementById('address1');
+      acEl.addEventListener('input', () => {
+        // On some builds the web component exposes valueText
+        addrInput.value = acEl.valueText || addrInput.value;
       });
 
-      // On selection, set address + components
-      ac.addEventListener('gmpx-placechange', () => {
-        const place = ac.valuePlace || null;
-        hidden.value = place?.formattedAddress || ac.value || '';
-
+      acEl.addEventListener('gmpx-placechange', () => {
+        // In ECL, the selected PlaceResult is available as .value or .valuePlace depending on version
+        const place = acEl.valuePlace || acEl.value;
         const comps = place?.addressComponents || [];
         const byType = {};
-        comps.forEach(c => (c.types || []).forEach(t => (byType[t] = c)));
+        comps.forEach(c => c.types?.forEach(t => byType[t] = c));
 
         const city  = (byType.locality || byType.sublocality || byType.postal_town)?.longText || '';
         const state = byType.administrative_area_level_1?.shortText || '';
@@ -227,29 +211,22 @@
         if (city)  cityEl.value  = city;
         if (state) stateEl.value = state;
         if (zip)   zipEl.value   = zip;
+
+        // Ensure the visible input has the formatted address text
+        const formatted = place?.formattedAddress || '';
+        if (formatted) addrInput.value = formatted;
       });
-
-      // If component failed to render its inner input for some reason, show fallback
-      setTimeout(() => {
-        // Heuristic: if the inner control width is 0, show fallback
-        const rect = ac.getBoundingClientRect();
-        if (rect.height < 10) {
-          fb.style.display = 'block';
-          ac.style.display = 'none';
-          fb.addEventListener('input', () => { hidden.value = fb.value; });
-        }
-      }, 1500);
     }
-
-    // Load the Maps JS via the official loader tag and run init when ready
-    window.__afterGmpxLoaded = initPlaces;
   </script>
 
-  <!-- API loader (NO legacy maps script). Replace YOUR_API_KEY -->
+  <!-- Load the Extended Component Library (module!) -->
+  <script type="module" src="https://unpkg.com/@googlemaps/extended-component-library@0.6/dist/index.min.js"></script>
+  <!-- Load Maps JS via the API Loader component; DO NOT add an extra Google Maps script -->
   <gmpx-api-loader
     key="AIzaSyAVCNj2VPiRQpoZHIxoEAAbtW_m5LlZcaY"
     libraries="places"
-    onload="__afterGmpxLoaded()">
-  </gmpx-api-loader>
+    solution-channel="GMP_components"
+    onload="wireAddressFill()"
+  ></gmpx-api-loader>
 </body>
 </html>
