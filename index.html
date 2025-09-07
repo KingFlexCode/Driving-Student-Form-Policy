@@ -61,15 +61,25 @@
       <input id="phone" name="phone" required autocomplete="tel"/>
 
       <!-- Address (new web component) -->
-      <label for="address1">Street Address*</label>
-      <!-- Visible autocomplete field -->
+      <label for="address1-ac">Street Address*</label>
+
+      <!-- 1) The Google Places web component users type into -->
       <gmpx-place-autocomplete
-        id="address1"
+        id="address1-ac"
         aria-label="Street Address"
         autocomplete-options='{"componentRestrictions":{"country":["us"]}}'
+        style="margin-bottom:8px"
       ></gmpx-place-autocomplete>
-      <input id="address1" name="address1" required />
 
+      <!-- 2) Visible read-only mirror that actually gets submitted -->
+      <input
+        id="address1"
+        name="address1"
+        required
+        readonly
+        placeholder="Start typing above to select an address"
+      />
+      
       <label for="address2">Address 2</label>
       <input id="address2" name="address2" autocomplete="address-line2"/>
 
@@ -181,39 +191,43 @@
     });
   </script>
 
+  <!-- Load Google's Extended Component Library (defines <gmpx-*> tags) -->
+  <script type="module" src="https://unpkg.com/@googlemaps/extended-component-library@0.6/dist/index.min.js"></script>
+
   <!-- Glue code + component loader -->
   <script type="module">
-    // Ensure the component is defined, then wire it up
     async function wireUpPlaceElement() {
+      // Make sure the custom element is defined (provided by the Extended Component Library)
       await customElements.whenDefined('gmpx-place-autocomplete');
 
-      const el      = document.querySelector('gmpx-place-autocomplete');
-      const hidden  = document.getElementById('address1');
+      const el      = document.getElementById('address1-ac');
+      const mirror  = document.getElementById('address1'); // visible, readonly input
       const cityEl  = document.getElementById('city');
       const stateEl = document.getElementById('state');
       const zipEl   = document.getElementById('zip');
 
-      if (!el || !hidden) {
-        console.warn('Autocomplete element or hidden address1 not found');
+      if (!el || !mirror) {
+        console.warn('Autocomplete element or #address1 mirror not found');
         return;
       }
 
-      // Keep hidden field in sync while typing (so required validation works)
+      // While typing (no selection yet), mirror raw text so "required" passes
       el.addEventListener('input', () => {
-        // For this component, .value is the raw text; .valuePlace appears after selection
-        hidden.value = el.value || '';
+        mirror.value = el.value || '';
       });
 
-      // When user picks a suggestion (NOTE THE DASH in event name)
+      // When a suggestion is actually chosen
       el.addEventListener('gmpx-placechange', () => {
-        const place = el.valuePlace || null; // PlaceResult-like object from the component
-        // Mirror the formatted address into the hidden field that Netlify submits
-        hidden.value =
-          place?.formattedAddress ||
-          place?.formatted_address ||   // just in case
-          el.value || '';
+        const place = el.valuePlace || null;
 
-        // Pull out address components (new component uses longText/shortText)
+        // Put formatted address into the mirror input (this is what gets submitted)
+        mirror.value =
+          place?.formattedAddress ||
+          place?.formatted_address ||
+          el.value ||
+          '';
+
+        // Fill City/State/ZIP
         const comps = place?.addressComponents || [];
         const byType = {};
         comps.forEach(c => (c.types || []).forEach(t => (byType[t] = c)));
@@ -230,16 +244,20 @@
       console.log('Place Autocomplete wired ✓');
     }
 
-    // Kick off wiring as soon as the module loads
-    wireUpPlaceElement();
+    // Expose for the API loader onload
+    window.__afterGmpxLoaded = wireUpPlaceElement;
   </script>
 
-  <!-- NEW: Google’s official API loader for the web component (no legacy callback needed) -->
+  <!-- Extended Component Library (defines <gmpx-*> elements) -->
+  <script type="module" src="https://unpkg.com/@googlemaps/extended-component-library@0.6/dist/index.min.js"></script>
+
+  <!-- Official API loader for components -->
   <gmpx-api-loader
     key="AIzaSyAVCNj2VPiRQpoZHIxoEAAbtW_m5LlZcaY"
-    solution-channel="GMP_GCC"
-    libraries="places">
+    libraries="places"
+    onload="__afterGmpxLoaded()">
   </gmpx-api-loader>
+
 </body>
 </html>
 
