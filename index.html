@@ -181,31 +181,42 @@
     });
   </script>
 
-  <!-- Glue code to mirror the web component's selection into your form fields -->
-  <script>
-    function wireUpPlaceElement() {
-      const el = document.querySelector('gmpx-place-autocomplete');
-      const hidden = document.getElementById('address1');
-      const cityEl = document.getElementById('city');
+  <!-- Glue code + component loader -->
+  <script type="module">
+    // Ensure the component is defined, then wire it up
+    async function wireUpPlaceElement() {
+      await customElements.whenDefined('gmpx-place-autocomplete');
+
+      const el      = document.querySelector('gmpx-place-autocomplete');
+      const hidden  = document.getElementById('address1');
+      const cityEl  = document.getElementById('city');
       const stateEl = document.getElementById('state');
-      const zipEl = document.getElementById('zip');
+      const zipEl   = document.getElementById('zip');
 
-      if (!el || !hidden) return;
+      if (!el || !hidden) {
+        console.warn('Autocomplete element or hidden address1 not found');
+        return;
+      }
 
-      // Whenever the user types, keep hidden input in sync so form validation works
+      // Keep hidden field in sync while typing (so required validation works)
       el.addEventListener('input', () => {
-        // Some implementations expose el.valueText for raw text; fall back to value
-        hidden.value = el.valueText || el.value || '';
+        // For this component, .value is the raw text; .valuePlace appears after selection
+        hidden.value = el.value || '';
       });
 
-      // When a place is selected, copy formatted address + components
-      el.addEventListener('gmpxplacechange', () => {
-        const place = el.value; // PlaceResult-like object
-        hidden.value = place?.formattedAddress || el.valueText || el.value || '';
+      // When user picks a suggestion (NOTE THE DASH in event name)
+      el.addEventListener('gmpx-placechange', () => {
+        const place = el.valuePlace || null; // PlaceResult-like object from the component
+        // Mirror the formatted address into the hidden field that Netlify submits
+        hidden.value =
+          place?.formattedAddress ||
+          place?.formatted_address ||   // just in case
+          el.value || '';
 
+        // Pull out address components (new component uses longText/shortText)
         const comps = place?.addressComponents || [];
         const byType = {};
-        comps.forEach(c => c.types?.forEach(t => byType[t] = c));
+        comps.forEach(c => (c.types || []).forEach(t => (byType[t] = c)));
 
         const city  = (byType.locality || byType.sublocality || byType.postal_town)?.longText || '';
         const state = byType.administrative_area_level_1?.shortText || '';
@@ -215,15 +226,22 @@
         if (state) stateEl.value = state;
         if (zip)   zipEl.value   = zip;
       });
+
+      console.log('Place Autocomplete wired ✓');
     }
+
+    // Kick off wiring as soon as the module loads
+    wireUpPlaceElement();
   </script>
-<script type="module" src="https://unpkg.com/@googlemaps/extended-component-library@0.6/dist/index.min.js"></script>
-  <!-- Google Maps JS (Places) — replace YOUR_API_KEY -->
-<script
-  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAVCNj2VPiRQpoZHIxoEAAbtW_m5LlZcaY&libraries=places&v=beta&loading=async"
-  async
-  defer
-  onload="wireUpPlaceElement()"
-></script>
+
+  <!-- NEW: Google’s official API loader for the web component (no legacy callback needed) -->
+  <gmpx-api-loader
+    key="AIzaSyAVCNj2VPiRQpoZHIxoEAAbtW_m5LlZcaY"
+    solution-channel="GMP_GCC"
+    libraries="places">
+  </gmpx-api-loader>
+</body>
+</html>
+
 </body>
 </html>
