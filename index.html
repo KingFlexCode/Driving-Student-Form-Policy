@@ -60,7 +60,17 @@
       <input id="phone" name="phone" required autocomplete="tel"/>
 
       <!-- Address (new web component) -->
-      <label for="address1-visible">Street Address*</label>  
+      <label for="address1-visible">Street Address*</label>
+      <!-- Visible autocomplete field -->
+      <gmpx-place-autocomplete
+        id="address1-visible"
+        aria-label="Street Address"
+        autocomplete-options='{"componentRestrictions":{"country":["us"]}}'
+      ></gmpx-place-autocomplete>
+
+      <!-- Hidden input that actually gets posted to Netlify -->
+      <input type="hidden" id="address1" name="address1" required />
+
       <input type="hidden" id="address1" name="address1" required />
 
       <label for="address2">Address 2</label>
@@ -213,7 +223,7 @@
   
   <!-- Google Maps JS (Places) — replace YOUR_API_KEY -->
 <script
-  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAVCNj2VPiRQpoZHIxoEAAbtW_m5LlZcaY&libraries=places&loading=async"
+  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAVCNj2VPiRQpoZHIxoEAAbtW_m5LlZcaY&libraries=places&v=beta&loading=async"
   async
   defer
   onload="wireUpPlaceElement()"
