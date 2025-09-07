@@ -13,18 +13,26 @@
     button{padding:12px 16px;border-radius:10px;border:0;background:#ffcc00;color:#0d1324;font-weight:700;cursor:pointer;margin-top:12px}
     .sig{background:#fff;border-radius:8px;border:1px solid #1f2937;overflow:hidden;margin:8px 0}
     canvas{display:block;width:100%;height:180px}
-    /* keep the Places dropdown above the card UI */
-    .pac-container{z-index:3000!important}
-
-    /* a11y helper (visually hidden) */
     .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+
+    /* Style the new Places element like your inputs */
+    gmpx-place-autocomplete {
+      display:block;
+      --gmpx-color-surface:#0b1020;
+      --gmpx-color-on-surface:#f8fafc;
+      --gmpx-color-outline:#1f2937;
+      --gmpx-shape-corner-extra-large:8px;
+      border-radius:8px;
+      margin:0 0 8px 0;
+    }
+    /* Keep dropdown above your card */
+    .pac-container{z-index:3000!important}
   </style>
 </head>
 <body>
   <div class="wrap">
     <h1>Avian Driving School — Student Registration</h1>
 
-    <!-- Netlify must see this at build time -->
     <form
       name="Avian Registration"
       method="POST"
@@ -36,9 +44,7 @@
     >
       <h2 id="form-title" class="sr-only">Registration Form</h2>
 
-      <!-- Required hidden input -->
       <input type="hidden" name="form-name" value="Avian Registration" />
-      <!-- Optional honeypot -->
       <p style="display:none"><label>Don’t fill this out: <input name="bot-field" autocomplete="off"/></label></p>
 
       <label for="firstName">First Name*</label>
@@ -53,9 +59,16 @@
       <label for="phone">Phone*</label>
       <input id="phone" name="phone" required autocomplete="tel"/>
 
-      <!-- Address (single input; suggestions fill the fields below on selection) -->
-      <label for="address1">Street Address*</label>
-      <input id="address1" name="address1" required autocomplete="street-address"/>
+      <!-- Address (new web component) -->
+      <label for="address1-visible">Street Address*</label>
+      <!-- Visible autocomplete element -->
+      <gmpx-place-autocomplete
+        id="address1-visible"
+        aria-label="Street Address"
+        autocomplete-options='{"componentRestrictions":{"country":["us"]}}'
+      ></gmpx-place-autocomplete>
+      <!-- Hidden input that actually submits with the form -->
+      <input type="hidden" id="address1" name="address1" required />
 
       <label for="address2">Address 2</label>
       <input id="address2" name="address2" autocomplete="address-line2"/>
@@ -147,60 +160,64 @@
     form.addEventListener('submit',e=>{ if(!document.getElementById('signatureData').value){ e.preventDefault(); alert('Please sign in the box.'); }});
   </script>
 
-  <!-- File size limit: 3.5 MB per image (no compression) -->
+  <!-- File size limit: 3.5 MB per image -->
   <script>
-    const MAX_BYTES = 3.5 * 1024 * 1024; // 3.5 MB
+    const MAX_BYTES = 3.5 * 1024 * 1024;
     function enforceMaxSize(input){
       if(!input?.files?.length) return true;
       for(const f of input.files){
         if(f.size > MAX_BYTES){
           alert(`"${f.name}" is ${(f.size/1024/1024).toFixed(2)} MB. Please upload images under 3.5 MB.`);
-          input.value=''; // clear
-          return false;
+          input.value=''; return false;
         }
       }
       return true;
     }
     const idFrontInput = document.getElementById('idFront');
     const idBackInput  = document.getElementById('idBack');
-    [idFrontInput, idBackInput].forEach(el=>{
-      el.addEventListener('change',()=>enforceMaxSize(el));
-    });
+    [idFrontInput, idBackInput].forEach(el=>el.addEventListener('change',()=>enforceMaxSize(el)));
     document.querySelector('form[name="Avian Registration"]').addEventListener('submit',(e)=>{
       if(!enforceMaxSize(idFrontInput) || !enforceMaxSize(idBackInput)) e.preventDefault();
     });
   </script>
 
-  <!-- Address Autocomplete (legacy API) -->
+  <!-- Glue code to mirror the web component's selection into your form fields -->
   <script>
-    function initAddressAutocomplete(){
-      const input = document.getElementById('address1');
-      if (!input || !window.google || !google.maps || !google.maps.places) return;
+    function wireUpPlaceElement() {
+      const el = document.querySelector('gmpx-place-autocomplete');
+      const hidden = document.getElementById('address1');
+      const cityEl = document.getElementById('city');
+      const stateEl = document.getElementById('state');
+      const zipEl = document.getElementById('zip');
 
-      const ac = new google.maps.places.Autocomplete(input, {
-        types: ['address'],
-        componentRestrictions: { country: ['us'] },
-        fields: ['address_components', 'formatted_address', 'geometry']
+      if (!el || !hidden) return;
+
+      // Whenever the user types, keep hidden input in sync so form validation works
+      el.addEventListener('input', () => {
+        // Some implementations expose el.valueText for raw text; fall back to value
+        hidden.value = el.valueText || el.value || '';
       });
 
-      ac.addListener('place_changed', () => {
-        const place = ac.getPlace();
-        if (!place || !place.address_components) return;
+      // When a place is selected, copy formatted address + components
+      el.addEventListener('gmpxplacechange', () => {
+        const place = el.value; // PlaceResult-like object
+        hidden.value = place?.formattedAddress || el.valueText || el.value || '';
 
+        const comps = place?.addressComponents || [];
         const byType = {};
-        place.address_components.forEach(c => c.types.forEach(t => byType[t] = c));
+        comps.forEach(c => c.types?.forEach(t => byType[t] = c));
 
-        const city  = (byType.locality || byType.sublocality || byType.postal_town)?.long_name || '';
-        const state = byType.administrative_area_level_1?.short_name || '';
-        const zip   = byType.postal_code?.long_name || '';
+        const city  = (byType.locality || byType.sublocality || byType.postal_town)?.longText || '';
+        const state = byType.administrative_area_level_1?.shortText || '';
+        const zip   = byType.postal_code?.longText || '';
 
-        if (city)  document.getElementById('city').value  = city;
-        if (state) document.getElementById('state').value = state;
-        if (zip)   document.getElementById('zip').value   = zip;
+        if (city)  cityEl.value  = city;
+        if (state) stateEl.value = state;
+        if (zip)   zipEl.value   = zip;
       });
     }
   </script>
-
+  
   <!-- Google Maps JS (Places) — replace YOUR_API_KEY -->
   <script
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAVCNj2VPiRQpoZHIxoEAAbtW_m5LlZcaY&libraries=places&callback=initAutocomplete"
