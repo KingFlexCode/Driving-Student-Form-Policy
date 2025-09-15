@@ -174,7 +174,7 @@
       width:100%;
       background:var(--input-bg);
       color:var(--text);
-      border:1px solid var(--border);
+      border:1px solid var(--input-bg);
       border-radius:8px;
       padding:10px;
       display:flex;
@@ -184,13 +184,13 @@
     .dd-list{
       position:absolute; left:0; right:0; margin-top:4px;
       list-style:none; padding:4px 0;
-      background:var(--input-bg);
+      background:var(--border);
       border:1px solid var(--border);
       border-radius:8px; z-index:10;
     }
     .dd-list li{padding:8px 10px;cursor:pointer}
-    .dd-list li[aria-selected="true"]{background:var(--menu-selected)}
-    .dd-list li:hover,.dd-list li:focus{outline:none;background:var(--menu-hover)}
+    .dd-list li[aria-selected="true"]{background:var(--input-bg)}
+    .dd-list li:hover,.dd-list li:focus{outline:none;background:var(--border-strong)}
 
     /* Grid helpers */
     .field{display:flex;flex-direction:column}
@@ -1289,5 +1289,13 @@
   <!-- Google Maps Extended Component Library -->
   <script type="module" src="https://unpkg.com/@googlemaps/extended-component-library@0.6/dist/index.min.js"></script>
   <gmpx-api-loader key="AIzaSyDFWiR4rl5JkPVVJ5jufHcEBvU106SCVsg" libraries="places" solution-channel="GMP_components" onload="wireAddressFill()"></gmpx-api-loader>
+  <script>
+  function postHeight(){
+    const h = document.documentElement.scrollHeight;
+    parent.postMessage({ type:'resize', height:h }, '*');
+  }
+  window.addEventListener('load', postHeight);
+  new ResizeObserver(postHeight).observe(document.body);
+</script>
 </body>
 </html>
