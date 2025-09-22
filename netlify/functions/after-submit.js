@@ -1,278 +1,272 @@
 // netlify/functions/after-submit.js
-// 1) Append to Google Sheets  2) Generate PDF  3) Email PDF via Resend
+// Keep your webhook. Make sure env vars are set: SHEET_ID, GOOGLE_SERVICE_ACCOUNT, RESEND_API_KEY
+// netlify.toml should use zisi bundler and include assets/avian_logo.png
 
 const { google } = require('googleapis');
 const PDFDocument = require('pdfkit');
-const { Resend } = require('resend');
+const fs = require('fs');
 const path = require('path');
 
-const SHEET_ID = process.env.SHEET_ID;
-const SERVICE_ACCOUNT = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT || '{}');
-const RANGE = 'Form Responses!A1'; // change if your tab name differs
-const resend = new Resend(process.env.RESEND_API_KEY);
+// ---------- helpers ----------
+function parseSubmission(event) {
+  const body = JSON.parse(event.body || '{}');
+  // Works with Netlify webhook shape OR a raw POST
+  const payload = body.payload || body || {};
+  const data = payload.data || {};
+  const files = payload.files || [];
+  return { data, files };
+}
 
-// ---------- Helpers ----------
-function sheetsClient() {
-  const jwt = new google.auth.JWT(
-    SERVICE_ACCOUNT.client_email,
-    null,
-    SERVICE_ACCOUNT.private_key,
+function pick(data, ...cands) {
+  // 1) direct keys
+  for (const c of cands) {
+    if (data[c] != null && String(data[c]).trim() !== '') return String(data[c]).trim();
+  }
+  // 2) normalized keys (first-name / First Name / first_name => firstName)
+  const keys = Object.keys(data);
+  for (const c of cands) {
+    const norm = c.toLowerCase().replace(/[\s_-]/g, '');
+    const hit = keys.find(k => k.toLowerCase().replace(/[\s_-]/g, '') === norm);
+    if (hit && String(data[hit]).trim() !== '') return String(data[hit]).trim();
+  }
+  return '';
+}
+
+function resolveFields(data) {
+  const firstName = pick(data, 'firstName','First Name','first-name','first_name','first');
+  const lastName  = pick(data, 'lastName','Last Name','last-name','last_name','last');
+
+  const email = pick(data, 'email','Email','studentEmail','contactEmail');
+  const phone = pick(data, 'phone','Phone','phoneNumber','Phone Number');
+
+  const permit = pick(data, 'permit','permitNumber','Permit Number','licenseNumber','License Number');
+
+  let dob = pick(data, 'dob','DOB','dateOfBirth','Date of Birth','birthdate','Birth Date');
+  if (!dob) {
+    const m = pick(data, 'dobMonth','DOB Month','birthMonth','Birth Month');
+    const d = pick(data, 'dobDay','DOB Day','birthDay','Birth Day');
+    const y = pick(data, 'dobYear','DOB Year','birthYear','Birth Year');
+    if (y && m && d) dob = `${y}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+  }
+
+  return { firstName, lastName, email, phone, permit, dob };
+}
+
+async function appendAllFieldsToSheet({ sheetId, tabName, dataObj }) {
+  const svc = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT || '{}');
+  if (!svc.client_email || !svc.private_key) {
+    throw new Error('GOOGLE_SERVICE_ACCOUNT is missing client_email/private_key');
+  }
+  const auth = new google.auth.JWT(
+    svc.client_email, null, svc.private_key,
     ['https://www.googleapis.com/auth/spreadsheets']
   );
-  return google.sheets({ version: 'v4', auth: jwt });
-}
+  const sheets = google.sheets({ version: 'v4', auth });
 
-function safe(obj, path, def = '') {
-  try {
-    return path.split('.').reduce((o, k) => (o ? o[k] : undefined), obj) ?? def;
-  } catch {
-    return def;
+  // Read header (row 1)
+  const headerResp = await sheets.spreadsheets.values.get({
+    spreadsheetId: sheetId, range: `${tabName}!1:1`,
+  });
+  let header = (headerResp.data.values && headerResp.data.values[0]) || [];
+  if (!header.length) header = ['timestamp']; // ensure timestamp first col
+
+  // Add any new keys (stable order)
+  const keys = Object.keys(dataObj);
+  for (const k of keys) {
+    if (!header.includes(k)) header.push(k);
   }
-}
 
-function formatPhone(s = '') {
-  const d = (s || '').replace(/\D/g, '').slice(-10);
-  return d.length === 10 ? `(${d.slice(0, 3)}) ${d.slice(3, 6)}-${d.slice(6)}` : s || '';
-}
+  // If header changed or was empty, write it back
+  const needHeaderUpdate =
+    !headerResp.data.values || header.length !== (headerResp.data.values[0] || []).length;
 
-// ---------- Parse Netlify submission ----------
-function parseSubmission(event) {
-  let body = {};
-  try {
-    body = JSON.parse(event.body || '{}');
-  } catch {}
-  const payload = body.payload || {};
-  const data = payload.data || {};
-  const files = Array.isArray(payload.files) ? payload.files : [];
+  if (needHeaderUpdate) {
+    await sheets.spreadsheets.values.update({
+      spreadsheetId: sheetId,
+      range: `${tabName}!1:1`,
+      valueInputOption: 'RAW',
+      requestBody: { values: [header] },
+    });
+  }
 
-  const metadata = {
-    id: payload.id || '',
-    created_at: payload.created_at || '',
-    form_name: payload.form_name || '',
-    page_url: payload.page_url || '',
-    user_agent: safe(event, 'headers.user-agent', ''),
-    ip:
-      safe(event, 'headers.x-nf-client-connection-ip', '') ||
-      safe(event, 'headers.client-ip', '') ||
-      safe(event, 'headers.x-forwarded-for', ''),
-  };
+  // Build row following header order
+  const row = header.map(h =>
+    h === 'timestamp' ? new Date().toISOString() : (dataObj[h] ?? '')
+  );
 
-  const urlBy = (needle) => {
-    const exact = files.find((f) => (f.name || '').toLowerCase() === needle);
-    if (exact?.url) return exact.url;
-    const fuzzy = files.find((f) => (f.name || '').toLowerCase().includes(needle));
-    return fuzzy?.url || '';
-  };
-
-  return {
-    data,
-    metadata,
-    fileUrls: {
-      idFrontUrl: urlBy('idfront'),
-      idBackUrl: urlBy('idback'),
-    },
-  };
-}
-
-// ---------- PDF Helpers ----------
-function pdfToBuffer(doc) {
-  return new Promise((resolve, reject) => {
-    const chunks = [];
-    doc.on('data', (c) => chunks.push(c));
-    doc.on('end', () => resolve(Buffer.concat(chunks)));
-    doc.on('error', reject);
-    doc.end();
+  await sheets.spreadsheets.values.append({
+    spreadsheetId: sheetId,
+    range: `${tabName}!A:A`,
+    valueInputOption: 'USER_ENTERED',
+    requestBody: { values: [row] },
   });
 }
 
-async function fetchImageBuffer(url) {
-  if (!url) return null;
-  try {
-    const res = await fetch(url);
-    if (!res.ok) {
-      console.warn('fetchImageBuffer non-200', res.status, url);
-      return null;
-    }
-    const ab = await res.arrayBuffer();
-    return Buffer.from(ab);
-  } catch (e) {
-    console.warn('fetchImageBuffer error', e?.message || e, url);
-    return null;
-  }
+function findFile(files, ...needles) {
+  return files.find(f => {
+    const n = (f.name || '').toLowerCase();
+    return needles.some(nd => n.includes(nd));
+  }) || null;
 }
 
-// ---------- Build PDF ----------
-async function buildPdf({ data, fileUrls }) {
-  const doc = new PDFDocument({ size: 'LETTER', margin: 50 });
+async function fetchBuffer(url) {
+  const r = await fetch(url);
+  if (!r.ok) throw new Error(`fetch ${url} failed: ${r.status}`);
+  const ab = await r.arrayBuffer();
+  return Buffer.from(ab);
+}
 
-  // Logo + Title
-  try {
-    const logoPath = path.join(__dirname, '../../assets/avian_logo.png');
-    doc.image(logoPath, { fit: [140, 60], align: 'center' });
-  } catch (e) {
-    console.warn('Logo load failed:', e.message);
-  }
-  doc.moveDown(0.5);
-  doc.fontSize(16).text('Student Information Sheet', { align: 'center' });
-  doc.moveDown(1);
-
-  const line = () => {
-    doc.moveDown(0.35);
-    doc.strokeColor('#ddd').moveTo(50, doc.y).lineTo(562, doc.y).stroke();
-    doc.moveDown(0.35);
-  };
-
-  // Student Info
-  doc.fontSize(14).text('Student Information');
-  line();
-  doc.fontSize(11);
-  doc.text(`First Name: ${data.firstName || ''}`);
-  doc.text(`Last Name: ${data.lastName || ''}`);
-  doc.text(`Date of Birth: ${data.dob || ''}`);
-  doc.text(`Email: ${data.email || ''}`);
-  doc.text(`Phone: ${formatPhone(data.phone) || ''}`);
-  doc.text(`Address 1: ${data.address1 || ''}`);
-  doc.text(`Address 2: ${data.address2 || ''}`);
-  doc.text(`City: ${data.city || ''}`);
-  doc.text(`State: ${data.state || ''}`);
-  doc.text(`ZIP: ${data.zip || ''}`);
-  doc.moveDown(0.5);
-
-  // Permit / License
-  doc.fontSize(14).text('Permit / License');
-  line();
-  doc.fontSize(11);
-  doc.text(`Permit/License #: ${data.permitNo || ''}`);
-  doc.text(`Issue Date: ${data.issueDate || ''}`);
-  doc.text(`Expiration Date: ${data.expDate || ''}`);
-  doc.moveDown(0.5);
-
-  // Services / Choices
-  doc.fontSize(14).text('Service Selection');
-  line();
-  doc.fontSize(11);
-  doc.text(`Package: ${data.package || ''}`);
-  doc.text(`5-Hour Class Slot: ${data.fiveHourSlot || ''}`);
-  doc.text(`Permit Source: ${data.permitSource || ''}`);
-  doc.text(`Need help with signs?: ${data.signHelp || ''}`);
-  doc.moveDown(0.5);
-
-  // Agreements
-  doc.fontSize(14).text('Agreements');
-  line();
-  doc.fontSize(11);
-  doc.text(`Agreed to Terms of Service: ${data.agreeTOS ? 'Yes' : 'No'}`);
-  doc.text(`Agreed to Privacy Policy: ${data.agreePrivacy ? 'Yes' : 'No'}`);
-  doc.text(`Acknowledged 6-month validity: ${data.ack6mo ? 'Yes' : 'No'}`);
-  doc.moveDown(0.5);
-
-  // Signature
-  if (data.signatureData) {
+async function buildPdf({ data, core, files }) {
+  return new Promise(async (resolve, reject) => {
     try {
-      const sigBase64 = data.signatureData.replace(/^data:image\/\w+;base64,/, '');
-      const sigBuffer = Buffer.from(sigBase64, 'base64');
-      doc.fontSize(14).text('Signature');
-      line();
-      const sigWidth = 300;
-      doc.image(sigBuffer, { fit: [sigWidth, 120] });
-      doc.moveDown(0.5);
-    } catch {
-      // ignore
-    }
-  }
+      const doc = new PDFDocument({ size: 'LETTER', margin: 36 });
+      const chunks = [];
+      doc.on('data', (c) => chunks.push(c));
+      doc.on('end', () => resolve(Buffer.concat(chunks)));
 
-  // ID Images
-  const frontBuf = await fetchImageBuffer(fileUrls.idFrontUrl);
-  const backBuf = await fetchImageBuffer(fileUrls.idBackUrl);
+      // Header with logo
+      try {
+        // NOTE: path is from functions/ to /assets (we keep zisi + included_files)
+        const logoPath = path.join(__dirname, '..', 'assets', 'avian_logo.png');
+        if (fs.existsSync(logoPath)) {
+          doc.image(logoPath, 36, 36, { width: 110 });
+        }
+      } catch (e) { /* non-fatal */ }
 
-  if (frontBuf || backBuf) {
-    doc.addPage();
-    doc.fontSize(14).text('ID Images');
-    line();
-    const maxW = 480,
-      maxH = 360;
-    if (frontBuf) {
-      doc.fontSize(12).text('Front', { paragraphGap: 6 });
-      doc.image(frontBuf, { fit: [maxW, maxH] });
-      doc.moveDown(0.5);
-    }
-    if (backBuf) {
-      doc.fontSize(12).text('Back', { paragraphGap: 6 });
-      doc.image(backBuf, { fit: [maxW, maxH] });
-      doc.moveDown(0.5);
-    }
-  }
+      doc.fontSize(18).text('Student Information Sheet', 160, 40);
+      doc.moveDown();
 
-  return await pdfToBuffer(doc);
+      doc.fontSize(11);
+      const putLine = (label, value) => {
+        doc.font('Helvetica-Bold').text(`${label}: `, { continued: true });
+        doc.font('Helvetica').text(value || 'N/A');
+      };
+
+      // Summary section (core fields)
+      doc.moveDown(1);
+      doc.font('Helvetica-Bold').text('Student Information', { underline: true });
+      doc.moveDown(0.5);
+
+      putLine('First Name', core.firstName);
+      putLine('Last Name',  core.lastName);
+      putLine('Email',      core.email);
+      putLine('Phone',      core.phone);
+      putLine('Permit / License #', core.permit);
+      putLine('Date of Birth', core.dob);
+
+      // All Fields (everything submitted)
+      doc.moveDown(1);
+      doc.font('Helvetica-Bold').text('All Submitted Fields', { underline: true });
+      doc.moveDown(0.5);
+      const keys = Object.keys(data);
+      keys.forEach(k => {
+        doc.font('Helvetica-Bold').text(`${k}: `, { continued: true });
+        doc.font('Helvetica').text(String(data[k]));
+      });
+
+      // ID Images if present (idFront/idBack, case-insensitive)
+      const front = findFile(files, 'idfront', 'frontid', 'id front');
+      const back  = findFile(files, 'idback',  'backid',  'id back');
+      if (front || back) {
+        doc.addPage();
+        doc.font('Helvetica-Bold').fontSize(14).text('Identification Images');
+        doc.moveDown(0.5);
+        if (front) {
+          try {
+            const b = await fetchBuffer(front.url);
+            doc.fontSize(12).text('Front', { underline: true });
+            doc.image(b, { fit: [520, 360] });
+            doc.moveDown(0.75);
+          } catch (e) {
+            doc.fontSize(10).fillColor('#900').text('Could not load ID Front image.');
+            doc.fillColor('black');
+          }
+        }
+        if (back) {
+          try {
+            const b = await fetchBuffer(back.url);
+            doc.fontSize(12).text('Back', { underline: true });
+            doc.image(b, { fit: [520, 360] });
+          } catch (e) {
+            doc.fontSize(10).fillColor('#900').text('Could not load ID Back image.');
+            doc.fillColor('black');
+          }
+        }
+      }
+
+      doc.end();
+    } catch (err) {
+      reject(err);
+    }
+  });
 }
 
-// ---------- Main handler ----------
-exports.handler = async (event) => {
-  console.log('after-submit invoked');
-  try {
-    const { data, metadata, fileUrls } = parseSubmission(event);
+async function sendEmail({ core, pdfBuffer }) {
+  const RESEND_API_KEY = process.env.RESEND_API_KEY;
+  if (!RESEND_API_KEY) throw new Error('Missing RESEND_API_KEY');
 
-    // 1) Append to Google Sheets
-    const rows = [[
-      new Date().toISOString(),
-      metadata.id, metadata.form_name, metadata.page_url, metadata.ip, metadata.user_agent,
-      data.firstName || '', data.lastName || '', data.email || '', data.phone || '',
-      data.address1 || '', data.address2 || '', data.city || '', data.state || '', data.zip || '',
-      data.permitNo || '', data.dob || '', data.issueDate || '', data.expDate || '',
-      data.package || '', data.fiveHourSlot || '', data.permitSource || '', data.signHelp || '',
-      fileUrls.idFrontUrl || '', fileUrls.idBackUrl || '',
-      (data.signatureData ? 'Captured' : 'Missing'),
-      data.agreeTOS ? 'Yes' : '', data.agreePrivacy ? 'Yes' : '', data.ack6mo ? 'Yes' : ''
-    ]];
-    const sheets = sheetsClient();
-    const appendRes = await sheets.spreadsheets.values.append({
-      spreadsheetId: SHEET_ID,
-      range: RANGE,
-      valueInputOption: 'USER_ENTERED',
-      requestBody: { values: rows },
-    });
-    console.log('append status:', appendRes.status);
+  const subject = `New Student Registration${core.firstName || core.lastName ? ` – ${core.firstName || ''} ${core.lastName || ''}` : ''}`;
 
-    // 2) Build PDF
-    const pdfBuffer = await buildPdf({ data, fileUrls });
+  const text =
+`You have a new student registration.
 
-    // 3) Email via Resend
-    const studentName = `${data.firstName || ''} ${data.lastName || ''}`.trim();
-    const subject = `New Student Registration: ${studentName || 'Unknown'}`;
+Name: ${core.firstName || 'N/A'} ${core.lastName || 'N/A'}
+Email: ${core.email || 'N/A'}
+Phone: ${core.phone || 'N/A'}
+Permit #: ${core.permit || 'N/A'}
+Date of Birth: ${core.dob || 'N/A'}
 
-    const emailRes = await resend.emails.send({
-      from: 'Avian Forms <forms@aviandrivingschool.com>',
+The PDF summary is attached. ID images are embedded inside the PDF.`;
+
+  const resp = await fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${RESEND_API_KEY}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      from: 'Avian Forms <forms@aviandrivingschool.com>', // must be a verified sender/domain in Resend
       to: ['info@aviandrivingschool.com'],
-      cc: ['aviandrivingschool@gmail.com'],
       subject,
-      html: `
-        <p>You have a new student registration.</p>
-        <p>
-          <strong>Name:</strong> ${studentName || 'N/A'}<br/>
-          <strong>Email:</strong> <a href="mailto:${data.email || ''}">${data.email || 'N/A'}</a><br/>
-          <strong>Phone:</strong> ${formatPhone(data.phone) || 'N/A'}<br/>
-          <strong>Permit #:</strong> ${data.permitNo || 'N/A'}<br/>
-          <strong>Date of Birth:</strong> ${data.dob || 'N/A'}
-        </p>
-        ${(fileUrls.idFrontUrl || fileUrls.idBackUrl) ? `
-        <p><strong>Uploaded IDs:</strong><br/>
-          ${fileUrls.idFrontUrl ? `• <a href="${fileUrls.idFrontUrl}" target="_blank" rel="noopener">ID Front</a><br/>` : ``}
-          ${fileUrls.idBackUrl  ? `• <a href="${fileUrls.idBackUrl}"  target="_blank" rel="noopener">ID Back</a><br/>`  : ``}
-        </p>` : ``}
-        <p>The PDF summary is attached. ID images are embedded inside the PDF.</p>
-      `,
+      text,
       attachments: [
         {
-          filename: `Registration-${metadata.id || Date.now()}.pdf`,
-          content: pdfBuffer.toString('base64'),
-        },
+          filename: `Registration-${Date.now()}.pdf`,
+          content: pdfBuffer.toString('base64'), // base64 for Resend
+        }
       ],
+      // cc: core.email ? [core.email] : undefined, // enable if you want to CC student
+    }),
+  });
+
+  if (!resp.ok) {
+    const t = await resp.text();
+    throw new Error(`Resend error ${resp.status}: ${t}`);
+  }
+}
+
+// ---------- main handler ----------
+exports.handler = async (event) => {
+  try {
+    const { data, files } = parseSubmission(event);
+    const core = resolveFields(data);
+
+    // 1) Build PDF
+    const pdfBuffer = await buildPdf({ data, core, files });
+
+    // 2) Append ALL fields to Sheet (ensure tab name matches your Sheet)
+    await appendAllFieldsToSheet({
+      sheetId: process.env.SHEET_ID,
+      tabName: 'Form Responses',
+      dataObj: data,
     });
 
-    console.log('email status:', emailRes && (emailRes.id || 'ok'));
+    // 3) Email with PDF
+    await sendEmail({ core, pdfBuffer });
+
     return { statusCode: 200, body: 'OK' };
   } catch (err) {
     console.error('after-submit error:', err);
-    return { statusCode: 200, body: 'Received (error logged).' };
+    return { statusCode: 500, body: String(err && err.message ? err.message : err) };
   }
 };
