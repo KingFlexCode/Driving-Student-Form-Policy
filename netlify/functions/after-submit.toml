@@ -1,6 +1,0 @@
-[function]
-  node_bundler = "esbuild"
-
-[[events]]
-  type = "submission_created"
-  function = "after-submit"
