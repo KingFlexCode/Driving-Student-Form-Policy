@@ -2,6 +2,27 @@
 // Requires env: SHEET_ID, GOOGLE_SERVICE_ACCOUNT, RESEND_API_KEY
 // zisi bundler + included_files: ["assets/avian_logo.png"]
 
+// Convert any submitted value into a Sheets-friendly cell
+const MAX_CELL_LEN = 48000; // under Sheets' ~50k char limit
+function toCell(key, v) {
+  if (v == null) return '';
+  // Arrays -> comma-joined
+  if (Array.isArray(v)) return v.map(x => toCell(key, x)).join(', ').slice(0, MAX_CELL_LEN);
+
+  // Objects -> file url if present, else JSON
+  if (typeof v === 'object') {
+    if (v.url && typeof v.url === 'string') return v.url.slice(0, MAX_CELL_LEN);
+    try { return JSON.stringify(v).slice(0, MAX_CELL_LEN); }
+    catch { return String(v); }
+  }
+
+  // Enormous data URIs (e.g., signatureData) -> short marker
+  if (typeof v === 'string' && v.startsWith('data:')) {
+    return `data-uri(len=${v.length})`;
+  }
+
+  return String(v).slice(0, MAX_CELL_LEN);
+}
 const { google } = require('googleapis');
 const PDFDocument = require('pdfkit');
 const fs = require('fs');
@@ -124,8 +145,8 @@ exports.handler = async (event) => {
       });
       console.log('[after-submit] header updated:', header);
     }
-
-    const row = header.map(h => (h === 'timestamp' ? new Date().toISOString() : (data[h] ?? '')));
+    const row = header.map(h =>
+      h === 'timestamp' ? new Date().toISOString() : toCell(h, dataObj[h]));
     await sheets.spreadsheets.values.append({
       spreadsheetId: process.env.SHEET_ID,
       range: `${tabName}!A:A`,
