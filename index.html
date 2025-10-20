@@ -271,41 +271,6 @@
       position:absolute; inset:0; opacity:0; cursor:pointer;
       width:100%; height:100%; border:0; padding:0; margin:0; z-index:2;
     }
-
-    /* Scoped styles for the terms block */
-    #terms-section .terms-box {
-      max-height: 260px;          /* adjust if you want more/less visible area */
-      overflow-y: auto;
-      background: #fff;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      padding: 14px;
-      line-height: 1.55;
-    }
-
-    /* Keep spacing consistent with your current form rows */
-    #terms-section { margin-top: 18px; }
-
-    #terms-section .terms-check {
-      display: flex;
-      align-items: flex-start;
-      gap: 8px;
-      margin-top: 10px;
-    }
-
-    #terms-section .terms-check input[type="checkbox"][disabled] {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
-
-    #terms-section .terms-check .hint {
-      display: block;
-      color: #666;
-      margin-left: 28px; /* lines hint up under label text */
-      margin-top: 2px;
-      font-size: 12px;
-    }
-
   </style>
 </head>
 <body>
@@ -365,14 +330,16 @@
 
         
       <!-- ) Contact Info -->
-          <div class="field">
-                <label for="email" data-i18n="field.email">Email Address</label>
-                <input id="email" type="email" name="email" data-i18n-placeholder="" placeholder="Enter your email address...">
-            </div>
-          <div class="field">
-                <label for="phone-number">Phone Number</label>
-                <input id="phone-number" type="tel" name="phone-number" data-i18n-placeholder="" placeholder="(646)-123-4567..." required>
-            </div>
+<div class="grid grid-2" aria-label="contact-info">
+  <div class="field">
+    <label for="email" data-i18n="field.email">Email Address</label>
+    <input id="email" type="email" name="email" placeholder="Enter your email address..." required>
+  </div>
+  <div class="field">
+    <label for="phone-number">Phone Number</label>
+    <input id="phone-number" type="tel" name="phone-number" placeholder="(646)-123-4567..." required>
+  </div>
+</div>
       
         <!-- 2) Address block -->
         <div class="field">
@@ -573,36 +540,58 @@
       </section>
         
         <!-- 8) Upload IDs -->
-      <section class="section-margin">
-        <div class="field">
-          <label for="idFront" data-i18n="field.idFront">ID (Front)*</label>
-          <div id="idFrontZone" class="dropzone" role="button" tabindex="0" aria-label="Upload a photo of your ID (Front)">
-            <div class="dz-icon" aria-hidden="true">
-              <svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M6 18h12a4 4 0 0 0 0-8 6 6 0 0 0-11.3-2.5A4.5 4.5 0 0 0 6 18zm6-3v-6m0 0-3 3m3-3 3 3" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </div>
-            <div class="dz-title">Browse Files</div>
-            <div class="dz-sub">Drag and drop files here</div>
-            <div class="dz-file" aria-live="polite"></div>
-            <input id="idFront" type="file" name="idFront" accept="image/*" capture="environment" required/>
-          </div>
+<section class="section-margin">
+  <div class="grid grid-3">
+    <!-- Front ID -->
+    <div class="field">
+      <label for="idFront" data-i18n="field.idFront">ID (Front)*</label>
+      <div id="idFrontZone" class="dropzone" role="button" tabindex="0" aria-label="Upload a photo of your ID (Front)">
+        <div class="dz-icon" aria-hidden="true">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M6 18h12a4 4 0 0 0 0-8 6 6 0 0 0-11.3-2.5A4.5 4.5 0 0 0 6 18zm6-3v-6m0 0-3 3m3-3 3 3" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
         </div>
-        <div class="field">
-          <label for="idBack" data-i18n="field.idBack">ID (Back)*</label>
-          <div id="idBackZone" class="dropzone" role="button" tabindex="0" aria-label="Upload a photo of your ID (Back)">
-            <div class="dz-icon" aria-hidden="true">
-              <svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M6 18h12a4 4 0 0 0 0-8 6 6 0 0 0-11.3-2.5A4.5 4.5 0 0 0 6 18zm6-3v-6m0 0-3 3m3-3 3 3" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </div>
-            <div class="dz-title">Browse Files</div>
-            <div class="dz-sub">Drag and drop files here</div>
-            <div class="dz-file" aria-live="polite"></div>
-            <input id="idBack" type="file" name="idBack" accept="image/*" capture="environment" required/>
-          </div>
+        <div class="dz-title">Browse Files</div>
+        <div class="dz-sub">Drag and drop files here</div>
+        <div class="dz-file" aria-live="polite"></div>
+        <input id="idFront" type="file" name="idFront" accept="image/*" capture="environment" required/>
+      </div>
+    </div>
+
+    <!-- Back ID -->
+    <div class="field">
+      <label for="idBack" data-i18n="field.idBack">ID (Back)*</label>
+      <div id="idBackZone" class="dropzone" role="button" tabindex="0" aria-label="Upload a photo of your ID (Back)">
+        <div class="dz-icon" aria-hidden="true">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M6 18h12a4 4 0 0 0 0-8 6 6 0 0 0-11.3-2.5A4.5 4.5 0 0 0 6 18zm6-3v-6m0 0-3 3m3-3 3 3" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
         </div>
-      </section>
+        <div class="dz-title">Browse Files</div>
+        <div class="dz-sub">Drag and drop files here</div>
+        <div class="dz-file" aria-live="polite"></div>
+        <input id="idBack" type="file" name="idBack" accept="image/*" capture="environment" required/>
+      </div>
+    </div>
+
+    <!-- 5-Hour Certificate -->
+    <div class="field">
+      <label for="fiveHrCert">5-Hour Certificate (MV-278)*</label>
+      <div id="fiveHrCertZone" class="dropzone" role="button" tabindex="0" aria-label="Upload a photo of your 5-Hour Certificate">
+        <div class="dz-icon" aria-hidden="true">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M6 18h12a4 4 0 0 0 0-8 6 6 0 0 0-11.3-2.5A4.5 4.5 0 0 0 6 18zm6-3v-6m0 0-3 3m3-3 3 3" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="dz-title">Browse Files</div>
+        <div class="dz-sub">Drag and drop files here</div>
+        <div class="dz-file" aria-live="polite"></div>
+        <input id="fiveHrCert" type="file" name="fiveHrCert" accept="image/*,application/pdf" required/>
+      </div>
+      <div class="hint">Please upload a clear photo or PDF of your 5-hour course completion certificate.</div>
+    </div>
+  </div>
+</section>
         
         <!-- 9) Policy box -->
       <section class="section-margin">
@@ -665,27 +654,7 @@
           <div class="btn-clear-margin">
             <button type="button" class="btn-clear" id="clearSig" aria-label="Clear signature" data-i18n="btn.clear">Clear Signature</button>
           </div>
-
-          <!-- Terms of Service & Student Policy -->
-        <div class="form-row" id="terms-section">
-          <label for="termsBox">Terms of Service &amp; Student Policy</label>
-
-          <div id="termsBox" class="terms-box" aria-label="Terms content" tabindex="0">
-            <!-- paste your full Terms text here (the same content you use in Jotform).
-                Keep existing <p>, <strong>, <ul> etc. -->
-            <p><strong>AVIAN DRIVING SCHOOL TERMS OF SERVICE &amp; STUDENT POLICY</strong></p>
-            <!-- … rest of your terms … -->
-          </div>
-
-          <div class="form-check terms-check">
-            <input type="checkbox" id="agreeTerms" name="agreeTerms" disabled required>
-            <label for="agreeTerms">
-              I have read and agree to Avian Driving School’s <strong>Terms of Service &amp; Student Policy</strong>.
-            </label>
-            <small class="hint">Scroll to the bottom to enable this checkbox.</small>
-          </div>
-        </div>
-
+          
         <!-- Submission Btn -->
           <div class="btn-submit">
             <button class="grow" type="submit" data-i18n="btn.submit">Submit Registration</button>
@@ -1456,27 +1425,5 @@
   window.addEventListener('load', postHeight);
   new ResizeObserver(postHeight).observe(document.body);
   </script>
-  
-  <script>
-  (function () {
-    var termsBox = document.getElementById('termsBox');
-    var agree = document.getElementById('agreeTerms');
-    if (!termsBox || !agree) return;
-
-    function canEnable() {
-      var atBottom = termsBox.scrollTop + termsBox.clientHeight >= termsBox.scrollHeight - 2;
-      if (atBottom) {
-        agree.disabled = false;
-      }
-    }
-    // In case content fits without scrolling, enable immediately
-    if (termsBox.scrollHeight <= termsBox.clientHeight + 2) {
-      agree.disabled = false;
-    } else {
-      termsBox.addEventListener('scroll', canEnable, { passive: true });
-    }
-  })();
-</script>
-
 </body>
 </html>
