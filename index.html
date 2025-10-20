@@ -1,1404 +1,180 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title data-i18n="title">Avian Driving School Student Registration Form</title>
-
-  <!-- Flatpickr (date picker) -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Avian Driving School - Student Form Policy</title>
+  <link rel="stylesheet" href="styles.css" />
 
   <style>
-    :root{
-      /* Palette */
-      --bg:#0f172a;
-      --panel: #f76b0a;
-      --input-bg:#fde2cf;
-      --text:#111827;
-      --muted:#181616;
-
-      --border:#1f2937;
-      --border-strong:#FFFFFF;
-
-      --accent:#FFCC00;
-      --accent-contrast:#0d1324;
-
-      /* Components */
-      --dropzone-border:#111827;
-      --dropzone-hover:#0e152a;
-      --dropzone-title:#315491;
-      --dropzone-sub:#35383b;
-
-      --menu-selected:#111827;
-      --menu-hover:#1f2937;
-
-      --sig-stroke:#111827; /* used in JS */
-      --invalid:#ef4444;
-      --invalid-glow: rgba(239,68,68,.25);
-      
-      /* Clear button palette */
-      --btn-clear-bg:#dadef3;
-      --btn-clear-text:#343c6a;
+    body {
+      font-family: "Inter", sans-serif;
+      background-color: #f8f9fa;
+      color: #222;
+      margin: 0;
+      padding: 0;
     }
 
-    /* Reset & Layout */
-    *{
-      box-sizing:border-box
-    }
-    body{
-      font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,Arial;
-      background:var(--bg);
-      color:var(--text);
-      margin:0}
-    .wrap{
-      max-width:930px;
-      margin:0 auto;
-      padding:24px
-    }
-    .form-title img{
-      display:block;
-      max-width:350px;
-      margin:10px auto
+    .container {
+      max-width: 750px;
+      margin: 50px auto;
+      background: #fff;
+      padding: 40px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
     }
 
-    /* Card */
-    .card{
-      background:var(--panel);
-      border:1px solid var(--border);
-      border-radius:16px;
-      padding:30px;
-      border:6px solid var(--border-strong);
+    h1 {
+      text-align: center;
+      color: #ff6b0a; /* Brand orange */
+      margin-bottom: 10px;
     }
 
-    /* Rule */
-    .rule{
-      display:block;
-      width:100%;
-      height:1px;
-      background:var(--border-strong);
-      margin-bottom:20px;
+    p.subheader {
+      text-align: center;
+      color: #007bff; /* Brand blue */
+      font-weight: 500;
+      margin-bottom: 30px;
     }
 
-    /* Form controls */
-    label{
-      display:block;
-      margin:10px 0 6px;
-    }
-    input,select{
-      width:100%;
-      margin:0;
-      padding:10px;
-      border-radius:8px;
-      border:1px solid var(--border);
-      background:var(--input-bg);
-      color:var(--text);
-      font-size:16px;
-    }
-    button{
-      padding:12px 16px;
-      border-radius:10px;
-      border:0;
-      background:var(--accent);
-      color:var(--accent-contrast);
-      font-weight:700;
-      cursor:pointer;
-    }
-    .btn-submit{
-      display:flex;
-      width:100%;
-      margin:10px 0;
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
     }
 
-    /* Buttons row */
-    .btn-row{display:block;}
-    .btn-row .grow{flex:1}
-
-    /* Clear button */
-    .btn-clear{
-      display:flex;
-      background-color:var(--btn-clear-bg);
-      color:var(--btn-clear-text);
-      font-size:12px;
-      cursor:pointer;
-      padding:4px 10px;
-      border-radius:4px;
-      margin-top:10px;
-      margin-bottom:60px;
-      margin-left:auto;
-    }
-    .form-header h1{
-      margin-top:10px;
-      margin-bottom:10px;
-      font-size: 2.8rem;
-    }
-    .form-header p{
-      margin-bottom:10px;
-      margin-top:10px;
-    }
-    #dobMonth,#dobDay,#dobYear,#gender,#restriction,#state,#issueMonth,#issueDay,#issueYear,
-    #expMonth,#expDay,#expYear,#package{
-      font-size:16px;
-      height:38px;
-    }
-    .section-margin{
-      margin:30px 0px;
-      padding:0px 30px;
-    }
-    .section-margin-1{
-    margin:5px 0px;
-    padding:0px 30px;
+    label {
+      font-weight: 600;
+      color: #222;
     }
 
-    /* Agreements */
-    .agree-row{display:flex;align-items:flex-start;gap:8px;line-height:1.2}
-    .agree-row input[type="checkbox"]{margin-top:2px;width:18px;height:18px;cursor:pointer}
-    .agree-row a{color:var(--text);text-decoration:underline}
-
-    /* Signature */
-    .sig{position:relative;background:#fff;border-radius:8px;border:1px solid var(--border);overflow:hidden;margin:8px 0}
-    canvas{display:block;width:100%;height:180px}
-
-    /* “Sign here” overlay */
-    .sig-hint{
-      position:absolute; inset:0;
-      display:flex; align-items:center; justify-content:center; gap:8px;
-      color:var(--muted); font-weight:600; pointer-events:none;
-      transition:opacity .15s ease;
-    }
-    .sig-hint svg{width:22px;height:22px;opacity:.9}
-    .sig-hint.hidden{opacity:0;visibility:hidden}
-
-    /* Helpers */
-    .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
-    .hp{display:none}
-    .hint{font-size:12px;color:var(--muted);margin-top:4px}
-    .invalid{border-color:var(--invalid);box-shadow:0 0 0 2px var(--invalid-glow)}
-    .is-hidden{display:none!important}
-    .mt-2{margin-top:8px}
-
-    /* Policy box */
-    #policyBox{
-      border:1px solid var(--border);
-      background:var(--input-bg);
-      color:var(--text);
-      padding:16px;
-      height:400px;
-      max-height:600px;
-      overflow-y:auto;
-      font-size:14px;
-      border-radius:12px;
-      margin-bottom:12px;
-    }
-    #policyFullLink{color:var(--panel)}
-    #privacyLink,#termsLink{
-      color: var(--border-strong);
+    input, select, textarea {
+      padding: 10px 12px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 14px;
+      width: 100%;
+      box-sizing: border-box;
     }
 
-    /* Language Switcher */
-    .lang-switcher{
-      position:relative;
-      max-width:120px;
-      margin-bottom:10px;
-      margin-left:auto;
-    }
-    .dd-toggle{
-      width:100%;
-      background:var(--input-bg);
-      color:var(--text);
-      border:1px solid var(--input-bg);
-      border-radius:8px;
-      padding:10px;
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-    }
-    .dd-list{
-      position:absolute; left:0; right:0; margin-top:4px;
-      list-style:none; padding:4px 0;
-      background:var(--border);
-      border:1px solid var(--border);
-      border-radius:8px; z-index:10;
-    }
-    .dd-list li{padding:8px 10px;cursor:pointer}
-    .dd-list li[aria-selected="true"]{background:var(--input-bg)}
-    .dd-list li:hover,.dd-list li:focus{outline:none;background:var(--border-strong)}
-
-    /* Grid helpers */
-    .field{display:flex;flex-direction:column}
-    .grid{display:grid;gap:12px}
-    .grid-2{grid-template-columns:1fr}
-    .grid-3{grid-template-columns:1fr}
-    .grid-4{grid-template-columns:1fr}
-    .cols-3{grid-template-columns:1fr 1fr 1fr}
-
-    @media(min-width:640px){
-      .grid-2{grid-template-columns:1fr 1fr}
-      .grid-3{grid-template-columns:2fr 1fr 1fr} /* City, State, ZIP */
-      .grid-4{grid-template-columns:1fr 1fr 1fr 1fr}
+    button {
+      background-color: #ff6b0a;
+      color: white;
+      border: none;
+      padding: 14px;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+      font-weight: 600;
     }
 
-    /* Google Autocomplete theme */
-    gmpx-place-autocomplete{
-      display:block;margin:0 0 8px 0;
-      --gmpx-color-surface: var(--input-bg);
-      --gmpx-color-on-surface: var(--text);
-      --gmpx-color-outline: var(--border);
-      --gmpx-shape-corner-extra-large: 8px;
+    button:hover {
+      background-color: #e45f09;
     }
 
-    /* Dropzone */
-    .dropzone{
-      position:relative;
-      display:flex; flex-direction:column; align-items:center; justify-content:center;
-      min-height:220px;
-      padding:18px;
-      border:2px dashed var(--dropzone-border);
-      border-radius:12px;
-      background:var(--input-bg);
-      text-align:center;
-      cursor:pointer;
-      transition:border-color .2s, background .2s;
+    /* Scrollable Terms Section */
+    #termsSection {
+      margin-top: 30px;
     }
-    .dropzone:hover, .dropzone.hover{
-      border-color:var(--accent);
-      background:var(--dropzone-hover);
+
+    #termsBox {
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 15px;
+      max-height: 250px;
+      overflow-y: auto;
+      background: #fff;
+      line-height: 1.6;
+      margin-top: 8px;
     }
-    .dropzone .dz-icon{margin-bottom:8px;opacity:.8}
-    .dropzone .dz-title{font-weight:700;font-size:24px;color:var(--dropzone-title)}
-    .dropzone .dz-sub{font-size:16px;color:var(--dropzone-sub)}
-    .dropzone .dz-file{margin-top:8px;font-size:12px;color:var(--muted)}
-    .dropzone input[type="file"]{
-      position:absolute; inset:0; opacity:0; cursor:pointer;
-      width:100%; height:100%; border:0; padding:0; margin:0; z-index:2;
+
+    #agreeContainer {
+      margin-top: 12px;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    #agreeContainer label {
+      font-size: 14px;
+      color: #222;
+    }
+
+    /* Responsive for small screens */
+    @media (max-width: 600px) {
+      .container {
+        padding: 25px;
+      }
+
+      #termsBox {
+        max-height: 200px;
+      }
     }
   </style>
 </head>
+
 <body>
+  <div class="container">
+    <h1>Avian Driving School</h1>
+    <p class="subheader">Student Registration & Policy Agreement</p>
 
-  <header class="form-title">
-    <img src="assets/avian_header_logo_2.png" alt="Avian Driving School">
-  </header>
+    <form id="studentForm">
+      <!-- Example Fields -->
+      <div>
+        <label for="name">Full Name</label>
+        <input type="text" id="name" name="name" required />
+      </div>
 
-  <div class="wrap">
-    <form
-      name="Avian Registration"
-      method="POST"
-      action="/success.html"
-      data-netlify="true"
-      enctype="multipart/form-data"
-      class="card"
-      aria-labelledby="form-title"
-      novalidate>
+      <div>
+        <label for="email">Email Address</label>
+        <input type="email" id="email" name="email" required />
+      </div>
 
-      <!-- Language Switcher -->
-      <section class="section-margin">
-        <div class="lang-switcher">
-          <input type="hidden" id="input_language" name="input_language" value="en"/>
-          <button id="langToggle" type="button" class="dd-toggle" aria-haspopup="listbox" aria-expanded="false" aria-label="Language Selection">
-            <span id="langLabel">English (US)</span><span aria-hidden="true">▾</span>
-          </button>
-          <ul id="langList" class="dd-list" role="listbox" tabindex="-1" hidden aria-label="Language options">
-            <li role="option" data-lang="en" aria-selected="true" tabindex="0">English (US)</li>
-            <li role="option" data-lang="es" aria-selected="false" tabindex="0">Español</li>
+      <div>
+        <label for="phone">Phone Number</label>
+        <input type="tel" id="phone" name="phone" required />
+      </div>
+
+      <!-- ✅ Terms of Service Scroll Box Section -->
+      <div id="termsSection">
+        <label for="termsBox">Terms of Service & Student Policy</label>
+
+        <div id="termsBox">
+          <p><strong>AVIAN DRIVING SCHOOL TERMS OF SERVICE & STUDENT POLICY</strong></p>
+          <p>We’re delighted that you’ve chosen Avian Driving School, Inc. (“Avian,” “we,” “our,” or “us”) for your driver training needs. These Terms of Service (“Terms”) govern your use of all our offerings, including driving lessons, packages, road test services, and our website (collectively, the “Services”). By enrolling or participating in any of our Services, you agree to these Terms.</p>
+          <p><strong>Key Highlights:</strong></p>
+          <ul>
+            <li>All lessons must be prepaid in full before scheduling.</li>
+            <li>Cancellations require at least 24-hour notice to avoid forfeiture.</li>
+            <li>Refunds can be requested within six months of purchase.</li>
+            <li>Students must comply with all safety and conduct rules.</li>
           </ul>
-        </div>
-        
-        <!-- Header -->
-        <div class="form-header">
-          <h1 data-i18n="form.title">Registration Form</h1>
-          <p data-i18n="form.subtitle">Complete the registration form to finalize your enrollment.</p>
-          <strong class="rule"></strong>
-        </div>
-      </section>
-
-      <!-- Netlify helpers -->
-      <input type="hidden" name="form-name" value="Avian Registration"/>
-      <p class="hp"><label data-i18n="bot">Don’t fill this out: <input name="bot-field" autocomplete="off"/></label></p>
-
-      <!-- 1) Name (inline) -->
-      <section class="section-margin-1">
-        <div class="grid grid-2" aria-label="name-row">
-          <div class="field">
-            <label for="firstName" data-i18n="field.firstName">First Name*</label>
-            <input id="firstName" name="firstName" required autocomplete="given-name" data-i18n-placeholder="ph.firstName" placeholder="First name"/>
-          </div>
-          <div class="field">
-            <label for="lastName" data-i18n="field.lastName">Last Name*</label>
-            <input id="lastName" name="lastName" required autocomplete="family-name" data-i18n-placeholder="ph.lastName" placeholder="Last name"/>
-          </div>
+          <p>By signing or submitting this form, you confirm that you have read, understood, and agreed to all the terms outlined in this policy.</p>
         </div>
 
-        
-      <!-- ) Contact Info -->
-          <div class="field">
-                <label for="email" data-i18n="field.email">Email Address</label>
-                <input id="email" type="email" name="email" data-i18n-placeholder="" placeholder="Enter your email address...">
-            </div>
-          <div class="field">
-                <label for="phone-number">Phone Number</label>
-                <input id="phone-number" type="tel" name="phone-number" data-i18n-placeholder="" placeholder="(646)-123-4567..." required>
-            </div>
-      
-        <!-- 2) Address block -->
-        <div class="field">
-          <label for="address1" data-i18n="field.address1">Street Address*</label>
-          <input id="address1" name="address1" required autocomplete="street-address" data-i18n-placeholder="ph.address1" placeholder="Street address"/>
+        <div id="agreeContainer">
+          <input type="checkbox" id="agree" name="agree" disabled required />
+          <label for="agree">I have read and agree to Avian Driving School’s <strong>Terms of Service & Student Policy</strong>.</label>
         </div>
-        <gmpx-place-autocomplete for="address1" autocomplete-options='{"componentRestrictions":{"country":["us"]}}'></gmpx-place-autocomplete>
-        
-        <div class="field">
-          <label for="address2" data-i18n="field.address2">Address 2</label>
-          <input id="address2" name="address2" autocomplete="address-line2" data-i18n-placeholder="ph.address2" placeholder="Apt, suite, etc. (optional)"/>
-        </div>
-        
-        <div class="grid grid-3">
-          <div class="field">
-            <label for="city" data-i18n="field.city">City*</label>
-            <input id="city" name="city" required autocomplete="address-level2" data-i18n-placeholder="ph.city" placeholder="City"/>
-          </div>
-          <div class="field">
-            <label class="label-state" for="state" data-i18n="field.state">State*</label>
-            <select id="state" name="state" required autocomplete="address-level1">
-              <option value="" data-i18n="ph.state">Select…</option>
-              <option>AL</option><option>AK</option><option>AZ</option><option>AR</option><option>CA</option><option>CO</option><option>CT</option><option>DE</option><option>DC</option><option>FL</option><option>GA</option><option>HI</option><option>ID</option><option>IL</option><option>IN</option><option>IA</option><option>KS</option><option>KY</option><option>LA</option><option>ME</option><option>MD</option><option>MA</option><option>MI</option><option>MN</option><option>MS</option><option>MO</option><option>MT</option><option>NE</option><option>NV</option><option>NH</option><option>NJ</option><option>NM</option><option>NY</option><option>NC</option><option>ND</option><option>OH</option><option>OK</option><option>OR</option><option>PA</option><option>RI</option><option>SC</option><option>SD</option><option>TN</option><option>TX</option><option>UT</option><option>VT</option><option>VA</option><option>WA</option><option>WV</option><option>WI</option><option>WY</option>
-            </select>
-          </div>
-          <div class="field">
-            <label for="zip" data-i18n="field.zip">ZIP*</label>
-            <input id="zip" name="zip" pattern="[0-9]{5}(-[0-9]{4})?" required inputmode="numeric" autocomplete="postal-code" data-i18n-placeholder="ph.zip" placeholder="#####"/>
-          </div>
-        </div>
-      </section>
-        
-        <!-- 3) Permit # + Restrictions -->
-      <section class="section-margin">
-           <div class="grid grid-2">
-              <div class="field">
-                <label for="permitNo" data-i18n="field.permit">Permit or License Number*</label>
-                <input id="permitNo" name="permitNo" required data-i18n-placeholder="ph.permit" placeholder="123-456-789"/>
-              </div>
-              <div class="field">
-                <label for="restriction" data-i18n="field.restriction">Restrictions (if any)</label>
-                <select id="restriction" name="restriction">
-                  <option value="none" data-i18n="restriction.none">None</option>
-                  <option value="B">Corrective lenses (B)</option>
-                  <option value="C">Mechanical aid (C)</option>
-                  <option value="D">Prosthetic device (D)</option>
-                  <option value="E">Automatic transmission (E)</option>
-                  <option value="F">Hearing aid (F)</option>
-                  <option value="G">Daylight driving only (G)</option>
-                  <option value="J">Other / special restrictions (J)</option>
-                  <option value="K">CDL—Intrastate only (K)</option>
-                  <option value="L">CDL—No air brakes (L)</option>
-                  <option value="M">CDL—Power unit only (M)</option>
-                  <option value="N">CDL—No passengers in CMV bus (N)</option>
-                  <option value="P">CDL—No passengers (P)</option>
-                  <option value="R">CDL—No interstate CMV (R)</option>
-                  <option value="S">CDL—No manual transmission CMV (S)</option>
-                  <option value="T">CDL—No tractor-trailer (T)</option>
-                  <option value="V">CDL—Medical variance (V)</option>
-                  <option value="W">CDL—Intrastate only (W)</option>
-                  <option value="X">CDL—No cargo in tank (X)</option>
-                  <option value="Y">Limited daylight/area (Y)</option>
-                  <option value="Z">No full air brake system (Z)</option>
-                  <option value="other" data-i18n="restriction.other">Other (specify)</option>
-                </select>
-                <input id="restrictionOther" name="restrictionOther" class="is-hidden mt-2" placeholder="Specify restriction"/>
-              </div>
-            </div>
-            
-            <!-- 4) DOB (MDY selects) + Gender -->
-            <div class="grid grid-2">
-              <div class="field">
-                <label data-i18n="field.dob">Date of Birth*</label>
-                <div class="grid cols-3">
-                  <select id="dobMonth"></select>
-                  <select id="dobDay"></select>
-                  <select id="dobYear"></select>
-                </div>
-                <input type="hidden" id="dob" name="dob" required/>
-              </div>
-              <div class="field">
-                <label for="gender" data-i18n="field.gender">Gender*</label>
-                <select id="gender" name="gender" required>
-                  <option value="male" data-i18n="gender.male">Male</option>
-                  <option value="female" data-i18n="gender.female">Female</option>
-                </select>
-              </div>
-            </div>
-            
-            <!-- 5) Issue + Expiration (MDY selects, inline) -->
-            <div class="grid grid-2">
-              <div class="field">
-                <label data-i18n="field.issue">Issue Date*</label>
-                <div class="grid cols-3">
-                  <select id="issueMonth"></select>
-                  <select id="issueDay"></select>
-                  <select id="issueYear"></select>
-                </div>
-                <input type="hidden" id="issueDate" name="issueDate" required/>
-              </div>
-              <div class="field">
-                <label data-i18n="field.exp">Expiration Date*</label>
-                <div class="grid cols-3">
-                  <select id="expMonth"></select>
-                  <select id="expDay"></select>
-                  <select id="expYear"></select>
-                </div>
-                <input type="hidden" id="expDate" name="expDate" required/>
-              </div>
-            </div>
-        </section>
-            
-      <!-- 6) Packages and Services -->
-      <section class="section-margin">
-        <div class="field">
-          <label for="package" data-i18n="field.package">Packages & Services*</label>
-          <select id="package" name="package" required>
-            <option value="" disabled selected data-i18n="pkg.select">Please select a package</option>
-            
-            <optgroup data-i18n="group.rt" label="Road Test Services">
-              <option value="Road Test Car — $135" data-i18n="pkg.rtCar">Road Test Car — $135</option>
-              <option value="Road Test Appointment — $30" data-i18n="pkg.rtAppt">Road Test Appointment — $30</option>
-            </optgroup>
-            
-            <optgroup data-i18n="group.classD" label="Class D — Lessons & Packages">
-              <option value="Single Driving Lesson — $60" data-i18n="pkg.single">Single Driving Lesson — $60</option>
-              <option value="Class D — 5 Lesson Package — $275" data-i18n="pkg.d0">Class D — 5 Lesson Package — $275</option>
-              <option value="Class D — 10 Lesson Package — $550" data-i18n="pkg.d10">Class D — 10 Lesson Package — $550</option>
-              
-              <option value="Class D - Package 1 ($299)" data-i18n="pkg.d1">Class D — Package 1 — $299</option>
-              <option value="Class D - Package 2 ($399)" data-i18n="pkg.d2">Class D — Package 2 — $399</option>
-              <option value="Class D - Package 3 ($649)" data-i18n="pkg.d3">Class D — Package 3 — $649</option>
-              <option value="Class D - Package 4 ($899)" data-i18n="pkg.d4">Class D — Package 4 — $899</option>
-              <option value="Class D - Package 5 ($1,249)" data-i18n="pkg.d5">Class D — Package 5 — $1,249</option>
-              <option value="Class D - Package 6 ($1,499)" data-i18n="pkg.d6">Class D — Package 6 — $1,499</option>
-            </optgroup>
-            
-            <optgroup data-i18n="group.highway" label="Highway Lessons">
-              <option value="Single Highway Lesson — $95" data-i18n="pkg.singleHwy">Single Highway Lesson — $95</option>
-              <option value="5 Highway Lesson Package — $450" data-i18n="pkg.hwy5">5 Highway Lesson Package — $450</option>
-              <option value="10 Highway Lesson Package — $900" data-i18n="pkg.hwy10">10 Highway Lesson Package — $900</option>
-            </optgroup>
-            
-            <optgroup data-i18n="group.courses" label="Courses & Certificates">
-              <option value="MV-278 Duplicate — $40" data-i18n="pkg.mv278">MV-278 Duplicate — $40</option>
-              <option value="5HR Pre-Licensing Course — $69" data-i18n="pkg.pre5hr">5HR Pre-Licensing Course — $69</option>
-              <option value="6HR Defensive Course — $100" data-i18n="pkg.def6hr">6HR Defensive Course — $100</option>
-            </optgroup>
-            
-            <optgroup data-i18n="group.cdlA_pkgs" label="CDL — Class A Packages">
-              <option value="CDL Class A — Package 1 ($1,700)" data-i18n="pkg.cdlA1">Class A — Package 1 — $1,700</option>
-              <option value="CDL Class A — Package 2 ($2,250)" data-i18n="pkg.cdlA2">Class A — Package 2 — $2,250</option>
-              <option value="CDL Class A — Package 3 ($2,950)" data-i18n="pkg.cdlA3">Class A — Package 3 — $2,950</option>
-              <option value="CDL Class A — Package 4 ($3,600)" data-i18n="pkg.cdlA4">Class A — Package 4 — $3,600</option>
-            </optgroup>
-            
-            <optgroup data-i18n="group.cdlA_indiv" label="CDL — Class A Individual Services">
-              <option value="CDL Class A — Tractor Trailer 1 Hour Lesson ($140)" data-i18n="pkg.cdlA_lesson1h">Tractor Trailer 1 Hour Lesson — $140</option>
-              <option value="CDL Class A — Road Test Vehicle Rental ($370)" data-i18n="pkg.cdlA_rental">Road Test Vehicle Rental — $370</option>
-              <option value="CDL — Road Test Appointment ($30)" data-i18n="pkg.cdl_rtAppt">Road Test Appointment — $30</option>
-            </optgroup>
-            
-            <optgroup data-i18n="group.cdlB_sb_pkgs" label="CDL — Class B School Bus Packages">
-              <option value="CDL Class B (School Bus) — Package 1 ($1,155)" data-i18n="pkg.cdlBsb1">School Bus — Package 1 — $1,155</option>
-              <option value="CDL Class B (School Bus) — Package 2 ($1,925)" data-i18n="pkg.cdlBsb2">School Bus — Package 2 — $1,925</option>
-            </optgroup>
-            
-            <optgroup data-i18n="group.cdlB_sb_indiv" label="CDL — Class B School Bus Individual Services">
-              <option value="CDL Class B (School Bus) — 1 Hour Lesson ($110)" data-i18n="pkg.cdlBsb_lesson1h">School Bus 1 Hour Lesson — $110</option>
-              <option value="CDL Class B (School Bus) — Road Test Vehicle Rental ($270)" data-i18n="pkg.cdlBsb_rental">Road Test Vehicle Rental — $270</option>
-              <option value="CDL — Road Test Appointment ($30)" data-i18n="pkg.cdl_rtAppt">Road Test Appointment — $30</option>
-            </optgroup>
-            
-            <optgroup data-i18n="group.cdlB_st_pkgs" label="CDL — Class B Straight Truck Packages">
-              <option value="CDL Class B (Straight Truck) — Package 1 ($1,155)" data-i18n="pkg.cdlBst1">Straight Truck — Package 1 — $1,155</option>
-              <option value="CDL Class B (Straight Truck) — Package 2 ($1,925)" data-i18n="pkg.cdlBst2">Straight Truck — Package 2 — $1,925</option>
-            </optgroup>
-            
-            <optgroup data-i18n="group.cdlB_st_indiv" label="CDL — Class B Straight Truck Individual Services">
-              <option value="CDL Class B (Straight Truck) — 1 Hour Lesson ($110)" data-i18n="pkg.cdlBst_lesson1h">Straight Truck 1 Hour Lesson — $110</option>
-              <option value="CDL Class B (Straight Truck) — Road Test Vehicle Rental ($270)" data-i18n="pkg.cdlBst_rental">Road Test Vehicle Rental — $270</option>
-              <option value="CDL — Road Test Appointment ($30)" data-i18n="pkg.cdl_rtAppt">Road Test Appointment — $30</option>
-            </optgroup>
-          </select>
-        </div>
-        
-        <!-- 7) 5-Hour Class -->
-        <div class="field">
-          <label for="fiveHourDate" data-i18n="field.classDate">5 Hour Class — Choose Date*</label>
-          <input id="fiveHourDate" name="fiveHourDate" required data-i18n-placeholder="ph.classDate" placeholder="Select a date"/>
-          <div class="hint" data-i18n="hint.classTimes">Classes are held on Tue, Thu (5:00–10:00 PM), and Sat (10:00 AM–3:00 PM).</div>
-        </div>
-        <div class="field">
-          <label for="fiveHourTime" data-i18n="field.classTime">Time Slot*</label>
-          <input id="fiveHourTime" name="fiveHourTime" readonly required data-i18n-placeholder="ph.classTime" placeholder="Auto-set from date"/>
-          <input type="hidden" id="fiveHourSlot" name="fiveHourSlot"/>
-        </div>
-      </section>
-        
-        <!-- 8) Upload IDs -->
-      <section class="section-margin">
-        <div class="field">
-          <label for="idFront" data-i18n="field.idFront">ID (Front)*</label>
-          <div id="idFrontZone" class="dropzone" role="button" tabindex="0" aria-label="Upload a photo of your ID (Front)">
-            <div class="dz-icon" aria-hidden="true">
-              <svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M6 18h12a4 4 0 0 0 0-8 6 6 0 0 0-11.3-2.5A4.5 4.5 0 0 0 6 18zm6-3v-6m0 0-3 3m3-3 3 3" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </div>
-            <div class="dz-title">Browse Files</div>
-            <div class="dz-sub">Drag and drop files here</div>
-            <div class="dz-file" aria-live="polite"></div>
-            <input id="idFront" type="file" name="idFront" accept="image/*" capture="environment" required/>
-          </div>
-        </div>
-        <div class="field">
-          <label for="idBack" data-i18n="field.idBack">ID (Back)*</label>
-          <div id="idBackZone" class="dropzone" role="button" tabindex="0" aria-label="Upload a photo of your ID (Back)">
-            <div class="dz-icon" aria-hidden="true">
-              <svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M6 18h12a4 4 0 0 0 0-8 6 6 0 0 0-11.3-2.5A4.5 4.5 0 0 0 6 18zm6-3v-6m0 0-3 3m3-3 3 3" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </div>
-            <div class="dz-title">Browse Files</div>
-            <div class="dz-sub">Drag and drop files here</div>
-            <div class="dz-file" aria-live="polite"></div>
-            <input id="idBack" type="file" name="idBack" accept="image/*" capture="environment" required/>
-          </div>
-        </div>
-      </section>
-        
-        <!-- 9) Policy box -->
-      <section class="section-margin">
-        <div>
-          <label class="policyLabel" for="policyBox"><strong data-i18n="policy.box.title">Terms & Conditions (Please Read Carefully Before Agreeing)</strong></label>
-          <div id="policyBox">
-            <div data-i18n-html="policy.box"></div>
-            <p class="note" data-i18n-html="policy.full">Read the full Terms of Service (including arbitration and legal terms)
-              <a id="policyFullLink" href="/terms.html" target="_blank" rel="noopener">here</a>.
-            </p>
-          </div>
-        </div>
-        
-        <!-- 10) Agreements -->
-        <p>
-          <label class="agree-row">
-            <input type="checkbox" id="agreePolicy" name="agreePolicy" disabled required>
-            <span data-i18n-html="agree.terms">
-              I have read and agree to the
-              <a id="termsLink" href="/terms.html" target="_blank" rel="noopener">Terms of Service & Student Policies</a>
-            </span>
-          </label>
-        </p>
-        <p>
-          <label class="agree-row">
-            <input type="checkbox" name="agreePrivacy" required>
-            <span data-i18n-html="agree.privacy">
-              I agree to the <a id="privacyLink" href="/privacy.html" target="_blank" rel="noopener">Privacy Policy</a>
-            </span>
-          </label>
-        </p>
-        <p>
-          <label class="agree-row">
-            <input type="checkbox" id="agree6month" name="ack6mo" required aria-required="true"/>
-            <span data-i18n="agree.sixmo">I understand all purchases are valid for 6 months and unused lessons expire.</span>
-          </label>
-        </p>
-      </section>
-        
-      <!-- 11) Signature -->
-      <section class="section-margin">
-        <div>
-          <label for="signatureData" data-i18n="sig.label">Policy Signature:</label>
-          <input id="signatureData" type="hidden" name="signatureData"/>
-          <div class="sig" role="group" aria-labelledby="siglabel">
-            <span id="siglabel" class="sr-only" data-i18n="sig.aria">Signature field</span>
-            <!-- Centered hint overlay -->
-            <div class="sig-hint">
-              <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M12 20h9"/>
-                <path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
-              </svg>
-              <span data-i18n="sig.hint">Sign here</span>
-            </div>
-            <canvas id="sig"></canvas>
-          </div>
-        </div>
-        <!-- Signature Reset Btn -->
-        <div class="btn-row">
-          <div class="btn-clear-margin">
-            <button type="button" class="btn-clear" id="clearSig" aria-label="Clear signature" data-i18n="btn.clear">Clear Signature</button>
-          </div>
-        <!-- Submission Btn -->
-          <div class="btn-submit">
-            <button class="grow" type="submit" data-i18n="btn.submit">Submit Registration</button>
-          </div>
-        </div>
-      </section>
-      </form>
-    </div>
-    
-    <!-- ========================= Scripts ========================= -->
-    
-    <!-- Language Switcher + i18n -->
+      </div>
+
+      <!-- Submit Button -->
+      <button type="submit">Submit Form</button>
+    </form>
+  </div>
+
   <script>
-    (function(){
-      const toggle   = document.getElementById('langToggle');
-      const list     = document.getElementById('langList');
-      const label    = document.getElementById('langLabel');
-      const hidden   = document.getElementById('input_language');
-      const htmlEl   = document.documentElement;
-      const policyBox= document.getElementById('policyBox');
-      const agreeBox = document.getElementById('agreePolicy');
+    // Enable checkbox only when user scrolls to bottom
+    window.addEventListener("DOMContentLoaded", () => {
+      const box = document.getElementById("termsBox");
+      const checkbox = document.getElementById("agree");
+      if (!box || !checkbox) return;
 
-      const LINKS = {
-        en: { terms: "/terms.html",    privacy: "/privacy.html" },
-        es: { terms: "/es/terms.html", privacy: "/es/privacy.html" }
-      };
-
-      const i18n = {
-        en: {
-          title: "Avian Driving School Student Registration Form",
-          bot: "Don’t fill this out:",
-          "form.title": "Registration Form",
-          "form.subtitle": "Complete the registration form to finalize your enrollment.",
-
-          "field.firstName": "First Name*",
-          "field.lastName":  "Last Name*",
-          "field.address1":  "Street Address*",
-          "field.address2":  "Address 2",
-          "field.city":      "City*",
-          "field.state":     "State*",
-          "field.zip":       "ZIP*",
-
-          "field.dob":   "Date of Birth*",
-          "field.gender":"Gender*",
-          "gender.male":"Male",
-          "gender.female":"Female",
-
-          "field.permit":"Permit or License Number*",
-          "field.restriction":"Restrictions (if any)",
-          "restriction.none":"None",
-          "restriction.other":"Other (specify)",
-
-          "field.issue":"Issue Date*",
-          "field.exp":"Expiration Date*",
-
-          "field.package":"Packages & Services*",
-          "pkg.select": "Please select a package",
-
-          /* Optgroup labels */
-          "group.rt": "Road Test Services",
-          "group.classD": "Class D — Lessons & Packages",
-          "group.highway": "Highway Lessons",
-          "group.courses": "Courses & Certificates",
-          "group.cdlA_pkgs": "CDL — Class A Packages",
-          "group.cdlA_indiv": "CDL — Class A Individual Services",
-          "group.cdlB_sb_pkgs": "CDL — Class B School Bus Packages",
-          "group.cdlB_sb_indiv": "CDL — Class B School Bus Individual Services",
-          "group.cdlB_st_pkgs": "CDL — Class B Straight Truck Packages",
-          "group.cdlB_st_indiv": "CDL — Class B Straight Truck Individual Services",
-
-          /* Road Test */
-          "pkg.rtCar":  "Road Test Car — $135",
-          "pkg.rtAppt": "Road Test Appointment — $30",
-
-          /* Class D — lessons & packages */
-          "pkg.single": "Single Driving Lesson — $60",
-          "pkg.d0":     "Class D — 5 Lesson Package — $275",
-          "pkg.d10":    "Class D — 10 Lesson Package — $550",
-          "pkg.d1": "Class D — Package 1 — $299",
-          "pkg.d2": "Class D — Package 2 — $399",
-          "pkg.d3": "Class D — Package 3 — $649",
-          "pkg.d4": "Class D — Package 4 — $899",
-          "pkg.d5": "Class D — Package 5 — $1,249",
-          "pkg.d6": "Class D — Package 6 — $1,499",
-
-          /* Highway */
-          "pkg.singleHwy": "Single Highway Lesson — $95",
-          "pkg.hwy5":      "5 Highway Lesson Package — $450",
-          "pkg.hwy10":     "10 Highway Lesson Package — $900",
-
-          /* Courses & certificates */
-          "pkg.mv278":  "MV-278 Duplicate — $40",
-          "pkg.pre5hr": "5HR Pre-Licensing Course — $69",
-          "pkg.def6hr": "6HR Defensive Course — $100",
-
-          /* CDL — Class A */
-          "pkg.cdlA1": "Class A — Package 1 — $1,700",
-          "pkg.cdlA2": "Class A — Package 2 — $2,250",
-          "pkg.cdlA3": "Class A — Package 3 — $2,950",
-          "pkg.cdlA4": "Class A — Package 4 — $3,600",
-          "pkg.cdlA_lesson1h": "Tractor Trailer 1 Hour Lesson — $140",
-          "pkg.cdlA_rental":   "Road Test Vehicle Rental — $370",
-          "pkg.cdl_rtAppt":    "Road Test Appointment — $30",
-
-          /* CDL — Class B School Bus */
-          "pkg.cdlBsb1": "School Bus — Package 1 — $1,155",
-          "pkg.cdlBsb2": "School Bus — Package 2 — $1,925",
-          "pkg.cdlBsb_lesson1h": "School Bus 1 Hour Lesson — $110",
-          "pkg.cdlBsb_rental":   "Road Test Vehicle Rental — $270",
-
-          /* CDL — Class B Straight Truck */
-          "pkg.cdlBst1": "Straight Truck — Package 1 — $1,155",
-          "pkg.cdlBst2": "Straight Truck — Package 2 — $1,925",
-          "pkg.cdlBst_lesson1h": "Straight Truck 1 Hour Lesson — $110",
-          "pkg.cdlBst_rental":   "Road Test Vehicle Rental — $270",
-
-          "field.classDate":"5 Hour Class — Choose Date*",
-          "field.classTime":"Time Slot*",
-          "hint.classTimes":"Classes are held on Tue, Thu (5:00–10:00 PM) and Sat (10:00 AM–3:00 PM).",
-
-          "field.idFront":"ID (Front)*",
-          "field.idBack":"ID (Back)*",
-
-          "policy.box.title":"Terms & Conditions (Please Read Carefully Before Agreeing)",
-          "policy.box": `
-            <h4>1. Lesson Payments & Validity</h4>
-            <p>All lessons, packages, credits, deposits, and gift certificates must be prepaid in full at the time of booking. Every purchase is valid for six (6) months from the date of payment. Unused lessons after this period automatically expire and are non-refundable. Refunds may be requested within the 6-month validity period and are subject to review. Approved refunds will deduct completed lessons at the current single-lesson rate, and the remaining balance will be refunded within 7–10 business days to the original payment method or by check, in compliance with New York State DMV regulations.</p>
-
-            <h4>2. Cancellations, Rescheduling & Lateness</h4>
-            <ul>
-              <li>Lessons may be canceled or rescheduled without penalty if notice is given at least 24 hours before the scheduled start time.</li>
-              <li>Cancellations within 24 hours or “no-shows” result in the full forfeiture of the lesson and associated fees.</li>
-              <li>Late arrivals will have the missed time deducted from the lesson. Arrivals 30+ minutes late forfeit the entire lesson without refund.</li>
-            </ul>
-
-            <h4>3. Road Test Vehicle Use</h4>
-            <ul>
-              <li>A non-refundable $135 deposit is required at least two (2) weeks in advance to reserve a school vehicle for the DMV Road Test.</li>
-              <li>Road test appointments must be canceled or rescheduled at least 72 hours in advance. Failure to do so, or arriving with expired/invalid documents (permit, 5-hour certificate, corrective lenses), results in forfeiture of fees and appointment.</li>
-              <li>Students must report to the Avian Driving School office before their test. Instructors do not meet students directly at DMV test sites.</li>
-            </ul>
-
-            <h4>4. Pick-Up Policy</h4>
-            <p>Pick-ups are limited to locations within a five (5) minute driving radius of the school. Pick-ups outside this radius require booking a double session (minimum 1.5 hours). No exceptions.</p>
-
-            <h4>5. Student Responsibility</h4>
-            <ul>
-              <li>Students are solely responsible for remembering and attending all scheduled lessons once confirmed. The school is not obligated to send reminders.</li>
-              <li>Students must behave respectfully toward instructors, staff, and vehicles. Unsafe, disrespectful, or disruptive conduct may result in immediate termination of service without refund.</li>
-              <li>Students must maintain valid permits, licenses, and certificates as required by the DMV. Failure to present valid documentation will result in loss of the lesson or service without refund.</li>
-            </ul>
-
-            <h4>6. Additional Notes</h4>
-            <ul>
-              <li>All advertised prices exclude sales tax.</li>
-              <li>A 3.5% processing fee applies to all electronic payments made by credit/debit card, PayPal, or similar methods. Zelle payments do not incur this fee.</li>
-              <li>The school may update policies at any time. Continued use of services constitutes acceptance of the latest terms.</li>
-            </ul>
-          `,
-          "policy.full": 'Read the full Terms of Service (including arbitration and legal terms) <a id="policyFullLink" href="/terms.html" target="_blank" rel="noopener">here</a>.',
-          "agree.terms": 'I have read and agree to the <a id="termsLink" href="/terms.html" target="_blank" rel="noopener">Terms of Service & Student Policies</a>',
-          "agree.privacy": 'I agree to the <a id="privacyLink" href="/privacy.html" target="_blank" rel="noopener">Privacy Policy</a>',
-          "agree.sixmo": "I understand all purchases are valid for 6 months and unused lessons expire.",
-
-          "sig.label":"Policy Signature:",
-          "sig.aria":"Signature field",
-          "sig.hint": "Sign here",
-          "btn.clear":"Clear Signature",
-          "btn.submit":"Submit Registration",
-
-          /* placeholders */
-          "ph.firstName": "First name",
-          "ph.lastName": "Last name",
-          "ph.address1": "Street address",
-          "ph.address2": "Apt, suite, etc. (optional)",
-          "ph.city": "City",
-          "ph.state": "Select…",
-          "ph.zip": "#####",
-          "ph.permit": "000-000-000",
-          "ph.classDate": "Select a date",
-          "ph.classTime": "Auto-set from date"
-        },
-        es: {
-          title: "Formulario de Registro de Estudiantes — Avian Driving School",
-          bot: "No complete esto:",
-          "form.title": "Formulario de Inscripción",
-          "form.subtitle": "Complete el formulario para finalizar su inscripción.",
-
-          "field.firstName":"Nombre*",
-          "field.lastName":"Apellido*",
-          "field.address1":"Dirección*",
-          "field.address2":"Dirección 2",
-          "field.city":"Ciudad*",
-          "field.state":"Estado*",
-          "field.zip":"Código postal*",
-
-          "field.dob":"Fecha de nacimiento*",
-          "field.gender":"Género*",
-          "gender.male":"Masculino",
-          "gender.female":"Femenino",
-
-          "field.permit":"Número de permiso o licencia*",
-          "field.restriction":"Restricciones (si aplica)",
-          "restriction.none":"Ninguna",
-          "restriction.other":"Otra (especifique)",
-
-          "field.issue":"Fecha de emisión*",
-          "field.exp":"Fecha de vencimiento*",
-
-          "field.package": "Paquetes y Servicios*",
-          "pkg.select": "Seleccione un paquete",
-
-          /* Optgroup labels */
-          "group.rt": "Servicios de Examen de Manejo",
-          "group.classD": "Clase D — Lecciones y Paquetes",
-          "group.highway": "Lecciones de Carretera",
-          "group.courses": "Cursos y Certificados",
-          "group.cdlA_pkgs": "CDL — Paquetes Clase A",
-          "group.cdlA_indiv": "CDL — Servicios Individuales Clase A",
-          "group.cdlB_sb_pkgs": "CDL — Paquetes Clase B (Autobús Escolar)",
-          "group.cdlB_sb_indiv": "CDL — Servicios Individuales Clase B (Autobús Escolar)",
-          "group.cdlB_st_pkgs": "CDL — Paquetes Clase B (Camión Rígido)",
-          "group.cdlB_st_indiv": "CDL — Servicios Individuales Clase B (Camión Rígido)",
-
-          /* Road Test */
-          "pkg.rtCar":  "Vehículo para Examen de Manejo — $135",
-          "pkg.rtAppt": "Cita para Examen de Manejo — $30",
-
-          /* Clase D — lecciones y paquetes */
-          "pkg.single": "Lección de Manejo Individual — $60",
-          "pkg.d0":     "Clase D — Paquete de 5 Lecciones — $275",
-          "pkg.d10":    "Clase D — Paquete de 10 Lecciones — $550",
-          "pkg.d1": "Clase D — Paquete 1 — $299",
-          "pkg.d2": "Clase D — Paquete 2 — $399",
-          "pkg.d3": "Clase D — Paquete 3 — $649",
-          "pkg.d4": "Clase D — Paquete 4 — $899",
-          "pkg.d5": "Clase D — Paquete 5 — $1,249",
-          "pkg.d6": "Clase D — Paquete 6 — $1,499",
-
-          /* Carretera */
-          "pkg.singleHwy": "Lección de Carretera Individual — $95",
-          "pkg.hwy5":      "Paquete de 5 Lecciones de Carretera — $450",
-          "pkg.hwy10":     "Paquete de 10 Lecciones de Carretera — $900",
-
-          /* Cursos y certificados */
-          "pkg.mv278":  "Duplicado de MV-278 — $40",
-          "pkg.pre5hr": "Curso Prelicencia de 5 Horas — $69",
-          "pkg.def6hr": "Curso de Manejo Defensivo de 6 Horas — $100",
-
-          /* CDL — Clase A */
-          "pkg.cdlA1": "Clase A — Paquete 1 — $1,700",
-          "pkg.cdlA2": "Clase A — Paquete 2 — $2,250",
-          "pkg.cdlA3": "Clase A — Paquete 3 — $2,950",
-          "pkg.cdlA4": "Clase A — Paquete 4 — $3,600",
-          "pkg.cdlA_lesson1h": "Lección de Tractocamión de 1 Hora — $140",
-          "pkg.cdlA_rental":   "Renta de Vehículo para Examen — $370",
-          "pkg.cdl_rtAppt":    "Cita para Examen de Manejo — $30",
-
-          /* CDL — Clase B Autobús Escolar */
-          "pkg.cdlBsb1": "Autobús Escolar — Paquete 1 — $1,155",
-          "pkg.cdlBsb2": "Autobús Escolar — Paquete 2 — $1,925",
-          "pkg.cdlBsb_lesson1h": "Lección de Autobús Escolar de 1 Hora — $110",
-          "pkg.cdlBsb_rental":   "Renta de Vehículo para Examen — $270",
-
-          /* CDL — Clase B Camión Rígido */
-          "pkg.cdlBst1": "Camión Rígido — Paquete 1 — $1,155",
-          "pkg.cdlBst2": "Camión Rígido — Paquete 2 — $1,925",
-          "pkg.cdlBst_lesson1h": "Lección de Camión Rígido de 1 Hora — $110",
-          "pkg.cdlBst_rental":   "Renta de Vehículo para Examen — $270",
-
-          "field.classDate":"Seleccione Curso de 5 horas*",
-          "field.classTime":"Horario*",
-          "hint.classTimes":"Las clases son Mar, Jue (5:00–10:00 PM) y Sáb (10:00 AM–3:00 PM).",
-
-          "field.idFront":"ID (Frente)*",
-          "field.idBack":"ID (Reverso)*",
-
-          "policy.box.title":"Términos y Condiciones (Por favor lea cuidadosamente antes de aceptar)",
-          "policy.box": `
-            <h4>1. Pagos y Validez de las Lecciones</h4>
-            <p>Todas las lecciones, paquetes, créditos, depósitos y certificados de regalo deben pagarse por adelantado en el momento de la reserva. Cada compra es válida por seis (6) meses a partir de la fecha de pago. Las clases no utilizadas después de este período expiran automáticamente y no son reembolsables. Los reembolsos solo pueden solicitarse dentro del período de validez de 6 meses y están sujetos a revisión. Los reembolsos aprobados deducirán las lecciones completadas a la tarifa actual por lección individual, y el saldo restante se reembolsará dentro de 7–10 días hábiles al método de pago original o mediante cheque, en cumplimiento con las regulaciones del DMV del Estado de Nueva York.</p>
-
-            <h4>2. Cancelaciones, Reprogramaciones y Tardanzas</h4>
-            <ul>
-              <li>Las lecciones pueden cancelarse o reprogramarse sin penalidad si se notifica al menos con 24 horas de anticipación a la hora programada.</li>
-              <li>Las cancelaciones dentro de 24 horas o las inasistencias resultarán en la pérdida total de la lección y los cargos correspondientes.</li>
-              <li>Las llegadas tarde tendrán el tiempo perdido deducido de la lección. Si el estudiante llega con 30+ minutos de retraso, la clase completa se pierde sin reembolso.</li>
-            </ul>
-
-            <h4>3. Uso de Vehículo para Examen de Manejo</h4>
-            <ul>
-              <li>Se requiere un depósito no reembolsable de $135 al menos dos (2) semanas antes para reservar un vehículo de la escuela para el examen práctico del DMV.</li>
-              <li>Las citas para el examen deben cancelarse o reprogramarse con al menos 72 horas de anticipación. No hacerlo, o presentarse con documentos vencidos/ inválidos (permiso, certificado de 5 horas, lentes correctivos), resultará en la pérdida de la cita y de los cargos correspondientes.</li>
-              <li>Los estudiantes deben presentarse en la oficina de Avian Driving School antes de su examen. Los instructores no se reúnen directamente con los estudiantes en el sitio del DMV.</li>
-            </ul>
-
-            <h4>4. Política de Recogida</h4>
-            <p>El servicio de recogida está limitado a ubicaciones dentro de un radio de cinco (5) minutos en vehículo desde la escuela. Para ubicaciones fuera de este radio se requiere reservar una sesión doble (mínimo de 1.5 horas). No hay excepciones.</p>
-
-            <h4>5. Responsabilidad del Estudiante</h4>
-            <ul>
-              <li>Los estudiantes son responsables de recordar y asistir a todas las clases programadas una vez confirmadas. La escuela no está obligada a enviar recordatorios.</li>
-              <li>Los estudiantes deben comportarse con respeto hacia los instructores, el personal y los vehículos. La conducta insegura, irrespetuosa o disruptiva puede resultar en la terminación inmediata del servicio sin reembolso.</li>
-              <li>Los estudiantes deben mantener permisos, licencias y certificados válidos según lo requiera el DMV. La falta de documentación válida resultará en la pérdida de la lección o servicio sin reembolso.</li>
-            </ul>
-
-            <h4>6. Notas Adicionales</h4>
-            <ul>
-              <li>Todos los precios anunciados excluyen impuestos de venta.</li>
-              <li>Se aplica una tarifa de procesamiento del 3.5% a todos los pagos electrónicos realizados con tarjeta de crédito/débito, PayPal u otros métodos similares. Los pagos con Zelle no incurren en este cargo.</li>
-              <li>La escuela puede actualizar estas políticas en cualquier momento. El uso continuo de los servicios constituye la aceptación de los términos más recientes.</li>
-            </ul>
-          `,
-          "policy.full": 'Lea los Términos completos (incluye arbitraje y condiciones legales) <a id="policyFullLink" href="/es/terms.html" target="_blank" rel="noopener">aquí</a>.',
-          "agree.terms": 'He leído y acepto los <a id="termsLink" href="/es/terms.html" target="_blank" rel="noopener">Términos y Políticas del Estudiante</a>',
-          "agree.privacy": 'Acepto la <a id="privacyLink" href="/es/privacy.html" target="_blank" rel="noopener">Política de Privacidad</a>',
-          "agree.sixmo": "Entiendo que todas las compras son válidas por 6 meses y las no usadas expiran.",
-
-          "sig.label":"Firma de políticas:",
-          "sig.aria":"Campo de firma",
-          "sig.hint": "Firme aquí",
-          "btn.clear":"Borrar firma",
-          "btn.submit":"Enviar inscripción",
-
-          /* placeholders */
-          "ph.firstName":"Nombre",
-          "ph.lastName":"Apellido",
-          "ph.address1":"Calle y número",
-          "ph.address2":"Apto, piso, etc. (opcional)",
-          "ph.city":"Ciudad",
-          "ph.state":"Seleccione…",
-          "ph.zip":"#####",
-          "ph.permit":"000-000-000",
-          "ph.classDate":"Seleccione una fecha",
-          "ph.classTime":"Se completa automáticamente"
-        }
-      };
-
-      /* Month names for MDY selects */
-      const MONTHS = {
-        en:["Month","January","February","March","April","May","June","July","August","September","October","November","December"],
-        es:["Mes","Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"]
-      };
-
-      function setLinksForLang(lang){
-        const {terms, privacy} = LINKS[lang] || LINKS.en;
-        const t1=document.getElementById('termsLink');
-        const p1=document.getElementById('privacyLink');
-        const full=document.getElementById('policyFullLink');
-        if(t1) t1.href=terms;
-        if(p1) p1.href=privacy;
-        if(full) full.href=terms;
-      }
-
-      function applyTexts(lang){
-        const dict = i18n[lang] || i18n.en;
-
-        // text nodes or attribute labels
-        document.querySelectorAll('[data-i18n]').forEach(el=>{
-          const key = el.getAttribute('data-i18n'); if(!dict[key]) return;
-          if (el.tagName === 'OPTGROUP') {
-            el.label = dict[key];               // translate optgroup label
-          } else {
-            el.textContent = dict[key];         // translate visible text
-          }
-        });
-
-        // html (for lines containing <a> or full blocks)
-        document.querySelectorAll('[data-i18n-html]').forEach(el=>{
-          const key = el.getAttribute('data-i18n-html'); if(!dict[key]) return;
-          el.innerHTML = dict[key];
-        });
-
-        // placeholders
-        document.querySelectorAll('[data-i18n-placeholder]').forEach(el=>{
-          const key = el.getAttribute('data-i18n-placeholder'); if(!dict[key]) return;
-          el.placeholder = dict[key];
-        });
-
-        // Title
-        const tKey = document.querySelector('title')?.getAttribute('data-i18n');
-        if(tKey && dict[tKey]) document.title = dict[tKey];
-
-        // Language UI label
-        document.getElementById('langLabel').textContent = (lang==='es') ? 'Español' : 'English (US)';
-
-        // Rebuild MDY selects with localized month placeholder
-        rebuildMDY(lang);
-      }
-
-      /* Language Button */
-      function setLang(lang){
-        hidden.value = lang;
-        htmlEl.lang = lang;
-        applyTexts(lang);
-        setLinksForLang(lang);
-        resetPolicyScroll();
-
-        // set selected in menu
-        list.querySelectorAll('li').forEach(li=>{
-          li.setAttribute('aria-selected', li.dataset.lang===lang ? 'true':'false');
-        });
-      }
-
-      function openList(){
-        list.hidden = false;
-        toggle.setAttribute('aria-expanded','true');
-        (list.querySelector('li[aria-selected="true"]') || list.querySelector('li'))?.focus();
-        document.addEventListener('click', outsideClose, { once:true });
-      }
-      function closeList(){
-        list.hidden = true;
-        toggle.setAttribute('aria-expanded','false');
-        toggle.focus();
-      }
-      function outsideClose(e){
-        if (!list.contains(e.target) && e.target !== toggle) closeList();
-      }
-
-      toggle.addEventListener('click', ()=> list.hidden ? openList() : closeList());
-
-      // Robust click handler (handles text-node clicks too)
-      list.addEventListener('click', (e) => {
-        const target = e.target.nodeType === 1 ? e.target : e.target.parentElement; // 1 = Element
-        const li = target?.closest?.('li[data-lang]');
-        if (!li) return;
-        e.stopPropagation();
-        setLang(li.dataset.lang);
-        closeList();
+      box.addEventListener("scroll", () => {
+        const atBottom = box.scrollTop + box.clientHeight >= box.scrollHeight - 10;
+        if (atBottom) checkbox.disabled = false;
       });
-
-      // Close when focus leaves the menu (Tabbing away)
-      list.addEventListener('focusout', (e) => {
-        const next = e.relatedTarget;
-        if (!list.contains(next) && next !== toggle) closeList();
-      });
-
-      list.addEventListener('keydown', e=>{
-        const items = [...list.querySelectorAll('li')];
-        const idx = items.indexOf(document.activeElement);
-        if (e.key==='ArrowDown'){ e.preventDefault(); (items[idx+1]||items[0]).focus(); }
-        else if (e.key==='ArrowUp'){ e.preventDefault(); (items[idx-1]||items[items.length-1]).focus(); }
-        else if (e.key==='Enter' || e.key===' '){
-          e.preventDefault();
-          const li = document.activeElement;
-          if (li?.dataset?.lang){ setLang(li.dataset.lang); closeList(); }
-        } else if (e.key==='Escape'){ e.preventDefault(); closeList(); }
-      });
-
-      toggle.addEventListener('keydown', e=>{
-        if (['ArrowDown','Enter',' '].includes(e.key)){ e.preventDefault(); openList(); }
-      });
-
-      // Scroll-to-enable
-      function resetPolicyScroll(){
-        if(!policyBox || !agreeBox) return;
-        agreeBox.checked=false; agreeBox.disabled=true;
-        const clone = policyBox.cloneNode(true);
-        policyBox.parentNode.replaceChild(clone, policyBox);
-        const newBox=document.getElementById('policyBox');
-        function onScroll(){
-          const atBottom = newBox.scrollTop + newBox.clientHeight >= newBox.scrollHeight - 4;
-          if(atBottom){ agreeBox.disabled=false; newBox.removeEventListener('scroll', onScroll); }
-        }
-        newBox.addEventListener('scroll', onScroll);
-      }
-
-      // ======= MDY SELECT HELPERS =======
-      function fillRange(sel, start, end, prefix){
-        sel.innerHTML='';
-        const opt = document.createElement('option'); opt.value=''; opt.textContent=prefix; sel.appendChild(opt);
-        for(let v=start; v<=end; v++){ const o=document.createElement('option'); o.value=String(v).padStart(2,'0'); o.textContent=v; sel.appendChild(o); }
-      }
-      function fillMonths(sel, lang){
-        sel.innerHTML='';
-        const m = MONTHS[lang] || MONTHS.en;
-        m.forEach((name,i)=>{
-          const o=document.createElement('option');
-          o.value = i===0 ? '' : String(i).padStart(2,'0');
-          o.textContent = name;
-          sel.appendChild(o);
-        });
-      }
-      function composeHidden(prefix, hiddenId){
-        const M=document.getElementById(prefix+'Month').value;
-        const D=document.getElementById(prefix+'Day').value;
-        const Y=document.getElementById(prefix+'Year').value;
-        const hidden=document.getElementById(hiddenId);
-        hidden.value = (M && D && Y) ? `${Y}-${M}-${D}` : '';
-      }
-      function attachMDY(prefix, hiddenId, lang, yearStart, yearEnd){
-        fillMonths(document.getElementById(prefix+'Month'), lang);
-        fillRange(document.getElementById(prefix+'Day'), 1, 31, lang==='es'?'Día':'Day');
-        const ySel=document.getElementById(prefix+'Year');
-        ySel.innerHTML='';
-        const yOpt=document.createElement('option'); yOpt.value=''; yOpt.textContent=(lang==='es'?'Año':'Year'); ySel.appendChild(yOpt);
-        for(let y=yearEnd; y>=yearStart; y--){ const o=document.createElement('option'); o.value=String(y); o.textContent=y; ySel.appendChild(o); }
-        ['Month','Day','Year'].forEach(s=>document.getElementById(prefix+s).addEventListener('change',()=>composeHidden(prefix,hiddenId)));
-      }
-      function rebuildMDY(lang){
-        const now=new Date().getFullYear();
-        attachMDY('dob','dob', lang, now-100, now);         // DOB: last 100 years
-        attachMDY('issue','issueDate', lang, now-25, now+1); // Issue: -25 to next year
-        attachMDY('exp','expDate', lang, now-1, now+15);     // Exp: last year to +15
-      }
-
-      // Restriction "Other" toggle (no inline styles)
-      const restrictionSel = document.getElementById('restriction');
-      const restrictionOther = document.getElementById('restrictionOther');
-      restrictionSel.addEventListener('change',()=>{
-        const isOther = restrictionSel.value==='other';
-        restrictionOther.classList.toggle('is-hidden', !isOther);
-        if(!isOther) restrictionOther.value='';
-      });
-      
-      // Init language
-      setLang(hidden.value || 'en');
-    })();
-  </script>
-
-  <!-- Flatpickr -->
-  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-
-  <!-- Signature pad (simple) -->
-  <script>
-    const c = document.getElementById('sig'), ctx = c.getContext('2d');
-    const sigHint = document.querySelector('.sig-hint');
-    const sigInput = document.getElementById('signatureData');
-    
-    function size(){
-      const r = window.devicePixelRatio||1;
-      c.width = c.clientWidth*r; c.height = 180*r;
-      ctx.setTransform(r,0,0,r,0,0); ctx.lineWidth=2; ctx.lineCap='round';
-      // Use CSS variable for signature stroke
-      const SIG_STROKE = getComputedStyle(document.documentElement).getPropertyValue('--sig-stroke').trim() || '#111827';
-      ctx.strokeStyle = SIG_STROKE;
-    }
-    const hideHint = ()=> sigHint && sigHint.classList.add('hidden');
-    const showHint = ()=> sigInput.value ? null : (sigHint && sigHint.classList.remove('hidden'));
-    
-    window.addEventListener('resize', size); size();
-    let drawing=false,x=0,y=0;
-    const set=(a,b)=>{ drawing=true; x=a; y=b; hideHint(); };
-    const draw=(a,b)=>{ if(!drawing) return; ctx.beginPath(); ctx.moveTo(x,y); ctx.lineTo(a,b); ctx.stroke(); x=a; y=b; };
-    const end=()=>{ drawing=false; sigInput.value = c.toDataURL('image/png'); };
-    
-    // Mouse
-    c.addEventListener('mousedown', e=>set(e.offsetX,e.offsetY));
-    c.addEventListener('mousemove', e=>draw(e.offsetX,e.offsetY));
-    c.addEventListener('mouseup', end);
-    c.addEventListener('mouseleave', end);
-    
-    // Touch
-    c.addEventListener('touchstart', e=>{ const t=e.touches[0], r=c.getBoundingClientRect(); set(t.clientX-r.left,t.clientY-r.top); }, {passive:true});
-    c.addEventListener('touchmove',  e=>{ const t=e.touches[0], r=c.getBoundingClientRect(); draw(t.clientX-r.left,t.clientY-r.top); }, {passive:true});
-    c.addEventListener('touchend', end);
-    
-    // Clear button
-    document.getElementById('clearSig').onclick = () => {
-      ctx.clearRect(0,0,c.width,c.height);
-      sigInput.value = '';
-      showHint();
-    };
-    
-    // On load (if no signature yet, show hint)
-    showHint();
-    </script>
-
-  <!-- 5-Hour class picker: Tue/Thu/Sat only + time auto-fill -->
-  <script>
-    const ALLOWED_DAYS=[2,4,6]; // Tue=2, Thu=4, Sat=6
-    const dateInput=document.getElementById("fiveHourDate");
-    const timeInput=document.getElementById("fiveHourTime");
-    const slotHidden=document.getElementById("fiveHourSlot");
-    function classTimeForDay(day){ return day===6 ? "10:00 AM – 3:00 PM" : "5:00 PM – 10:00 PM"; }
-    
-    flatpickr(dateInput,{
-      dateFormat:"Y-m-d",
-      minDate:"today",
-      disable:[(date)=>!ALLOWED_DAYS.includes(date.getDay())],
-      onChange:(selected,dateStr)=>{
-        if(!selected.length){ timeInput.value=""; slotHidden.value=""; return; }
-        const day=selected[0].getDay();
-        const windowLabel=classTimeForDay(day);
-        timeInput.value=windowLabel;
-        slotHidden.value=`${dateStr} | ${windowLabel}`;
-      }
-      });
-
-      // Guard on submit (must have valid slot)
-      document.querySelector('form[name="Avian Registration"]').addEventListener('submit', e=>{
-        if(!slotHidden.value){ e.preventDefault(); alert("Please select a valid 5-hour class date (Tue/Thu/Sat)."); dateInput.focus(); }
-      });
-    </script>
-
-  <!-- File size limit: 3.5 MB per image -->
-  <script>
-    const MAX_BYTES=3.5*1024*1024;
-    function enforceMaxSize(input){
-      if(!input?.files?.length) return true;
-      for(const f of input.files){
-        if(f.size>MAX_BYTES){
-          alert(`"${f.name}" is ${(f.size/1024/1024).toFixed(2)} MB. Please upload images under 3.5 MB.`);
-          input.value=''; return false;
-        }
-      } return true;
-    }
-    ['idFront','idBack'].forEach(id=>document.getElementById(id).addEventListener('change',e=>enforceMaxSize(e.target)));
-  </script>
-
-  <!-- File Upload Dropzone -->
-  <script>
-    function setupDropzone(zoneId, inputId){
-      const zone  = document.getElementById(zoneId);
-      const input = document.getElementById(inputId);
-      const fileOut = zone.querySelector('.dz-file');
-
-      // keyboard accessibility
-      zone.addEventListener('keydown', (e)=>{
-        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); input.click(); }
-      });
-
-      // drag-over visuals
-      ['dragenter','dragover'].forEach(evt=>{
-        zone.addEventListener(evt, (e)=>{ e.preventDefault(); e.dataTransfer.dropEffect='copy'; zone.classList.add('hover'); });
-      });
-      ['dragleave','drop'].forEach(evt=>{
-        zone.addEventListener(evt, (e)=>{ e.preventDefault(); zone.classList.remove('hover'); });
-      });
-
-      // handle drop
-      zone.addEventListener('drop', (e)=>{
-        if (!e.dataTransfer?.files?.length) return;
-        input.files = e.dataTransfer.files;   // assign dropped files to the real input
-        if (typeof enforceMaxSize === 'function') enforceMaxSize(input);
-        renderName();
-      });
-
-      // handle normal selection
-      input.addEventListener('change', ()=>{
-        if (typeof enforceMaxSize === 'function') enforceMaxSize(input);
-        renderName();
-      });
-
-      function renderName(){
-        if (input.files && input.files.length){
-          fileOut.textContent = (input.files.length === 1)
-            ? input.files[0].name
-            : `${input.files.length} files selected`;
-        } else {
-          fileOut.textContent = '';
-        }
-      }
-    }
-    // init both zones
-    setupDropzone('idFrontZone','idFront');
-    setupDropzone('idBackZone','idBack');
-  </script>
-
-  <!-- Phone formatting + nicer validation (safe if #phone absent) -->
-  <script>
-    const phoneEl=document.getElementById('phone');
-    if(phoneEl){
-      phoneEl.addEventListener('blur',()=>{
-        const digits=phoneEl.value.replace(/\D/g,'').slice(0,10);
-        if(digits.length===10){ phoneEl.value=`(${digits.slice(0,3)}) ${digits.slice(3,6)}-${digits.slice(6)}`; phoneEl.classList.remove('invalid'); }
-      });
-    }
-    (function(){
-      const form = document.querySelector('form[name="Avian Registration"]');
-      const slotHidden = document.getElementById("fiveHourSlot");
-
-    function composeHidden(prefix, hiddenId){
-        const M=document.getElementById(prefix+'Month').value;
-        const D=document.getElementById(prefix+'Day').value;
-        const Y=document.getElementById(prefix+'Year').value;
-        const hidden=document.getElementById(hiddenId);
-        hidden.value = (M && D && Y) ? `${Y}-${M}-${D}` : '';
-      }
-
-    form.addEventListener('submit',(e)=>{
-      // always sync hidden MDY fields right before validating
-      composeHidden('dob','dob');
-      composeHidden('issue','issueDate');
-      composeHidden('exp','expDate');
-
-      const msgs = [];
-
-      // Signature required
-      if(!document.getElementById('signatureData').value){
-        msgs.push('Please sign in the box.');
-      }
-
-      // 5-Hour class slot required
-      if(!slotHidden.value){
-        msgs.push('Please select a valid 5-hour class date (Tue/Thu/Sat).');
-      }
-
-      // Built-in validity (ignore disabled controls)
-      const firstInvalid = [...form.elements].find(el => el.willValidate && !el.checkValidity());
-
-      if (msgs.length || firstInvalid){
-        e.preventDefault();
-        // highlight and focus the first invalid control if any
-        form.querySelectorAll('.invalid').forEach(el=>el.classList.remove('invalid'));
-        if (firstInvalid){
-          firstInvalid.classList.add('invalid');
-          firstInvalid.scrollIntoView({behavior:'smooth', block:'center'});
-          try { firstInvalid.focus({preventScroll:true}); } catch {}
-        }
-        // show messages (if any)
-        if (msgs.length) alert(msgs.join('\n'));
-      }
     });
-  })();
-
-      // require signature image
-      if(!document.getElementById('signatureData').value){ e.preventDefault(); alert('Please sign in the box.'); return; }
-      
-      // compose hidden MDY fields (safety)
-      ['dob','issueDate','expDate'].forEach(id=>{
-        const v=document.getElementById(id).value;
-        if(!v){ e.preventDefault(); alert('Please complete all date fields.'); }
-      });
-      
-      // highlight first invalid field
-      const invalid=[...form.querySelectorAll('input, select')].filter(el=>!el.checkValidity());
-      form.querySelectorAll('.invalid').forEach(el=>el.classList.remove('invalid'));
-      if(invalid.length){ e.preventDefault(); invalid[0].classList.add('invalid'); invalid[0].scrollIntoView({behavior:'smooth',block:'center'}); }
-  </script>
-
-  <!-- Address Autocomplete: fill City/State/ZIP -->
-  <script>
-    function wireAddressFill(){
-      const acEl=document.querySelector('gmpx-place-autocomplete');
-      const addrEl=document.getElementById('address1');
-      const cityEl=document.getElementById('city');
-      const stateEl=document.getElementById('state');
-      const zipEl=document.getElementById('zip');
-      if(!acEl||!addrEl) return;
-
-      acEl.addEventListener('input', ()=>{ addrEl.value = acEl.valueText || acEl.value || addrEl.value; });
-      acEl.addEventListener('gmpx-placechange', ()=>{
-        const place=acEl.valuePlace || acEl.value;
-        const comps=place?.addressComponents || [];
-        const byType={}; comps.forEach(c=>c.types?.forEach(t=>byType[t]=c));
-        const city =(byType.locality || byType.sublocality || byType.postal_town)?.longText || '';
-        const state=byType.administrative_area_level_1?.shortText || '';
-        const zip  =byType.postal_code?.longText || '';
-        if(place?.formattedAddress) addrEl.value=place.formattedAddress;
-        if(city)  cityEl.value=city;
-        if(state) stateEl.value=state;   // sets matching option
-        if(zip)   zipEl.value=zip;
-      });
-    }
-  </script>
-
-  <!-- Google Maps Extended Component Library -->
-  <script type="module" src="https://unpkg.com/@googlemaps/extended-component-library@0.6/dist/index.min.js"></script>
-  <gmpx-api-loader key="AIzaSyD4mGMeRkjd0jXzmAynRWCKS-Athi_RCtI" libraries="places" solution-channel="GMP_components" onload="wireAddressFill()"></gmpx-api-loader>
-  
-  <!-- Squarespace Resize Script -->
-  <script>
-  function postHeight(){
-    const h = document.documentElement.scrollHeight;
-    parent.postMessage({ type:'resize', height:h }, '*');
-  }
-  window.addEventListener('load', postHeight);
-  new ResizeObserver(postHeight).observe(document.body);
   </script>
 </body>
 </html>
