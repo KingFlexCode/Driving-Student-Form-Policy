@@ -271,6 +271,41 @@
       position:absolute; inset:0; opacity:0; cursor:pointer;
       width:100%; height:100%; border:0; padding:0; margin:0; z-index:2;
     }
+
+    /* Scoped styles for the terms block */
+    #terms-section .terms-box {
+      max-height: 260px;          /* adjust if you want more/less visible area */
+      overflow-y: auto;
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 14px;
+      line-height: 1.55;
+    }
+
+    /* Keep spacing consistent with your current form rows */
+    #terms-section { margin-top: 18px; }
+
+    #terms-section .terms-check {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    #terms-section .terms-check input[type="checkbox"][disabled] {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    #terms-section .terms-check .hint {
+      display: block;
+      color: #666;
+      margin-left: 28px; /* lines hint up under label text */
+      margin-top: 2px;
+      font-size: 12px;
+    }
+
   </style>
 </head>
 <body>
@@ -630,7 +665,27 @@
           <div class="btn-clear-margin">
             <button type="button" class="btn-clear" id="clearSig" aria-label="Clear signature" data-i18n="btn.clear">Clear Signature</button>
           </div>
-          
+
+          <!-- Terms of Service & Student Policy -->
+        <div class="form-row" id="terms-section">
+          <label for="termsBox">Terms of Service &amp; Student Policy</label>
+
+          <div id="termsBox" class="terms-box" aria-label="Terms content" tabindex="0">
+            <!-- paste your full Terms text here (the same content you use in Jotform).
+                Keep existing <p>, <strong>, <ul> etc. -->
+            <p><strong>AVIAN DRIVING SCHOOL TERMS OF SERVICE &amp; STUDENT POLICY</strong></p>
+            <!-- … rest of your terms … -->
+          </div>
+
+          <div class="form-check terms-check">
+            <input type="checkbox" id="agreeTerms" name="agreeTerms" disabled required>
+            <label for="agreeTerms">
+              I have read and agree to Avian Driving School’s <strong>Terms of Service &amp; Student Policy</strong>.
+            </label>
+            <small class="hint">Scroll to the bottom to enable this checkbox.</small>
+          </div>
+        </div>
+
         <!-- Submission Btn -->
           <div class="btn-submit">
             <button class="grow" type="submit" data-i18n="btn.submit">Submit Registration</button>
@@ -1401,5 +1456,27 @@
   window.addEventListener('load', postHeight);
   new ResizeObserver(postHeight).observe(document.body);
   </script>
+  
+  <script>
+  (function () {
+    var termsBox = document.getElementById('termsBox');
+    var agree = document.getElementById('agreeTerms');
+    if (!termsBox || !agree) return;
+
+    function canEnable() {
+      var atBottom = termsBox.scrollTop + termsBox.clientHeight >= termsBox.scrollHeight - 2;
+      if (atBottom) {
+        agree.disabled = false;
+      }
+    }
+    // In case content fits without scrolling, enable immediately
+    if (termsBox.scrollHeight <= termsBox.clientHeight + 2) {
+      agree.disabled = false;
+    } else {
+      termsBox.addEventListener('scroll', canEnable, { passive: true });
+    }
+  })();
+</script>
+
 </body>
 </html>
