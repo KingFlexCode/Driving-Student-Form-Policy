@@ -1,0 +1,490 @@
+:root{
+    /* Palette */
+    --bg:#0f172a;
+    --panel: #f76b0a;
+    --input-bg:#fde2cf;
+    --text:#111827;
+    --muted:#181616;
+    --border:#1f2937;
+    --border-strong:#FFFFFF;
+    --accent:#FFCC00;
+    --accent-contrast:#0d1324;
+
+    /* Components */
+    --dropzone-border:#111827;
+    --dropzone-hover:#0e152a;
+    --dropzone-title:#315491;
+    --dropzone-sub:#35383b;
+    
+    --menu-selected:#111827;
+    --menu-hover:#1f2937;
+    --sig-stroke:#111827;
+
+    /* used in JS */
+    --invalid:#ef4444;
+    --invalid-glow: rgba(239,68,68,.25);
+      
+    /* Clear button palette */
+    --btn-clear-bg:#dadef3;
+    --btn-clear-text:#343c6a;
+}
+
+/* Reset & Layout */
+*{
+    box-sizing:border-box
+}
+
+body{
+    font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,Arial;
+    background:var(--bg);
+    color:var(--text);
+    margin:0
+}
+
+.wrap{
+    max-width:930px;
+    margin:0 auto;
+    padding:24px
+}
+
+.form-title img{
+    display:block;
+    max-width:350px;
+    margin:10px auto
+}
+
+/* Card */
+.card{
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:16px;
+    padding:30px;
+    border:6px solid var(--border-strong);
+}
+
+/* Rule */
+.rule{
+    display:block;
+    width:100%;
+    height:1px;
+    background:var(--border-strong);
+    margin-bottom:20px;
+}
+
+/* Form controls */
+label{
+    display:block;
+    margin:10px 0 6px;
+}
+input,select{
+    width:100%;
+    margin:0;
+    padding:10px;
+    border-radius:8px;
+    border:1px solid var(--border);
+    background:var(--input-bg);
+    color:var(--text);
+    font-size:16px;
+}
+button{
+    padding:12px 16px;
+    border-radius:10px;
+    border:0;
+    background:var(--accent);
+    color:var(--accent-contrast);
+    font-weight:700;
+    cursor:pointer;
+}
+.btn-submit{
+    display:flex;
+    width:100%;
+    margin:10px 0;
+}
+
+/* Buttons row */
+.btn-row{
+    display:block;
+}
+
+.btn-row .grow{
+    flex:1
+}
+
+/* Clear button */
+.btn-clear{
+    display:flex;
+    background-color:var(--btn-clear-bg);
+    color:var(--btn-clear-text);
+    font-size:12px;
+    cursor:pointer;
+    padding:4px 10px;
+    border-radius:4px;
+    margin-top:10px;
+    margin-bottom:60px;
+    margin-left:auto;
+}
+
+.form-header h1{
+    margin-top:10px;
+    margin-bottom:10px;
+    font-size: 2.8rem;
+}
+
+.form-header p{
+    margin-bottom:10px;
+    margin-top:10px;
+}
+
+#dobMonth,#dobDay,#dobYear,#gender,#restriction,#state,#issueMonth,#issueDay,#issueYear,
+#expMonth,#expDay,#expYear,#package{
+    font-size:16px;
+    height:38px;
+}
+
+.section-margin{
+    margin:30px 0px;
+    padding:0px 30px;
+}
+
+.section-margin-1{
+    margin:5px 0px;
+    padding:0px 30px;
+}
+
+/* Agreements */
+.agree-row{
+    display:flex;
+    align-items:flex-start;
+    gap:8px;
+    line-height:1.2
+}
+
+.agree-row input[type="checkbox"]{
+    margin-top:2px;
+    width:18px;
+    height:18px;
+    cursor:pointer
+}
+
+.agree-row a{
+    color:var(--text);
+    text-decoration:underline
+}
+
+/* Signature */
+.sig{
+    position:relative;
+    background:#fff;
+    border-radius:8px;
+    border:1px solid var(--border);
+    overflow:hidden;
+    margin:8px 0
+}
+canvas{
+    display:block;
+    width:100%;
+    height:180px
+}
+
+/* “Sign here” overlay */
+.sig-hint{
+    position:absolute;
+    inset:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    color:var(--muted);
+    font-weight:600;
+    pointer-events:none;
+    transition:opacity .15s ease;
+}
+
+.sig-hint svg{
+    width:22px;
+    height:22px;
+    opacity:.9
+}
+
+.sig-hint.hidden{
+    opacity:0;
+    visibility:hidden
+}
+
+/* Helpers */
+.sr-only{
+    position:absolute;
+    width:1px;
+    height:1px;
+    padding:0;
+    margin:-1px;
+    overflow:hidden;
+    clip:rect(0,0,0,0);
+    white-space:nowrap;
+    border:0
+}
+
+.hp{
+    display:none
+}
+
+.hint{
+    font-size:12px;
+    color:var(--muted);
+    margin-top:4px
+}
+
+.invalid{
+    border-color:var(--invalid);
+    box-shadow:0 0 0 2px var(--invalid-glow)
+}
+
+.is-hidden{
+    display:none!important
+}
+
+.mt-2{
+    margin-top:8px
+}
+
+/* Policy box */
+#policyBox{
+    border:1px solid var(--border);
+    background:var(--input-bg);
+    color:var(--text);
+    padding:16px;
+    height:400px;
+    max-height:600px;
+    overflow-y:auto;
+    font-size:14px;
+    border-radius:12px;
+    margin-bottom:12px;
+}
+
+#policyFullLink{
+    color:var(--panel)
+}
+
+#privacyLink,#termsLink{
+    color: var(--border-strong);
+}
+
+/* Language Switcher */
+.lang-switcher{
+    position:relative;
+    max-width:120px;
+    margin-bottom:10px;
+    margin-left:auto;
+}
+.dd-toggle{
+    width:100%;
+    background:var(--input-bg);
+    color:var(--text);
+    border:1px solid var(--input-bg);
+    border-radius:8px;
+    padding:10px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+.dd-list{
+    position:absolute; left:0; right:0; margin-top:4px;
+    list-style:none; padding:4px 0;
+    background:var(--border);
+    border:1px solid var(--border);
+    border-radius:8px; z-index:10;
+}
+.dd-list li{
+    padding:8px 10px;
+    cursor:pointer
+}
+
+.dd-list li[aria-selected="true"]{
+    background:var(--input-bg)
+}
+
+.dd-list li:hover,.dd-list li:focus{
+    outline:none;
+    background:var(--border-strong)
+}
+
+/* Grid helpers */
+.field{
+    display:flex;
+    flex-direction:column;
+}
+
+.field.row{
+    display:flex;
+    flex-direction:row;
+}
+
+.grid{
+    display:grid;
+    gap:12px
+}
+
+.grid-2{
+    grid-template-columns:1fr
+}
+
+.grid-3{
+    grid-template-columns:1fr
+}
+
+.grid-4{
+    grid-template-columns:1fr
+}
+
+.cols-3{
+    grid-template-columns:1fr 1fr 1fr
+}
+
+@media(min-width:640px){
+    .grid-2{grid-template-columns:1fr 1fr}
+    .grid-3{grid-template-columns:2fr 1fr 1fr} /* City, State, ZIP */
+    .grid-4{grid-template-columns:1fr 1fr 1fr 1fr}
+}
+
+/* Google Autocomplete theme */
+gmpx-place-autocomplete{
+    display:block;
+    margin:0 0 8px 0;
+    --gmpx-color-surface: var(--input-bg);
+    --gmpx-color-on-surface: var(--text);
+    --gmpx-color-outline: var(--border);
+    --gmpx-shape-corner-extra-large: 8px;
+}
+
+/* Dropzone */
+.dropzone,
+.dropzone2 {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 2px dashed var(--dropzone-border);
+  border-radius: 12px;
+  background: var(--input-bg);
+  text-align: center;
+  cursor: pointer;
+  padding: 20px;
+  transition: border-color 0.3s ease, background-color 0.3s ease;
+  min-height: 200px;
+}
+
+.dropzone:hover,
+.dropzone2:hover {
+  border-color: var(--accent);
+  background: #fff6ee; /* light orange hover */
+}
+
+.dropzone input[type="file"],
+.dropzone2 input[type="file"] {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+  width: 100%;
+  height: 100%;
+  border: none;
+  margin: 0;
+  z-index: 5;
+}
+
+/* hide ugly default file text (the "Choose file" part) */
+.dropzone input[type="file"]::-webkit-file-upload-button,
+.dropzone2 input[type="file"]::-webkit-file-upload-button {
+  display: none;
+}
+.dropzone input[type="file"]::file-selector-button,
+.dropzone2 input[type="file"]::file-selector-button {
+  display: none;
+}
+
+/* text content inside */
+.dz-icon {
+  font-size: 32px;
+  opacity: 0.7;
+  margin-bottom: 8px;
+}
+
+.dz-title {
+  font-weight: 700;
+  font-size: 20px;
+  color: var(--dropzone-title);
+}
+
+.dz-sub {
+  font-size: 14px;
+  color: var(--dropzone-sub);
+  margin-top: 4px;
+}
+
+
+/* ===== Fix: Align ID upload + 5hr certificate inline ===== */
+.grid-3.uploads-grid {
+    display: grid;
+    grid-template-columns: 1fr; /* default: stacked for mobile */
+    gap: 18px;
+}
+
+@media (min-width: 720px) {
+    .grid-3.uploads-grid {
+    grid-template-columns: repeat(3, 1fr); /* three columns side-by-side */
+    align-items: start;
+    }
+}
+
+/* Ensure each dropzone height aligns nicely */
+.uploads-grid .field {
+    display: flex;
+    flex-direction: column;
+}
+
+.uploads-grid .field.row{
+    display: flex;
+    flex-direction: row;
+}
+
+.uploads-grid .dropzone, .uploads-grid .dropzone2{
+    flex: 1;
+    min-height: 220px;
+}
+
+.uploads-grid label {
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+/* Align ID (Front) and ID (Back) side-by-side; keep 5HR Certificate below */
+.upload-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  justify-content: space-between;
+}
+
+.upload-row .field {
+  flex: 1 1 48%; /* Two per row (Front/Back ID) */
+  min-width: 280px;
+}
+
+/* Make 5HR certificate sit below both IDs */
+.upload-row + .field {
+  margin-top: 18px;
+}
+
+/* Responsive fix */
+@media (max-width: 700px) {
+  .upload-row .field {
+    flex: 1 1 100%; /* Stack vertically on small screens */
+  }
+}
+
+.form-sub-label{
+    min-height:13px;
+    font-size:12px;
+    color: var(--btn-clear-text)
+}
