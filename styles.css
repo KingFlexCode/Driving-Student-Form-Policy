@@ -30,10 +30,7 @@
 }
 
 /* Reset & Layout */
-*{
-    box-sizing:border-box
-}
-
+*{ box-sizing:border-box }
 body{
     font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,Arial;
     background:var(--bg);
@@ -56,10 +53,160 @@ body{
 /* Card */
 .card{
     background:var(--panel);
-    border:1px solid var(--border);
+    border:6px solid var(--border-strong);
     border-radius:16px;
     padding:30px;
-    border:6px solid var(--border-strong);
+}
+
+/* ---------- LANGUAGE SWITCHER (UPDATED) ---------- */
+.lang-switcher{
+    position: relative;
+    max-width: 140px;
+    margin-left: auto;
+    margin-bottom: 15px;
+}
+
+.dd-toggle{
+    width:100%;
+    padding:10px;
+    background:var(--input-bg);
+    border-radius:8px;
+    border:1px solid var(--border);
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    font-weight:600;
+    cursor:pointer;
+    color:var(--text);
+}
+
+.dd-list{
+    position:absolute;
+    top:105%;
+    left:0;
+    right:0;
+    list-style:none;
+    padding:0;
+    background:#ffffff;
+    border-radius:8px;
+    border:1px solid var(--border);
+    overflow:hidden;
+    z-index:20;
+}
+
+.dd-list li{
+    padding:10px 12px;
+    background:#ffffff;
+    font-size:15px;
+    color:var(--text);
+    cursor:pointer;
+}
+
+.dd-list li[aria-selected="true"]{
+    background:var(--accent);
+    color:var(--accent-contrast);
+    font-weight:700;
+}
+
+.dd-list li:hover{
+    background:#f1f5f9;
+    color:var(--text);
+}
+
+/* ---------- POLICY FULL PAGE STYLES ---------- */
+.policy-header {
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:15px;
+}
+
+.policy-title {
+    font-size:32px;
+    font-weight:700;
+    margin:0;
+}
+
+.policy-updated {
+    color:#eee;
+    font-size:14px;
+    margin-top:6px;
+}
+
+/* ---------- Floating TOC Button ---------- */
+#toc-btn{
+    position:fixed;
+    top:20px;
+    left:20px;
+    z-index:2000;
+    background:rgba(255,255,255,0.15);
+    backdrop-filter:blur(6px);
+    padding:10px 14px;
+    border-radius:10px;
+    color:#fff;
+    cursor:pointer;
+    border:1px solid rgba(255,255,255,0.25);
+}
+
+#toc-btn:hover{
+    background:rgba(255,255,255,0.25);
+}
+
+/* ---------- Slide-Out TOC Sidebar ---------- */
+.toc-sidebar{
+    position:fixed;
+    top:0;
+    left:-280px;
+    width:260px;
+    height:100vh;
+    background:rgba(255,255,255,0.1);
+    backdrop-filter:blur(10px);
+    border-right:1px solid rgba(255,255,255,0.2);
+    padding:20px;
+    transition:all .35s ease;
+    z-index:2500;
+    overflow-y:auto;
+}
+
+.toc-sidebar.open{
+    left:0;
+}
+
+.toc-sidebar h3{
+    margin-top:0;
+    color:#fff;
+}
+
+.toc-sidebar a{
+    display:block;
+    color:#fff;
+    margin:8px 0;
+    padding:4px 0;
+    text-decoration:none;
+    font-size:15px;
+}
+
+.toc-sidebar a:hover{
+    color:var(--accent);
+}
+
+/* ---------- Back to Top Button ---------- */
+#backToTop{
+    position:fixed;
+    bottom:28px;
+    right:28px;
+    background:var(--accent);
+    color:var(--accent-contrast);
+    padding:12px 14px;
+    border-radius:8px;
+    font-weight:700;
+    cursor:pointer;
+    display:none;
+    z-index:2000;
+}
+
+#backToTop:hover{
+    opacity:.85;
 }
 
 /* Rule */
@@ -107,7 +254,7 @@ button{
 }
 
 .btn-row .grow{
-    flex:1
+    flex:1;
 }
 
 /* Clear button */
@@ -124,28 +271,29 @@ button{
     margin-left:auto;
 }
 
+/* Typography for form headers */
 .form-header h1{
     margin-top:10px;
     margin-bottom:10px;
     font-size: 2.8rem;
 }
-
 .form-header p{
     margin-bottom:10px;
     margin-top:10px;
 }
 
+/* Dropdown sizes */
 #dobMonth,#dobDay,#dobYear,#gender,#restriction,#state,#issueMonth,#issueDay,#issueYear,
 #expMonth,#expDay,#expYear,#package{
     font-size:16px;
     height:38px;
 }
 
+/* Section spacing */
 .section-margin{
     margin:30px 0px;
     padding:0px 30px;
 }
-
 .section-margin-1{
     margin:5px 0px;
     padding:0px 30px;
@@ -156,37 +304,35 @@ button{
     display:flex;
     align-items:flex-start;
     gap:8px;
-    line-height:1.2
+    line-height:1.2;
 }
-
 .agree-row input[type="checkbox"]{
     margin-top:2px;
     width:18px;
     height:18px;
-    cursor:pointer
+    cursor:pointer;
 }
-
 .agree-row a{
     color:var(--text);
-    text-decoration:underline
+    text-decoration:underline;
 }
 
-/* Signature */
+/* Signature box */
 .sig{
     position:relative;
     background:#fff;
     border-radius:8px;
     border:1px solid var(--border);
     overflow:hidden;
-    margin:8px 0
+    margin:8px 0;
 }
 canvas{
     display:block;
     width:100%;
-    height:180px
+    height:180px;
 }
 
-/* “Sign here” overlay */
+/* Sign here */
 .sig-hint{
     position:absolute;
     inset:0;
@@ -199,16 +345,14 @@ canvas{
     pointer-events:none;
     transition:opacity .15s ease;
 }
-
 .sig-hint svg{
     width:22px;
     height:22px;
-    opacity:.9
+    opacity:.9;
 }
-
 .sig-hint.hidden{
     opacity:0;
-    visibility:hidden
+    visibility:hidden;
 }
 
 /* Helpers */
@@ -221,33 +365,28 @@ canvas{
     overflow:hidden;
     clip:rect(0,0,0,0);
     white-space:nowrap;
-    border:0
+    border:0;
 }
-
 .hp{
-    display:none
+    display:none;
 }
-
 .hint{
     font-size:12px;
     color:var(--muted);
-    margin-top:4px
+    margin-top:4px;
 }
-
 .invalid{
     border-color:var(--invalid);
-    box-shadow:0 0 0 2px var(--invalid-glow)
+    box-shadow:0 0 0 2px var(--invalid-glow);
 }
-
 .is-hidden{
-    display:none!important
+    display:none!important;
 }
-
 .mt-2{
-    margin-top:8px
+    margin-top:8px;
 }
 
-/* Policy box */
+/* POLICY BOX */
 #policyBox{
     border:1px solid var(--border);
     background:var(--input-bg);
@@ -261,102 +400,14 @@ canvas{
     margin-bottom:12px;
 }
 
-#policyFullLink{
-    color:var(--panel)
-}
+/* Link colors */
+#policyFullLink{ color:var(--panel); }
+#privacyLink,#termsLink{ color: var(--border-strong); }
 
-#privacyLink,#termsLink{
-    color: var(--border-strong);
-}
+/* ========================================
+   DROPZONE STYLING
+======================================== */
 
-/* Language Switcher */
-.lang-switcher{
-    position:relative;
-    max-width:120px;
-    margin-bottom:10px;
-    margin-left:auto;
-}
-.dd-toggle{
-    width:100%;
-    background:var(--input-bg);
-    color:var(--text);
-    border:1px solid var(--input-bg);
-    border-radius:8px;
-    padding:10px;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-}
-.dd-list{
-    position:absolute; left:0; right:0; margin-top:4px;
-    list-style:none; padding:4px 0;
-    background:var(--border);
-    border:1px solid var(--border);
-    border-radius:8px; z-index:10;
-}
-.dd-list li{
-    padding:8px 10px;
-    cursor:pointer
-}
-
-.dd-list li[aria-selected="true"]{
-    background:var(--input-bg)
-}
-
-.dd-list li:hover,.dd-list li:focus{
-    outline:none;
-    background:var(--border-strong)
-}
-
-/* Grid helpers */
-.field{
-    display:flex;
-    flex-direction:column;
-}
-
-.field.row{
-    display:flex;
-    flex-direction:row;
-}
-
-.grid{
-    display:grid;
-    gap:12px
-}
-
-.grid-2{
-    grid-template-columns:1fr
-}
-
-.grid-3{
-    grid-template-columns:1fr
-}
-
-.grid-4{
-    grid-template-columns:1fr
-}
-
-.cols-3{
-    grid-template-columns:1fr 1fr 1fr
-}
-
-@media(min-width:640px){
-    .grid-2{grid-template-columns:1fr 1fr}
-    .grid-3{grid-template-columns:2fr 1fr 1fr} /* City, State, ZIP */
-    .grid-4{grid-template-columns:1fr 1fr 1fr 1fr}
-}
-
-/* Google Autocomplete theme */
-gmpx-place-autocomplete{
-    display:block;
-    margin:0 0 8px 0;
-    --gmpx-color-surface: var(--input-bg);
-    --gmpx-color-on-surface: var(--text);
-    --gmpx-color-outline: var(--border);
-    --gmpx-shape-corner-extra-large: 8px;
-}
-
-/* Dropzone */
 .dropzone,
 .dropzone2 {
   position: relative;
@@ -377,7 +428,7 @@ gmpx-place-autocomplete{
 .dropzone:hover,
 .dropzone2:hover {
   border-color: var(--accent);
-  background: #fff6ee; /* light orange hover */
+  background: #fff6ee;
 }
 
 .dropzone input[type="file"],
@@ -393,98 +444,81 @@ gmpx-place-autocomplete{
   z-index: 5;
 }
 
-/* hide ugly default file text (the "Choose file" part) */
+/* hide default file button */
 .dropzone input[type="file"]::-webkit-file-upload-button,
-.dropzone2 input[type="file"]::-webkit-file-upload-button {
-  display: none;
-}
+.dropzone2 input[type="file"]::-webkit-file-upload-button,
 .dropzone input[type="file"]::file-selector-button,
 .dropzone2 input[type="file"]::file-selector-button {
   display: none;
 }
 
-/* text content inside */
 .dz-icon {
   font-size: 32px;
   opacity: 0.7;
   margin-bottom: 8px;
 }
-
 .dz-title {
   font-weight: 700;
   font-size: 20px;
   color: var(--dropzone-title);
 }
-
 .dz-sub {
   font-size: 14px;
   color: var(--dropzone-sub);
   margin-top: 4px;
 }
 
+/* GRID FIXES */
+.grid{
+    display:grid;
+    gap:12px;
+}
+.grid-2{ grid-template-columns:1fr }
+.grid-3{ grid-template-columns:1fr }
+.grid-4{ grid-template-columns:1fr }
+.cols-3{ grid-template-columns:1fr 1fr 1fr }
 
-/* ===== Fix: Align ID upload + 5hr certificate inline ===== */
-.grid-3.uploads-grid {
-    display: grid;
-    grid-template-columns: 1fr; /* default: stacked for mobile */
-    gap: 18px;
+@media(min-width:640px){
+    .grid-2{ grid-template-columns:1fr 1fr }
+    .grid-3{ grid-template-columns:2fr 1fr 1fr }
+    .grid-4{ grid-template-columns:1fr 1fr 1fr 1fr }
 }
 
-@media (min-width: 720px) {
-    .grid-3.uploads-grid {
-    grid-template-columns: repeat(3, 1fr); /* three columns side-by-side */
-    align-items: start;
+/* Uploads Grid */
+.grid-3.uploads-grid{
+    display:grid;
+    gap:18px;
+    grid-template-columns:1fr;
+}
+
+@media(min-width:720px){
+    .grid-3.uploads-grid{
+        grid-template-columns:repeat(3,1fr);
     }
 }
 
-/* Ensure each dropzone height aligns nicely */
-.uploads-grid .field {
-    display: flex;
-    flex-direction: column;
+.uploads-grid .field{
+    display:flex;
+    flex-direction:column;
 }
 
-.uploads-grid .field.row{
-    display: flex;
-    flex-direction: row;
+/* ID front/back side-by-side */
+.upload-row{
+  display:flex;
+  flex-wrap:wrap;
+  gap:18px;
+  justify-content:space-between;
 }
-
-.uploads-grid .dropzone, .uploads-grid .dropzone2{
-    flex: 1;
-    min-height: 220px;
+.upload-row .field{
+  flex:1 1 48%;
+  min-width:280px;
 }
-
-.uploads-grid label {
-    font-weight: 600;
-    margin-bottom: 6px;
-}
-
-/* Align ID (Front) and ID (Back) side-by-side; keep 5HR Certificate below */
-.upload-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 18px;
-  justify-content: space-between;
-}
-
-.upload-row .field {
-  flex: 1 1 48%; /* Two per row (Front/Back ID) */
-  min-width: 280px;
-}
-
-/* Make 5HR certificate sit below both IDs */
-.upload-row + .field {
-  margin-top: 18px;
-}
-
-/* Responsive fix */
-@media (max-width: 700px) {
-  .upload-row .field {
-    flex: 1 1 100%; /* Stack vertically on small screens */
-  }
+@media(max-width:700px){
+  .upload-row .field{ flex:1 1 100% }
 }
 
 .form-sub-label{
     min-height:13px;
     font-size:12px;
-    color: var(--btn-clear-text)
+    color: var(--btn-clear-text);
 }
