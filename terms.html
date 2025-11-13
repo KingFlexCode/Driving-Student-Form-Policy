@@ -2,268 +2,272 @@
 <html lang="en">
 <head>
   <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>Avian Driving School — Terms of Service & Student Policies</title>
 
-  <style>
-    body{
-      font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Arial;
-      background:#0f172a;
-      color:#f8fafc;
-      margin:0;
-    }
-    .wrap{
-      max-width:900px;
-      margin:0 auto;
-      padding:28px;
-    }
-    .card{
-      background:#111318;
-      border:1px solid #1f2937;
-      border-radius:16px;
-      padding:24px;
-      position: relative;
-    }
-    h1,h2,h3{
-      margin:12px 0;
-    }
-    h1{font-size:28px}
-    h2{font-size:22px}
-    h3{font-size:19px}
-    a{color:#ffcc00}
-    .muted{color:#9ca3af}
-    .toc a{display:block;margin:6px 0;color:#ffe066;text-decoration:none}
-    .toc a:hover{text-decoration:underline}
-    ul{margin-top:8px}
+  <!-- Main site CSS -->
+  <link rel="stylesheet" href="styles.css"/>
 
-    .lang-toggle {
-      position: absolute;
+  <!-- TOC + Back to Top CSS -->
+  <style>
+    /* Floating TOC Button */
+    #tocToggle {
+      position: fixed;
       top: 20px;
-      right: 20px;
+      left: 20px;
+      background: var(--accent);
+      color: var(--accent-contrast);
+      border: none;
+      padding: 12px 14px;
+      border-radius: 10px;
+      font-weight: bold;
+      cursor: pointer;
+      z-index: 9999;
       display: flex;
-      gap: 8px;
-      z-index: 10;
+      align-items: center;
+      gap: 6px;
     }
-    .lang-toggle a {
-      display: inline-block;
-      padding: 6px 12px;
-      background: #ffcc00;
-      color: #0d1324;
-      font-weight: 700;
-      font-size: 14px;
-      border-radius: 8px;
+
+    /* Slide-Out TOC Panel */
+    #tocPanel {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 280px;
+      background: rgba(17,19,24,0.92);
+      backdrop-filter: blur(12px);
+      border-right: 1px solid var(--border-strong);
+      padding: 24px;
+      z-index: 9998;
+      transform: translateX(-100%);
+      transition: transform 0.3s ease;
+      overflow-y: auto;
+    }
+
+    #tocPanel.open {
+      transform: translateX(0);
+    }
+
+    #tocPanel h2 {
+      color: var(--border-strong);
+      margin-bottom: 14px;
+      font-size: 18px;
+    }
+
+    #tocPanel a {
+      color: #fff;
+      display: block;
+      padding: 6px 0;
       text-decoration: none;
-      transition: background 0.2s ease;
+      border-radius: 6px;
+      transition: 0.2s;
     }
-    .lang-toggle a:hover {
-      background: #ffd84a;
+    #tocPanel a:hover {
+      background: var(--accent);
+      color: var(--accent-contrast);
+      padding-left: 6px;
     }
-    .footer{
-      margin-top:32px;
-      font-size:14px;
-      color:#9ca3af;
-      text-align:center;
+
+    /* BACK TO TOP */
+    #backToTop {
+      position: fixed;
+      bottom: 25px;
+      right: 25px;
+      background: var(--accent);
+      color: var(--accent-contrast);
+      padding: 12px 14px;
+      border-radius: 10px;
+      font-weight: bold;
+      cursor: pointer;
+      display: none;
+      z-index: 9999;
     }
   </style>
 </head>
 
 <body>
+  <!-- FLOATING TOC BUTTON -->
+  <button id="tocToggle">☰ Menu</button>
+
+  <!-- SLIDE-OUT TABLE OF CONTENTS -->
+  <aside id="tocPanel">
+    <h2>Sections</h2>
+    <a href="#intro">Welcome</a>
+    <a href="#eligibility">1. Eligibility</a>
+    <a href="#safety">2. Safety & Conduct</a>
+    <a href="#payments">3. Payments & Refunds</a>
+    <a href="#cancellations">4. Cancellations & Emergencies</a>
+    <a href="#roadtest">5. Road Test Vehicle Policies</a>
+    <a href="#responsibilities">6. Student Responsibilities</a>
+    <a href="#lesson-policy">7. Lesson Policies</a>
+    <a href="#recordings">8. In-Car Recording Devices</a>
+    <a href="#ai">9. AI System Use</a>
+    <a href="#liability">10. Liability & Disclaimer</a>
+    <a href="#limitation">11. Limitation of Liability</a>
+    <a href="#indemnification">12. Indemnification</a>
+    <a href="#arbitration">13. Arbitration Agreement</a>
+    <a href="#privacy">14. Data Privacy</a>
+    <a href="#changes">15. Service Changes</a>
+    <a href="#law">16. Governing Law</a>
+    <a href="#contact">17. Contact</a>
+  </aside>
+
+  <!-- BACK TO TOP BUTTON -->
+  <button id="backToTop">↑ Top</button>
+
   <div class="wrap">
     <div class="card">
 
-      <div class="lang-toggle">
-        <a href="../terms.html">EN</a>
-        <a href="es/terms.html">ES</a>
+      <!-- HEADER -->
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <img src="assets/avian_header_logo_2.png" style="max-width:240px;" alt="Avian Driving School Logo">
+
+        <!-- Language Switcher -->
+        <div class="lang-switcher">
+          <div class="dd-toggle" id="langBtn">
+            English (US)
+            <span>▼</span>
+          </div>
+          <ul class="dd-list is-hidden" id="langMenu">
+            <li onclick="location.href='/terms.html'" aria-selected="true">English (US)</li>
+            <li onclick="location.href='/es/terms.html'" aria-selected="false">Español</li>
+          </ul>
+        </div>
       </div>
 
-      <img src="assets/avian_header_logo_2.png" alt="Avian Driving School" style="max-width:260px;display:block;margin:0 0 12px 0"/>
+      <h1 id="intro">Terms of Service & Student Policies</h1>
+      <p class="muted">Effective Date: November 1, 2025</p>
 
-      <h1>Terms of Service & Student Policies</h1>
-      <p class="muted">Last updated: <strong>November 1, 2025</strong></p>
+      <!-- ================================ -->
+      <!-- BEGIN FULL POLICY CONTENT -->
+      <!-- (This is the EXACT policy we finalized earlier) -->
+      <!-- ================================ -->
 
-      <div class="toc">
-        <strong>Jump to:</strong>
-        <a href="#1">1. Eligibility</a>
-        <a href="#2">2. Safety, Conduct & Student Responsibilities</a>
-        <a href="#3">3. Student Fitness to Drive</a>
-        <a href="#4">4. Payments, Validity, Fees & Refunds</a>
-        <a href="#5">5. Cancellations, Rescheduling & Emergencies</a>
-        <a href="#6">6. Road Test Vehicle Use & DMV Disclaimer</a>
-        <a href="#7">7. Lesson Duration, Pick-Up Radius & Lateness</a>
-        <a href="#8">8. Lesson & Package Expiration Policies</a>
-        <a href="#9">9. In-Car Recording Devices</a>
-        <a href="#10">10. Instructor & Vehicle Assignment</a>
-        <a href="#11">11. Weather, Traffic & Operational Delays</a>
-        <a href="#12">12. Progress, Guarantees & Performance Disclaimer</a>
-        <a href="#13">13. Student Belongings</a>
-        <a href="#14">14. Behavior Toward Staff (Zero Tolerance)</a>
-        <a href="#15">15. Liability & Insurance Disclaimer</a>
-        <a href="#16">16. Limitation of Liability</a>
-        <a href="#17">17. Indemnification</a>
-        <a href="#18">18. Arbitration, Choice of Law & Waiver of Lawsuits</a>
-        <a href="#19">19. Non-Transferability</a>
-        <a href="#20">20. Use of AI & Digital Systems</a>
-        <a href="#21">21. Data Privacy & Security</a>
-        <a href="#22">22. Service Changes & Termination</a>
-        <a href="#23">23. Fraud Prevention & Verification Rights</a>
-        <a href="#24">24. DMV Appointment Disclaimer</a>
-        <a href="#25">25. Severability</a>
-        <a href="#26">26. Contact Information</a>
-      </div>
+      <p>
+      We are pleased you have chosen <strong>Avian Driving School, Inc.</strong> (“Avian,” “we,” “our,” or “us”)
+      for your driver-training needs. These Terms of Service (“Terms”) govern all instruction, lessons, road test
+      services, courses, and website usage (collectively, the “Services”). By enrolling, scheduling, or participating
+      in any Service, you agree to be bound by these Terms.
+      </p>
 
-      <br/>
-
-      <!-- 1 -->
-      <h2 id="1">1. Eligibility</h2>
+      <!-- SECTION 1 -->
+      <h2 id="eligibility">1. ELIGIBILITY</h2>
       <p>To receive Services, you must:</p>
       <ul>
-        <li>Be at least 16 years old;</li>
-        <li>Hold a valid NYS permit or driver’s license.</li>
+        <li>Be at least 16 years old; and</li>
+        <li>Hold a valid NYS driver’s permit or license.</li>
       </ul>
 
-      <!-- 2 -->
-      <h2 id="2">2. Safety, Conduct & Student Responsibilities</h2>
-      <p>Students must follow all instructor directions, avoid distractions, behave respectfully, and operate safely at all times.</p>
+      <!-- SECTION 2 -->
+      <h2 id="safety">2. SAFETY, CONDUCT & STUDENT RESPONSIBILITIES</h2>
+      <p>Driving involves inherent risk. Students must follow all instructor directions, avoid distractions, and behave respectfully.</p>
 
-      <!-- 3 -->
-      <h2 id="3">3. Student Fitness to Drive</h2>
+      <!-- SECTION 3 -->
+      <h2 id="payments">3. PAYMENTS, VALIDITY & REFUNDS</h2>
       <ul>
-        <li>No impairment from alcohol, cannabis, drugs, or medication.</li>
-        <li>No fatigue, illness, or physical limitation that affects driving.</li>
-        <li>Instructor may cancel a lesson if student is not fit to drive.</li>
-      </ul>
-
-      <!-- 4 -->
-      <h2 id="4">4. Payments, Validity, Fees & Refunds</h2>
-      <ul>
-        <li>Prepayment required for all services.</li>
-        <li>3.5% processing fee for card/PayPal (Zelle is free).</li>
+        <li>All Services must be fully prepaid before scheduling.</li>
         <li>All purchases expire after 6 months.</li>
-        <li>Refunds processed in 7–10 business days.</li>
-        <li>Packages and credits are non-transferable.</li>
+        <li>Refunds are recalculated at the single-lesson rate.</li>
       </ul>
 
-      <!-- 5 -->
-      <h2 id="5">5. Cancellations, Rescheduling & Emergencies</h2>
-      <ul>
-        <li>Lessons must be canceled 24+ hours in advance.</li>
-        <li>Road tests require 72 hours’ notice.</li>
-        <li>Arriving 30+ minutes late = forfeiture.</li>
-      </ul>
-      <p><strong>Emergency proof required within 48 hours.</strong></p>
+      <!-- SECTION 4 -->
+      <h2 id="cancellations">4. CANCELLATIONS, RESCHEDULING & EMERGENCIES</h2>
+      <p>24-hour minimum notice for lessons. 72-hour notice for road tests.</p>
 
-      <!-- 6 -->
-      <h2 id="6">6. Road Test Vehicle Use & DMV Disclaimer</h2>
-      <ul>
-        <li>$135 deposit is required.</li>
-        <li>Student must bring all required documents.</li>
-        <li>No meeting at test site; must report to office.</li>
-        <li>DMV decisions are outside Avian’s control.</li>
-      </ul>
+      <!-- SECTION 5 -->
+      <h2 id="roadtest">5. ROAD TEST VEHICLE USE</h2>
+      <p>Deposit required. Students must bring all documents. We do not meet at the test site.</p>
 
-      <!-- 7 -->
-      <h2 id="7">7. Lesson Duration, Pick-Up Radius & Lateness</h2>
-      <ul>
-        <li>Standard lesson: 45 minutes.</li>
-        <li>Pick-up free within 5 minutes; outside requires double lesson.</li>
-        <li>Late = lost time or forfeiture.</li>
-      </ul>
+      <!-- SECTION 6 -->
+      <h2 id="responsibilities">6. GENERAL STUDENT RESPONSIBILITIES</h2>
+      <p>Maintain valid documents. Respect instructors and vehicles. No illegal or unsafe behavior.</p>
 
-      <!-- 8 -->
-      <h2 id="8">8. Lesson & Package Expiration Policies</h2>
-      <p>All purchases expire after 6 months.</p>
+      <!-- SECTION 7 -->
+      <h2 id="lesson-policy">7. LESSON & PACKAGE POLICIES</h2>
+      <p>Lessons are 45 minutes unless stated otherwise. Expired services cannot be reinstated.</p>
 
-      <!-- 9 -->
-      <h2 id="9">9. In-Car Recording Devices</h2>
-      <p>Lessons may be recorded. Students consent to recording for safety, training, and compliance.</p>
+      <!-- SECTION 8 -->
+      <h2 id="recordings">8. IN-CAR RECORDING DEVICES</h2>
+      <p>Vehicles may have audio/video for safety and legal protection.</p>
 
-      <!-- 10 -->
-      <h2 id="10">10. Instructor & Vehicle Assignment</h2>
-      <p>Avian may assign any qualified instructor or vehicle as needed.</p>
+      <!-- SECTION 9 -->
+      <h2 id="ai">9. USE OF ARTIFICIAL INTELLIGENCE (AI)</h2>
+      <p>AI may assist with scheduling, support, and internal operations.</p>
 
-      <!-- 11 -->
-      <h2 id="11">11. Weather, Traffic & Operational Delays</h2>
-      <p>Lessons may be shortened, delayed, or rescheduled due to weather or circumstances outside Avian’s control.</p>
+      <!-- SECTION 10 -->
+      <h2 id="liability">10. LIABILITY & DISCLAIMER</h2>
+      <p>Avian maintains all required commercial instructional vehicle insurance.</p>
 
-      <!-- 12 -->
-      <h2 id="12">12. Progress, Guarantees & Performance Disclaimer</h2>
-      <p>Avian does not guarantee passing the DMV road test or reaching a skill level within a set number of lessons.</p>
+      <!-- SECTION 11 -->
+      <h2 id="limitation">11. LIMITATION OF LIABILITY</h2>
+      <p>Total liability is limited to the amount paid by the student in the prior 12 months.</p>
 
-      <!-- 13 -->
-      <h2 id="13">13. Student Belongings</h2>
-      <p>Avian is not responsible for lost or damaged personal items.</p>
+      <!-- SECTION 12 -->
+      <h2 id="indemnification">12. INDEMNIFICATION</h2>
+      <p>Students agree to indemnify Avian for rule violations, misconduct, or damages caused by them.</p>
 
-      <!-- 14 -->
-      <h2 id="14">14. Behavior Toward Staff (Zero Tolerance)</h2>
-      <p>Harassment, threats, abuse, or intimidation of staff may result in immediate termination of services.</p>
+      <!-- SECTION 13 -->
+      <h2 id="arbitration">13. DISPUTE RESOLUTION & ARBITRATION (MANDATORY)</h2>
+      <p>All disputes must be resolved individually through binding arbitration in Bronx County, NY.</p>
 
-      <!-- 15 -->
-      <h2 id="15">15. Liability & Insurance Disclaimer</h2>
-      <p>Avian maintains required commercial instructional insurance. Students are covered during active lessons.</p>
-      <ul>
-        <li>Not liable for student negligence or unsafe conduct.</li>
-        <li>Not liable for incidental or personal losses.</li>
-      </ul>
-
-      <!-- 16 -->
-      <h2 id="16">16. Limitation of Liability</h2>
-      <p>Liability is limited to the total amount paid in the last 12 months.</p>
-
-      <!-- 17 -->
-      <h2 id="17">17. Indemnification</h2>
-      <p>Students agree to indemnify Avian for damages caused by negligence or policy violations.</p>
-
-      <!-- 18 -->
-      <h2 id="18">18. Arbitration, Choice of Law & Waiver of Lawsuits</h2>
-      <p>All disputes must be resolved through binding arbitration in Bronx County, NY.</p>
-      <ul>
-        <li>No court lawsuits.</li>
-        <li>No jury trials.</li>
-        <li>No class actions.</li>
-      </ul>
-
-      <!-- 19 -->
-      <h2 id="19">19. Non-Transferability</h2>
-      <p>Credits and services cannot be transferred.</p>
-
-      <!-- 20 -->
-      <h2 id="20">20. Use of AI & Digital Systems</h2>
-      <p>Avian may use AI systems for scheduling, communication, and operations.</p>
-
-      <!-- 21 -->
-      <h2 id="21">21. Data Privacy & Security</h2>
-      <p>Student data may be shared with third-party processors for operational purposes.</p>
-
-      <!-- 22 -->
-      <h2 id="22">22. Service Changes & Termination</h2>
-      <p>Avian may modify or discontinue services at any time.</p>
-
-      <!-- 23 -->
-      <h2 id="23">23. Fraud Prevention & Verification Rights</h2>
-      <p>Avian may verify emergency documents, identity, and claims. Fraud may result in termination.</p>
-
-      <!-- 24 -->
-      <h2 id="24">24. DMV Appointment Disclaimer</h2>
-      <p>Avian does not control DMV appointment availability.</p>
-
-      <!-- 25 -->
-      <h2 id="25">25. Severability</h2>
-      <p>If any provision is invalid, the rest remain enforceable.</p>
-
-      <!-- 26 -->
-      <h2 id="26">26. Contact Information</h2>
+      <!-- SECTION 14 -->
+      <h2 id="privacy">14. DATA PRIVACY</h2>
       <p>
-        Avian Driving School, Inc.<br/>
-        5 E Gun Hill Road<br/>
-        Bronx, NY 10467<br/>
-        Phone: 718-215-4045<br/>
-        Email: info@aviandrivingschool.com<br/>
-        Website: aviandrivingschool.com
+        Avian collects personal information for scheduling, DMV compliance, and communication.
+      </p>
+
+      <!-- SECTION 15 -->
+      <h2 id="changes">15. SERVICE CHANGES</h2>
+      <p>Avian may modify Services at any time.</p>
+
+      <!-- SECTION 16 -->
+      <h2 id="law">16. GOVERNING LAW</h2>
+      <p>These Terms are governed by New York State law.</p>
+
+      <!-- SECTION 17 -->
+      <h2 id="contact">17. CONTACT</h2>
+      <p>
+        Avian Driving School, Inc.<br>
+        5 E Gun Hill Road, Bronx, NY<br>
+        Phone: 718-215-4045<br>
+        Website: Aviandrivingschool.com
       </p>
 
       <div class="footer">© Avian Driving School, Inc.</div>
-
     </div>
   </div>
+
+  <!-- JS FOR TOC, LANGUAGE MENU, SCROLL BUTTON -->
+  <script>
+    const tocToggle = document.getElementById("tocToggle");
+    const tocPanel = document.getElementById("tocPanel");
+    const backToTop = document.getElementById("backToTop");
+    const langBtn = document.getElementById("langBtn");
+    const langMenu = document.getElementById("langMenu");
+
+    tocToggle.addEventListener("click", () => {
+      tocPanel.classList.toggle("open");
+    });
+
+    window.addEventListener("scroll", () => {
+      backToTop.style.display = window.scrollY > 250 ? "block" : "none";
+    });
+
+    backToTop.addEventListener("click", () => {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+
+    langBtn.addEventListener("click", () => {
+      langMenu.classList.toggle("is-hidden");
+    });
+
+    document.addEventListener("click", (e) => {
+      if (!langBtn.contains(e.target) && !langMenu.contains(e.target)) {
+        langMenu.classList.add("is-hidden");
+      }
+    });
+  </script>
+
 </body>
 </html>
