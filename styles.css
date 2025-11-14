@@ -539,11 +539,68 @@ body.terms-page{
     max-width:260px;
 }
 
-.terms-lang-switcher .dd-toggle{
-    background:#020617;
-    color:#e5e7eb;
-    border:1px solid #1f2937;
+/* ---------- LANGUAGE SWITCHER (FINAL FIXED VERSION) ---------- */
+
+.lang-switcher{
+    position: relative;
+    max-width: 140px;
+    margin-left: auto;
+    margin-bottom: 15px;
 }
+
+.dd-toggle{
+    width:100%;
+    padding:10px;
+    background:var(--input-bg);
+    border-radius:8px;
+    border:1px solid var(--border);
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    font-weight:600;
+    cursor:pointer;
+    color:var(--text);
+}
+
+/* Dropdown menu */
+.dd-list{
+    position:absolute;
+    top:105%;
+    left:0;
+    right:0;
+    list-style:none;
+    padding:0;
+    margin:0;
+    background:#ffffff;
+    border-radius:8px;
+    border:1px solid var(--border);
+    overflow:hidden;
+    z-index:20;
+}
+
+/* Default item */
+.dd-list li{
+    padding:10px 12px;
+    background:#ffffff;
+    font-size:15px;
+    color:var(--text);
+    cursor:pointer;
+    transition:all .15s ease;
+}
+
+/* Selected item */
+.dd-list li[aria-selected="true"]{
+    background:var(--accent); /* yellow */
+    color:var(--accent-contrast); /* dark text */
+    font-weight:700;
+}
+
+/* Hover state (NEW: readable + highlighted) */
+.dd-list li:hover{
+    background:#f1f5f9 !important; /* soft light gray */
+    color:#000 !important;
+}
+
 
 body.terms-page h1,
 body.terms-page h2,
