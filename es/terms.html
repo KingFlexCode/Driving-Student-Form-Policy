@@ -2,264 +2,429 @@
 <html lang="es">
 <head>
   <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <title>Avian Driving School — Términos de Servicio y Políticas del Estudiante</title>
-
-  <link rel="stylesheet" href="../styles.css"/>
-
-  <style>
-    #tocToggle {
-      position: fixed;
-      top: 20px;
-      left: 20px;
-      background: var(--accent);
-      color: var(--accent-contrast);
-      border: none;
-      padding: 12px 14px;
-      border-radius: 10px;
-      font-weight: bold;
-      cursor: pointer;
-      z-index: 9999;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    #tocPanel {
-      position: fixed;
-      top: 0;
-      left: 0;
-      height: 100%;
-      width: 280px;
-      background: rgba(17,19,24,0.92);
-      backdrop-filter: blur(12px);
-      border-right: 1px solid var(--border-strong);
-      padding: 24px;
-      z-index: 9998;
-      transform: translateX(-100%);
-      transition: transform 0.3s ease;
-      overflow-y: auto;
-    }
-    #tocPanel.open {
-      transform: translateX(0);
-    }
-
-    #tocPanel h2 {
-      color: var(--border-strong);
-      margin-bottom: 14px;
-      font-size: 18px;
-    }
-
-    #tocPanel a {
-      color: #fff;
-      display: block;
-      padding: 6px 0;
-      text-decoration: none;
-      border-radius: 6px;
-      transition: 0.2s;
-    }
-    #tocPanel a:hover {
-      background: var(--accent);
-      color: var(--accent-contrast);
-      padding-left: 6px;
-    }
-
-    #backToTop {
-      position: fixed;
-      bottom: 25px;
-      right: 25px;
-      background: var(--accent);
-      color: var(--accent-contrast);
-      padding: 12px 14px;
-      border-radius: 10px;
-      font-weight: bold;
-      cursor: pointer;
-      display: none;
-      z-index: 9999;
-    }
-  </style>
+  <link rel="stylesheet" href="../styles.css">
 </head>
 
-<body>
+<body class="terms-page">
+  <div class="terms-wrap">
 
-  <!-- MENU TOC -->
-  <button id="tocToggle">☰ Menú</button>
-
-  <aside id="tocPanel">
-    <h2>Secciones</h2>
-    <a href="#intro">Bienvenida</a>
-    <a href="#eligibility">1. Elegibilidad</a>
-    <a href="#safety">2. Seguridad y Conducta</a>
-    <a href="#payments">3. Pagos y Reembolsos</a>
-    <a href="#cancellations">4. Cancelaciones y Emergencias</a>
-    <a href="#roadtest">5. Prueba de Manejo (DMV)</a>
-    <a href="#responsibilities">6. Responsabilidades del Estudiante</a>
-    <a href="#lesson-policy">7. Políticas de Lecciones</a>
-    <a href="#recordings">8. Grabación Dentro del Vehículo</a>
-    <a href="#ai">9. Uso de IA</a>
-    <a href="#liability">10. Responsabilidad</a>
-    <a href="#limitation">11. Limitación de Responsabilidad</a>
-    <a href="#indemnification">12. Indemnización</a>
-    <a href="#arbitration">13. Arbitraje</a>
-    <a href="#privacy">14. Privacidad de Datos</a>
-    <a href="#changes">15. Cambios del Servicio</a>
-    <a href="#law">16. Ley Aplicable</a>
-    <a href="#contact">17. Contacto</a>
-  </aside>
-
-  <!-- BACK TO TOP -->
-  <button id="backToTop">↑ Arriba</button>
-
-  <div class="wrap">
-    <div class="card">
-
-      <div style="display:flex; justify-content:space-between; align-items:center;">
-        <img src="../assets/avian_header_logo_2.png" style="max-width:240px;" alt="Logo Avian Driving School">
-
-        <!-- SWITCHER -->
-        <div class="lang-switcher">
-          <div class="dd-toggle" id="langBtn">
-            Español
-            <span>▼</span>
-          </div>
-          <ul class="dd-list is-hidden" id="langMenu">
-            <li onclick="location.href='../terms.html'" aria-selected="false">English (US)</li>
-            <li onclick="location.href='/es/terms.html'" aria-selected="true">Español</li>
-          </ul>
-        </div>
+    <!-- GLASS SIDEBAR -->
+    <aside class="terms-sidebar" aria-label="En esta página">
+      <div class="terms-sidebar-inner">
+        <div class="terms-sidebar-title">En esta página</div>
+        <nav class="terms-toc">
+          <a href="#1">1. Elegibilidad</a>
+          <a href="#2">2. Seguridad, Conducta y Responsabilidades del Estudiante</a>
+          <a href="#3">3. Aptitud del Estudiante para Conducir</a>
+          <a href="#4">4. Pagos, Validez, Cargos y Reembolsos</a>
+          <a href="#5">5. Cancelaciones, Reprogramaciones y Emergencias</a>
+          <a href="#6">6. Uso del Vehículo para el Examen y Aviso del DMV</a>
+          <a href="#7">7. Duración de las Clases, Recogida y Tardanza</a>
+          <a href="#8">8. Políticas de Vencimiento de Clases y Paquetes</a>
+          <a href="#9">9. Dispositivos de Grabación Dentro del Vehículo</a>
+          <a href="#10">10. Asignación de Instructor y Vehículo</a>
+          <a href="#11">11. Clima, Tráfico y Retrasos Operativos</a>
+          <a href="#12">12. Progreso, Garantías y Desempeño</a>
+          <a href="#13">13. Pertenencias y Artículos Personales del Estudiante</a>
+          <a href="#14">14. Comportamiento hacia el Personal (Cero Tolerancia)</a>
+          <a href="#15">15. Responsabilidad y Seguro</a>
+          <a href="#16">16. Limitación de Responsabilidad</a>
+          <a href="#17">17. Indemnización</a>
+          <a href="#18">18. Arbitraje, Ley Aplicable y Renuncia a Demandas</a>
+          <a href="#19">19. Intransferibilidad</a>
+          <a href="#20">20. Uso de IA, Sistemas Digitales y Tecnología</a>
+          <a href="#21">21. Privacidad y Seguridad de Datos</a>
+          <a href="#22">22. Cambios en el Servicio, Suspensión y Terminación</a>
+          <a href="#23">23. Prevención de Fraude y Derechos de Verificación</a>
+          <a href="#24">24. Sin Garantía de Citas Disponibles en el DMV</a>
+          <a href="#25">25. Divisibilidad</a>
+          <a href="#26">26. Información de Contacto</a>
+        </nav>
+        <button type="button" class="terms-sidebar-top" data-scroll-top>Volver arriba</button>
       </div>
+    </aside>
 
-      <h1 id="intro">Términos de Servicio y Políticas del Estudiante</h1>
-      <p class="muted">Fecha de Vigencia: 1 de Noviembre de 2025</p>
+    <!-- MAIN CARD -->
+    <main class="terms-main">
+      <div class="terms-card">
 
-      <p>
-        Estamos encantados de que haya elegido <strong>Avian Driving School, Inc.</strong> (“Avian”, “nosotros” o “nuestro”) para sus necesidades de capacitación de manejo. Estos Términos de Servicio (“Términos”) rigen el uso de todas nuestras lecciones, cursos, servicios para pruebas de manejo y nuestro sitio web (los “Servicios”). Al inscribirse o utilizar nuestros Servicios, usted acepta estos Términos.
-      </p>
+        <!-- Header: logo + language -->
+        <header class="terms-header">
+          <img src="../assets/avian_header_logo_2.png"
+               alt="Avian Driving School"
+               class="terms-logo"/>
 
-      <!-- 1 -->
-      <h2 id="eligibility">1. ELEGIBILIDAD</h2>
-      <p>Para recibir Servicios, el estudiante debe:</p>
-      <ul>
-        <li>Tener al menos 16 años.</li>
-        <li>Poseer un permiso o licencia válida emitida por el DMV de Nueva York.</li>
-      </ul>
+          <!-- Language switcher -->
+          <div class="terms-lang-switcher lang-switcher">
+            <button id="langToggle"
+                    type="button"
+                    class="dd-toggle"
+                    aria-haspopup="listbox"
+                    aria-expanded="false"
+                    aria-label="Selección de idioma">
+              <span id="langLabel">Español</span>
+              <span aria-hidden="true">▾</span>
+            </button>
+            <ul id="langList"
+                class="dd-list"
+                role="listbox"
+                tabindex="-1"
+                hidden
+                aria-label="Opciones de idioma">
+              <li role="option"
+                  data-lang="en"
+                  data-url="/terms.html"
+                  aria-selected="false"
+                  tabindex="0">
+                English (US)
+              </li>
+              <li role="option"
+                  data-lang="es"
+                  data-url="/es/terms.html"
+                  aria-selected="true"
+                  tabindex="0">
+                Español
+              </li>
+            </ul>
+          </div>
+        </header>
 
-      <!-- 2 -->
-      <h2 id="safety">2. SEGURIDAD, CONDUCTA Y RESPONSABILIDADES</h2>
-      <p>
-        Conducir conlleva riesgos inherentes. Los estudiantes deben seguir todas las instrucciones del instructor, evitar distracciones y comportarse de manera respetuosa y segura.
-      </p>
+        <h1>Términos de Servicio y Políticas del Estudiante</h1>
+        <p class="muted">Última actualización: <strong>1 de noviembre de 2025</strong></p>
 
-      <!-- 3 -->
-      <h2 id="payments">3. PAGOS, VALIDEZ Y REEMBOLSOS</h2>
-      <ul>
-        <li>Todos los Servicios deben pagarse en su totalidad antes de programarse.</li>
-        <li>Las compras vencen automáticamente después de 6 meses.</li>
-        <li>Los reembolsos se recalculan al precio de lección individual.</li>
-      </ul>
+        <!-- 1. ELIGIBILIDAD -->
+        <h2 id="1">1. Elegibilidad</h2>
+        <p>Para recibir nuestros Servicios, usted debe:</p>
+        <ul>
+          <li>Tener al menos 16 años de edad; y</li>
+          <li>Poseer un permiso de aprendizaje o licencia de conducir válida del Estado de Nueva York.</li>
+        </ul>
+        <p>
+          Al inscribirse, programar o participar en cualquier Servicio, usted declara que cumple con estos requisitos
+          y que tiene la capacidad legal para celebrar este acuerdo.
+        </p>
 
-      <!-- 4 -->
-      <h2 id="cancellations">4. CANCELACIONES, REPROGRAMACIONES Y EMERGENCIAS</h2>
-      <p>Las clases requieren al menos 24 horas de aviso. Las pruebas de manejo requieren 72 horas.</p>
+        <!-- 2. SEGURIDAD -->
+        <h2 id="2">2. Seguridad, Conducta y Responsabilidades del Estudiante</h2>
+        <p>La instrucción de manejo implica riesgos inherentes. Para la seguridad de todos, el estudiante debe:</p>
+        <ul>
+          <li>Seguir de forma inmediata todas las instrucciones del instructor.</li>
+          <li>No utilizar teléfonos celulares ni dispositivos que causen distracción durante la clase.</li>
+          <li>Mantener un comportamiento respetuoso hacia los instructores, el personal y el público.</li>
+          <li>Presentarse física y mentalmente apto para conducir.</li>
+        </ul>
+        <p>
+          Un comportamiento inseguro, la negativa a seguir instrucciones o cualquier conducta que ponga en riesgo la
+          seguridad puede resultar en la terminación inmediata de la clase sin derecho a reembolso.
+        </p>
 
-      <!-- 5 -->
-      <h2 id="roadtest">5. PRUEBA DE MANEJO (DMV)</h2>
-      <ul>
-        <li>Se requiere un depósito para reservar el vehículo.</li>
-        <li>El estudiante debe traer todos los documentos necesarios.</li>
-        <li>No nos reunimos directamente en el sitio de examen.</li>
-      </ul>
+        <!-- 3. APTITUD -->
+        <h2 id="3">3. Aptitud del Estudiante para Conducir</h2>
+        <p>El estudiante debe estar en condiciones físicas y mentales adecuadas para operar un vehículo de forma segura. No se permite conducir si existe:</p>
+        <ul>
+          <li>Cansancio extremo o somnolencia;</li>
+          <li>Consumo de alcohol, cannabis u otras sustancias ilegales;</li>
+          <li>Uso de medicamentos que afecten la capacidad de reacción o juicio;</li>
+          <li>Condiciones médicas que impidan la operación segura del vehículo.</li>
+        </ul>
+        <p>
+          El instructor puede cancelar una clase si considera que el estudiante no está apto para conducir. En ese caso,
+          no se emitirá reembolso.
+        </p>
 
-      <!-- 6 -->
-      <h2 id="responsibilities">6. RESPONSABILIDADES DEL ESTUDIANTE</h2>
-      <p>El estudiante debe mantener documentos válidos y respetar al instructor, personal y vehículo.</p>
+        <!-- 4. PAGOS -->
+        <h2 id="4">4. Pagos, Validez, Cargos y Reembolsos</h2>
+        <ul>
+          <li><strong>Pago adelantado:</strong> Todas las clases, paquetes y servicios de examen deben pagarse en su totalidad antes de programarse.</li>
+          <li><strong>Cargos de procesamiento:</strong> Pagos con tarjeta o PayPal pueden tener un cargo de procesamiento del <strong>3.5%</strong>. Pagos por Zelle no tienen cargos de la escuela.</li>
+          <li><strong>Vencimiento:</strong> Todas las compras vencen después de <strong>seis (6) meses</strong>. Los servicios vencidos no son reembolsables.</li>
+          <li><strong>Reembolsos:</strong> Las clases ya tomadas se descuentan al precio vigente de una clase individual. Los reembolsos se procesan en un plazo de <strong>7–10 días hábiles</strong>.</li>
+          <li><strong>Intransferible:</strong> Todos los créditos, paquetes, depósitos y servicios son personales y no se pueden transferir a otra persona.</li>
+        </ul>
 
-      <!-- 7 -->
-      <h2 id="lesson-policy">7. POLÍTICAS DE LECCIONES</h2>
-      <p>Las clases duran 45 minutos. Los servicios vencidos no pueden extenderse.</p>
+        <!-- 5. CANCELACIONES -->
+        <h2 id="5">5. Cancelaciones, Reprogramaciones y Emergencias</h2>
+        <p>Para evitar perder una clase o servicio, el estudiante debe:</p>
+        <ul>
+          <li>Cancelar o reprogramar clases con al menos <strong>24 horas</strong> de anticipación.</li>
+          <li>Cancelar o reprogramar servicios de examen de manejo con al menos <strong>72 horas</strong> de anticipación.</li>
+          <li>Entender que llegar 30 minutos o más tarde resultará en la pérdida de la clase completa.</li>
+        </ul>
+        <p>
+          <strong>Las excepciones por emergencia requieren documentación verificable dentro de las 48 horas</strong>
+          (por ejemplo, nota médica oficial, reporte policial o documento laboral con datos de contacto verificables).
+        </p>
 
-      <!-- 8 -->
-      <h2 id="recordings">8. GRABACIÓN DENTRO DEL VEHÍCULO</h2>
-      <p>Los vehículos pueden contar con grabación de audio y video.</p>
+        <!-- 6. EXAMEN -->
+        <h2 id="6">6. Uso del Vehículo para el Examen y Aviso del DMV</h2>
+        <ul>
+          <li>Se requiere un depósito de <strong>$135</strong> para reservar el vehículo de la escuela para el examen práctico.</li>
+          <li>El estudiante debe traer todos los documentos requeridos (permiso válido, certificado de 5 horas, lentes correctivos si aplican). Documentos faltantes o inválidos implican pérdida del examen y del depósito.</li>
+          <li>El estudiante debe presentarse en la oficina de Avian; no nos reunimos directamente en el sitio del examen del DMV.</li>
+          <li>No somos responsables por retrasos, cancelaciones o decisiones del DMV o de los examinadores.</li>
+        </ul>
 
-      <!-- 9 -->
-      <h2 id="ai">9. USO DE INTELIGENCIA ARTIFICIAL (IA)</h2>
-      <p>La IA puede utilizarse para programación, asistencia y procesos internos.</p>
+        <!-- 7. DURACIÓN -->
+        <h2 id="7">7. Duración de las Clases, Recogida y Tardanza</h2>
+        <ul>
+          <li><strong>Duración estándar de la clase:</strong> 45 minutos.</li>
+          <li><strong>Radio de recogida:</strong> Gratuito dentro de un radio aproximado de 5 minutos desde la escuela. Fuera de esta área se requiere una clase doble.</li>
+          <li><strong>Tardanza:</strong> Retrasos menores de 30 minutos se descuentan del tiempo de clase; retrasos de 30 minutos o más resultan en la pérdida total de la clase.</li>
+        </ul>
 
-      <!-- 10 -->
-      <h2 id="liability">10. RESPONSABILIDAD Y EXENCIÓN</h2>
-      <p>Avian mantiene el seguro comercial requerido por la ley para vehículos de instrucción.</p>
+        <!-- 8. VENCIMIENTO -->
+        <h2 id="8">8. Políticas de Vencimiento de Clases y Paquetes</h2>
+        <p>
+          Todas las compras vencen después de seis (6) meses a partir de la fecha de compra y no se pueden extender.
+          Las clases o servicios no utilizados después de esa fecha se pierden.
+        </p>
 
-      <!-- 11 -->
-      <h2 id="limitation">11. LIMITACIÓN DE RESPONSABILIDAD</h2>
-      <p>La responsabilidad total se limita al monto pagado por el estudiante en los últimos 12 meses.</p>
+        <!-- 9. GRABACIÓN -->
+        <h2 id="9">9. Dispositivos de Grabación Dentro del Vehículo</h2>
+        <p>
+          Por seguridad, entrenamiento y control de calidad, algunos vehículos pueden contar con sistemas de grabación
+          de audio y/o video. Al tomar clases, el estudiante acepta que puede ser grabado y renuncia a cualquier
+          expectativa de privacidad dentro de los vehículos de Avian.
+        </p>
 
-      <!-- 12 -->
-      <h2 id="indemnification">12. INDEMNIZACIÓN</h2>
-      <p>
-        El estudiante acepta indemnizar a Avian por daños causados por su negligencia, incumplimiento o conducta inapropiada.
-      </p>
+        <!-- 10. ASIGNACIÓN -->
+        <h2 id="10">10. Asignación de Instructor y Vehículo</h2>
+        <p>
+          Avian puede asignar cualquier instructor calificado o vehículo disponible según las necesidades de seguridad
+          y operación. No se garantiza un instructor o vehículo específico para cada clase.
+        </p>
 
-      <!-- 13 -->
-      <h2 id="arbitration">13. ARBITRAJE OBLIGATORIO</h2>
-      <p>Todos los reclamos deben resolverse mediante arbitraje vinculante en el condado de Bronx.</p>
+        <!-- 11. CLIMA -->
+        <h2 id="11">11. Clima, Tráfico y Retrasos Operativos</h2>
+        <p>
+          Las clases pueden acortarse, retrasarse o reprogramarse debido a condiciones climáticas, tráfico, problemas
+          mecánicos u otras razones operativas. No se emitirán reembolsos por situaciones fuera de nuestro control,
+          pero se harán esfuerzos razonables para reprogramar cuando sea apropiado.
+        </p>
 
-      <!-- 14 -->
-      <h2 id="privacy">14. PRIVACIDAD DE DATOS</h2>
-      <p>Avian recopila y almacena información para propósitos de programación, cumplimiento DMV y comunicación.</p>
+        <!-- 12. PROGRESO -->
+        <h2 id="12">12. Progreso, Garantías y Desempeño</h2>
+        <p>
+          Cada estudiante aprende a un ritmo diferente. Avian no garantiza que el estudiante aprobará el examen práctico
+          del DMV ni que alcanzará un nivel de manejo específico en un número determinado de clases. Nuestro trabajo es
+          ofrecer instrucción profesional; el resultado depende del desempeño del estudiante y las condiciones del examen.
+        </p>
 
-      <!-- 15 -->
-      <h2 id="changes">15. CAMBIOS EN EL SERVICIO</h2>
-      <p>Avian puede modificar los Servicios en cualquier momento.</p>
+        <!-- 13. PERTENENCIAS -->
+        <h2 id="13">13. Pertenencias y Artículos Personales del Estudiante</h2>
+        <p>
+          Avian no se hace responsable por artículos personales perdidos, robados o dañados en la oficina o dentro de los
+          vehículos. Se recomienda no dejar objetos de valor sin supervisión.
+        </p>
 
-      <!-- 16 -->
-      <h2 id="law">16. LEY APLICABLE</h2>
-      <p>Estos Términos se rigen por las leyes del Estado de Nueva York.</p>
+        <!-- 14. PERSONAL -->
+        <h2 id="14">14. Comportamiento hacia el Personal (Cero Tolerancia)</h2>
+        <p>
+          Mantenemos una política de cero tolerancia hacia el acoso, abuso verbal, amenazas, intimidación o discriminación
+          hacia el personal, instructores u otros estudiantes. Dicho comportamiento puede resultar en la terminación
+          inmediata de los Servicios sin reembolso.
+        </p>
 
-      <!-- 17 -->
-      <h2 id="contact">17. CONTACTO</h2>
-      <p>
-        Avian Driving School, Inc.<br>
-        5 E Gun Hill Road, Bronx, NY<br>
-        Tel: 718-215-4045<br>
-        Sitio Web: Aviandrivingschool.com
-      </p>
+        <!-- 15. RESPONSABILIDAD -->
+        <h2 id="15">15. Responsabilidad y Seguro</h2>
+        <p>
+          Avian mantiene el seguro comercial requerido por ley para vehículos de instrucción. Los estudiantes están
+          cubiertos como conductores autorizados únicamente durante las clases activas, bajo la supervisión del instructor.
+        </p>
+        <p>Sin embargo, Avian no es responsable de:</p>
+        <ul>
+          <li>Negligencia del estudiante o negativa a seguir instrucciones;</li>
+          <li>Lesiones causadas por conducta insegura o infracciones de tránsito;</li>
+          <li>Pérdida de ingresos, tiempo de trabajo u otros daños indirectos o consecuentes.</li>
+        </ul>
 
-      <div class="footer">© Avian Driving School, Inc.</div>
+        <!-- 16. LIMITACIÓN -->
+        <h2 id="16">16. Limitación de Responsabilidad</h2>
+        <p>
+          En la máxima medida permitida por la ley, la responsabilidad total de Avian por cualquier reclamación relacionada
+          con los Servicios no excederá el monto total pagado por el estudiante durante los doce (12) meses anteriores
+          a dicha reclamación. Avian no será responsable por daños indirectos, incidentales, especiales o consecuentes.
+        </p>
 
-    </div>
+        <!-- 17. INDEMNIZACIÓN -->
+        <h2 id="17">17. Indemnización</h2>
+        <p>
+          El estudiante acepta indemnizar y eximir de responsabilidad a Avian Driving School, sus propietarios, instructores,
+          empleados y afiliados por cualquier reclamación, daño o gasto que surja de su negligencia, mala conducta o
+          incumplimiento de estos Términos.
+        </p>
+
+        <!-- 18. ARBITRAJE -->
+        <h2 id="18">18. Arbitraje, Ley Aplicable y Renuncia a Demandas</h2>
+        <p>
+          Estos Términos se rigen por las leyes del Estado de Nueva York. Cualquier disputa o reclamación relacionada con
+          los Servicios se resolverá exclusivamente mediante arbitraje vinculante en el Condado del Bronx, Nueva York,
+          de acuerdo con las Reglas de Arbitraje para Consumidores de la Asociación Americana de Arbitraje (AAA).
+        </p>
+        <p>
+          El estudiante renuncia al derecho de presentar demandas en un tribunal, al derecho a juicio con jurado y al
+          derecho de participar en demandas colectivas o representativas. Todas las reclamaciones deberán presentarse
+          de manera individual.
+        </p>
+
+        <!-- 19. INTRANSFERIBLE -->
+        <h2 id="19">19. Intransferibilidad</h2>
+        <p>
+          Todos los paquetes, créditos de clases, depósitos y ofertas promocionales son personales del estudiante y no
+          pueden venderse, regalarse ni transferirse a otra persona o entidad.
+        </p>
+
+        <!-- 20. IA -->
+        <h2 id="20">20. Uso de IA, Sistemas Digitales y Tecnología</h2>
+        <p>
+          Avian puede utilizar herramientas digitales, incluyendo inteligencia artificial (IA), para programación de
+          clases, comunicación con clientes, análisis y apoyo educativo. Estas herramientas ayudan al personal y no
+          sustituyen la instrucción presencial.
+        </p>
+        <p>
+          Parte de la información del estudiante puede ser procesada por plataformas de terceros confiables únicamente
+          para brindar o mejorar los Servicios y la eficiencia operativa.
+        </p>
+
+        <!-- 21. PRIVACIDAD -->
+        <h2 id="21">21. Privacidad y Seguridad de Datos</h2>
+        <p>
+          Avian recopila y almacena información personal como nombre, datos de contacto, copias de permisos/licencias,
+          información de pago e historial de clases. Estos datos pueden compartirse con proveedores externos (por ejemplo,
+          procesadores de pago, sistemas de citas) con fines legítimos de negocio, seguridad o cumplimiento legal.
+        </p>
+        <p>
+          Para más detalles, consulte nuestra Política de Privacidad en
+          <a href="https://www.aviandrivingschool.com" target="_blank" rel="noopener">aviandrivingschool.com</a>.
+        </p>
+
+        <!-- 22. TERMINACIÓN -->
+        <h2 id="22">22. Cambios en el Servicio, Suspensión y Terminación</h2>
+        <p>
+          Podemos modificar, suspender o descontinuar cualquier Servicio, horario o precio en cualquier momento, con o sin
+          previo aviso, cuando la ley lo permita. Los cambios se aplican a compras futuras y no modifican los Servicios
+          ya prestados.
+        </p>
+
+        <!-- 23. FRAUDE -->
+        <h2 id="23">23. Prevención de Fraude y Derechos de Verificación</h2>
+        <p>
+          Avian se reserva el derecho de verificar documentación, identidad, reclamaciones de emergencia e información de
+          pago. Sospechas de fraude, abuso o tergiversación pueden resultar en la cancelación de Servicios e incluso en
+          la notificación a las autoridades correspondientes.
+        </p>
+
+        <!-- 24. DMV -->
+        <h2 id="24">24. Sin Garantía de Citas Disponibles en el DMV</h2>
+        <p>
+          Avian no controla los horarios, disponibilidad o cancelaciones del DMV. No podemos garantizar fechas, horas o
+          lugares específicos para las citas del DMV, ni somos responsables por cambios o retrasos en los sistemas del DMV.
+        </p>
+
+        <!-- 25. DIVISIBILIDAD -->
+        <h2 id="25">25. Divisibilidad</h2>
+        <p>
+          Si alguna disposición de estos Términos se considera inválida o inaplicable, las disposiciones restantes seguirán
+          vigentes y con plena fuerza legal.
+        </p>
+
+        <!-- 26. CONTACTO -->
+        <h2 id="26">26. Información de Contacto</h2>
+        <p>
+          Avian Driving School, Inc.<br/>
+          5 E Gun Hill Road<br/>
+          Bronx, NY 10467<br/>
+          Teléfono: 718-215-4045<br/>
+          Correo electrónico: <a href="mailto:info@aviandrivingschool.com">info@aviandrivingschool.com</a><br/>
+          Sitio web: <a href="https://www.aviandrivingschool.com" target="_blank" rel="noopener">aviandrivingschool.com</a>
+        </p>
+
+        <div class="terms-footer">© Avian Driving School, Inc.</div>
+      </div>
+    </main>
   </div>
 
-  <!-- JAVASCRIPT (same as English page) -->
+  <!-- LANG SWITCHER & BACK-TO-TOP SCRIPT -->
   <script>
-    const tocToggle = document.getElementById("tocToggle");
-    const tocPanel = document.getElementById("tocPanel");
-    const backToTop = document.getElementById("backToTop");
-    const langBtn = document.getElementById("langBtn");
-    const langMenu = document.getElementById("langMenu");
+    (function(){
+      const toggle = document.getElementById('langToggle');
+      const list   = document.getElementById('langList');
+      const label  = document.getElementById('langLabel');
 
-    tocToggle.addEventListener("click", () => {
-      tocPanel.classList.toggle("open");
-    });
-
-    window.addEventListener("scroll", () => {
-      backToTop.style.display = window.scrollY > 250 ? "block" : "none";
-    });
-
-    backToTop.addEventListener("click", () => {
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    });
-
-    langBtn.addEventListener("click", () => {
-      langMenu.classList.toggle("is-hidden");
-    });
-
-    document.addEventListener("click", (e) => {
-      if (!langBtn.contains(e.target) && !langMenu.contains(e.target)) {
-        langMenu.classList.add("is-hidden");
+      function openList(){
+        list.hidden = false;
+        toggle.setAttribute('aria-expanded','true');
+        const selected = list.querySelector('[aria-selected="true"]');
+        (selected || list.querySelector('li'))?.focus();
+        document.addEventListener('click', onOutsideClick, { once:true });
       }
-    });
-  </script>
 
+      function closeList(){
+        list.hidden = true;
+        toggle.setAttribute('aria-expanded','false');
+      }
+
+      function onOutsideClick(e){
+        if (!list.contains(e.target) && e.target !== toggle){
+          closeList();
+        }
+      }
+
+      toggle.addEventListener('click', ()=>{
+        if (list.hidden) openList(); else closeList();
+      });
+
+      list.addEventListener('click', (e)=>{
+        const li = e.target.closest('li[data-lang]');
+        if (!li) return;
+        const url = li.dataset.url;
+        if (url){
+          window.location.href = url;
+        }
+      });
+
+      list.addEventListener('keydown', (e)=>{
+        const items = Array.from(list.querySelectorAll('li'));
+        const currentIndex = items.indexOf(document.activeElement);
+        if (e.key === 'ArrowDown'){
+          e.preventDefault();
+          (items[currentIndex+1] || items[0]).focus();
+        } else if (e.key === 'ArrowUp'){
+          e.preventDefault();
+          (items[currentIndex-1] || items[items.length-1]).focus();
+        } else if (e.key === 'Enter' || e.key === ' '){
+          e.preventDefault();
+          const li = document.activeElement;
+          const url = li?.dataset?.url;
+          if (url) window.location.href = url;
+        } else if (e.key === 'Escape'){
+          e.preventDefault();
+          closeList();
+          toggle.focus();
+        }
+      });
+
+      toggle.addEventListener('keydown', (e)=>{
+        if (['ArrowDown','Enter',' '].includes(e.key)){
+          e.preventDefault();
+          openList();
+        }
+      });
+
+      // Etiqueta según ruta
+      if (window.location.pathname.startsWith('/es/')){
+        label.textContent = 'Español';
+      } else {
+        label.textContent = 'English (US)';
+      }
+
+      // Botón volver arriba
+      document.querySelectorAll('[data-scroll-top]').forEach(btn=>{
+        btn.addEventListener('click', ()=>window.scrollTo({ top:0, behavior:'smooth' }));
+      });
+    })();
+  </script>
 </body>
 </html>
