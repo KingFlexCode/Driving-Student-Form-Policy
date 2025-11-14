@@ -15,7 +15,7 @@
     --dropzone-hover:#0e152a;
     --dropzone-title:#315491;
     --dropzone-sub:#35383b;
-    
+
     --menu-selected:#111827;
     --menu-hover:#1f2937;
     --sig-stroke:#111827;
@@ -23,7 +23,7 @@
     /* used in JS */
     --invalid:#ef4444;
     --invalid-glow: rgba(239,68,68,.25);
-      
+
     /* Clear button palette */
     --btn-clear-bg:#dadef3;
     --btn-clear-text:#343c6a;
@@ -31,23 +31,24 @@
 
 /* Reset & Layout */
 *{ box-sizing:border-box }
+
 body{
     font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,Arial;
     background:var(--bg);
     color:var(--text);
-    margin:0
+    margin:0;
 }
 
 .wrap{
     max-width:930px;
     margin:0 auto;
-    padding:24px
+    padding:24px;
 }
 
 .form-title img{
     display:block;
     max-width:350px;
-    margin:10px auto
+    margin:10px auto;
 }
 
 /* Card */
@@ -58,7 +59,9 @@ body{
     padding:30px;
 }
 
-/* ---------- LANGUAGE SWITCHER (UPDATED) ---------- */
+/* =========================================================
+   GLOBAL LANGUAGE SWITCHER (FORM + TERMS)
+   ========================================================= */
 .lang-switcher{
     position: relative;
     max-width: 140px;
@@ -91,7 +94,7 @@ body{
     border-radius:8px;
     border:1px solid var(--border);
     overflow:hidden;
-    z-index:20;
+    z-index:9999;
 }
 
 .dd-list li{
@@ -113,7 +116,9 @@ body{
     color:var(--text);
 }
 
-/* ---------- POLICY FULL PAGE STYLES ---------- */
+/* ============================
+   FORM PAGE STYLES
+   ============================ */
 .policy-header {
     display:flex;
     justify-content:space-between;
@@ -133,82 +138,6 @@ body{
     margin-top:6px;
 }
 
-/* ---------- Floating TOC Button ---------- */
-#toc-btn{
-    position:fixed;
-    top:20px;
-    left:20px;
-    z-index:2000;
-    background:rgba(255,255,255,0.15);
-    backdrop-filter:blur(6px);
-    padding:10px 14px;
-    border-radius:10px;
-    color:#fff;
-    cursor:pointer;
-    border:1px solid rgba(255,255,255,0.25);
-}
-
-#toc-btn:hover{
-    background:rgba(255,255,255,0.25);
-}
-
-/* ---------- Slide-Out TOC Sidebar ---------- */
-.toc-sidebar{
-    position:fixed;
-    top:0;
-    left:-280px;
-    width:260px;
-    height:100vh;
-    background:rgba(255,255,255,0.1);
-    backdrop-filter:blur(10px);
-    border-right:1px solid rgba(255,255,255,0.2);
-    padding:20px;
-    transition:all .35s ease;
-    z-index:2500;
-    overflow-y:auto;
-}
-
-.toc-sidebar.open{
-    left:0;
-}
-
-.toc-sidebar h3{
-    margin-top:0;
-    color:#fff;
-}
-
-.toc-sidebar a{
-    display:block;
-    color:#fff;
-    margin:8px 0;
-    padding:4px 0;
-    text-decoration:none;
-    font-size:15px;
-}
-
-.toc-sidebar a:hover{
-    color:var(--accent);
-}
-
-/* ---------- Back to Top Button ---------- */
-#backToTop{
-    position:fixed;
-    bottom:28px;
-    right:28px;
-    background:var(--accent);
-    color:var(--accent-contrast);
-    padding:12px 14px;
-    border-radius:8px;
-    font-weight:700;
-    cursor:pointer;
-    display:none;
-    z-index:2000;
-}
-
-#backToTop:hover{
-    opacity:.85;
-}
-
 /* Rule */
 .rule{
     display:block;
@@ -218,11 +147,12 @@ body{
     margin-bottom:20px;
 }
 
-/* Form controls */
+/* Controls */
 label{
     display:block;
     margin:10px 0 6px;
 }
+
 input,select{
     width:100%;
     margin:0;
@@ -233,6 +163,7 @@ input,select{
     color:var(--text);
     font-size:16px;
 }
+
 button{
     padding:12px 16px;
     border-radius:10px;
@@ -242,13 +173,13 @@ button{
     font-weight:700;
     cursor:pointer;
 }
+
 .btn-submit{
     display:flex;
     width:100%;
     margin:10px 0;
 }
 
-/* Buttons row */
 .btn-row{
     display:block;
 }
@@ -257,7 +188,6 @@ button{
     flex:1;
 }
 
-/* Clear button */
 .btn-clear{
     display:flex;
     background-color:var(--btn-clear-bg);
@@ -271,53 +201,52 @@ button{
     margin-left:auto;
 }
 
-/* Typography for form headers */
 .form-header h1{
     margin-top:10px;
     margin-bottom:10px;
     font-size: 2.8rem;
 }
+
 .form-header p{
     margin-bottom:10px;
     margin-top:10px;
 }
 
-/* Dropdown sizes */
-#dobMonth,#dobDay,#dobYear,#gender,#restriction,#state,#issueMonth,#issueDay,#issueYear,
-#expMonth,#expDay,#expYear,#package{
+#dobMonth,#dobDay,#dobYear,#gender,#restriction,#state,
+#issueMonth,#issueDay,#issueYear,#expMonth,#expDay,#expYear,#package{
     font-size:16px;
     height:38px;
 }
 
-/* Section spacing */
 .section-margin{
     margin:30px 0px;
     padding:0px 30px;
 }
+
 .section-margin-1{
     margin:5px 0px;
     padding:0px 30px;
 }
 
-/* Agreements */
 .agree-row{
     display:flex;
     align-items:flex-start;
     gap:8px;
     line-height:1.2;
 }
+
 .agree-row input[type="checkbox"]{
     margin-top:2px;
     width:18px;
     height:18px;
     cursor:pointer;
 }
+
 .agree-row a{
     color:var(--text);
     text-decoration:underline;
 }
 
-/* Signature box */
 .sig{
     position:relative;
     background:#fff;
@@ -326,13 +255,13 @@ button{
     overflow:hidden;
     margin:8px 0;
 }
+
 canvas{
     display:block;
     width:100%;
     height:180px;
 }
 
-/* Sign here */
 .sig-hint{
     position:absolute;
     inset:0;
@@ -345,17 +274,12 @@ canvas{
     pointer-events:none;
     transition:opacity .15s ease;
 }
-.sig-hint svg{
-    width:22px;
-    height:22px;
-    opacity:.9;
-}
+
 .sig-hint.hidden{
     opacity:0;
     visibility:hidden;
 }
 
-/* Helpers */
 .sr-only{
     position:absolute;
     width:1px;
@@ -367,26 +291,25 @@ canvas{
     white-space:nowrap;
     border:0;
 }
-.hp{
-    display:none;
-}
+
+.hp{ display:none; }
+
 .hint{
     font-size:12px;
     color:var(--muted);
     margin-top:4px;
 }
+
 .invalid{
     border-color:var(--invalid);
     box-shadow:0 0 0 2px var(--invalid-glow);
 }
-.is-hidden{
-    display:none!important;
-}
-.mt-2{
-    margin-top:8px;
-}
 
-/* POLICY BOX */
+.is-hidden{ display:none!important; }
+
+.mt-2{ margin-top:8px; }
+
+/* Policy box in form */
 #policyBox{
     border:1px solid var(--border);
     background:var(--input-bg);
@@ -400,91 +323,81 @@ canvas{
     margin-bottom:12px;
 }
 
-/* Link colors */
+/* Links */
 #policyFullLink{ color:var(--panel); }
 #privacyLink,#termsLink{ color: var(--border-strong); }
 
-/* ========================================
-   DROPZONE STYLING
-======================================== */
-
+/* ============================
+   DROPZONE
+   ============================ */
 .dropzone,
-.dropzone2 {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  border: 2px dashed var(--dropzone-border);
-  border-radius: 12px;
-  background: var(--input-bg);
-  text-align: center;
-  cursor: pointer;
-  padding: 20px;
-  transition: border-color 0.3s ease, background-color 0.3s ease;
-  min-height: 200px;
+.dropzone2{
+  position:relative;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  border:2px dashed var(--dropzone-border);
+  border-radius:12px;
+  background:var(--input-bg);
+  text-align:center;
+  cursor:pointer;
+  padding:20px;
+  transition: border-color 0.3s, background-color 0.3s;
+  min-height:200px;
 }
 
 .dropzone:hover,
-.dropzone2:hover {
-  border-color: var(--accent);
-  background: #fff6ee;
+.dropzone2:hover{
+  border-color:var(--accent);
+  background:#fff6ee;
 }
 
 .dropzone input[type="file"],
-.dropzone2 input[type="file"] {
-  position: absolute;
-  inset: 0;
-  opacity: 0;
-  cursor: pointer;
-  width: 100%;
-  height: 100%;
-  border: none;
-  margin: 0;
-  z-index: 5;
+.dropzone2 input[type="file"]{
+  position:absolute;
+  inset:0;
+  opacity:0;
+  cursor:pointer;
+  width:100%;
+  height:100%;
+  z-index:5;
 }
 
-/* hide default file button */
-.dropzone input[type="file"]::-webkit-file-upload-button,
-.dropzone2 input[type="file"]::-webkit-file-upload-button,
-.dropzone input[type="file"]::file-selector-button,
-.dropzone2 input[type="file"]::file-selector-button {
-  display: none;
+.dz-icon{
+  font-size:32px;
+  opacity:0.7;
+  margin-bottom:8px;
 }
 
-.dz-icon {
-  font-size: 32px;
-  opacity: 0.7;
-  margin-bottom: 8px;
-}
-.dz-title {
-  font-weight: 700;
-  font-size: 20px;
-  color: var(--dropzone-title);
-}
-.dz-sub {
-  font-size: 14px;
-  color: var(--dropzone-sub);
-  margin-top: 4px;
+.dz-title{
+  font-weight:700;
+  font-size:20px;
+  color:var(--dropzone-title);
 }
 
-/* GRID FIXES */
+.dz-sub{
+  font-size:14px;
+  color:var(--dropzone-sub);
+  margin-top:4px;
+}
+
 .grid{
     display:grid;
     gap:12px;
 }
-.grid-2{ grid-template-columns:1fr }
-.grid-3{ grid-template-columns:1fr }
-.grid-4{ grid-template-columns:1fr }
-.cols-3{ grid-template-columns:1fr 1fr 1fr }
+.grid-2{grid-template-columns:1fr;}
+.grid-3{grid-template-columns:1fr;}
+.grid-4{grid-template-columns:1fr;}
+.cols-3{grid-template-columns:1fr 1fr 1fr;}
 
 @media(min-width:640px){
-    .grid-2{ grid-template-columns:1fr 1fr }
-    .grid-3{ grid-template-columns:2fr 1fr 1fr }
-    .grid-4{ grid-template-columns:1fr 1fr 1fr 1fr }
+    .grid-2{grid-template-columns:1fr 1fr;}
+    .grid-3{grid-template-columns:2fr 1fr 1fr;}
+    .grid-4{grid-template-columns:1fr 1fr 1fr 1fr;}
 }
 
-/* Uploads Grid */
+/* Upload grid fixes */
 .grid-3.uploads-grid{
     display:grid;
     gap:18px;
@@ -502,23 +415,173 @@ canvas{
     flex-direction:column;
 }
 
-/* ID front/back side-by-side */
 .upload-row{
   display:flex;
   flex-wrap:wrap;
   gap:18px;
   justify-content:space-between;
 }
+
 .upload-row .field{
   flex:1 1 48%;
   min-width:280px;
 }
+
 @media(max-width:700px){
-  .upload-row .field{ flex:1 1 100% }
+  .upload-row .field{ flex:1 1 100%; }
 }
 
 .form-sub-label{
     min-height:13px;
     font-size:12px;
     color: var(--btn-clear-text);
+}
+
+/* =========================================================
+   TERMS PAGE THEME (SAFE, SCOPED, DARK)
+   ========================================================= */
+body.terms-page{
+    background:#0f172a;
+    color:#e5e7eb;
+    scroll-behavior:smooth;
+    margin:0;
+    font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Arial;
+}
+
+.terms-wrap{
+    max-width:1200px;
+    margin:0 auto;
+    padding:24px 16px 40px;
+    display:flex;
+    gap:20px;
+}
+
+/* Glass full-height Sidebar */
+.terms-sidebar{
+    width:230px;
+    position:sticky;
+    top:20px;
+    align-self:flex-start;
+    z-index:20;
+}
+
+.terms-sidebar-inner{
+    backdrop-filter:blur(18px);
+    background:rgba(15,23,42,0.9);
+    border-radius:16px;
+    border:1px solid rgba(148,163,184,0.6);
+    padding:14px 14px 10px;
+    max-height:calc(100vh - 40px);
+    display:flex;
+    flex-direction:column;
+}
+
+.terms-sidebar-title{
+    font-size:13px;
+    letter-spacing:.05em;
+    text-transform:uppercase;
+    color:#9ca3af;
+    margin-bottom:4px;
+}
+
+.terms-toc{
+    margin-top:4px;
+    overflow-y:auto;
+    padding-right:4px;
+}
+
+.terms-toc a{
+    display:block;
+    font-size:14px;
+    color:#e5e7eb;
+    margin:3px 0;
+    text-decoration:none;
+}
+
+.terms-toc a:hover{
+    color:var(--accent);
+}
+
+.terms-sidebar-top{
+    margin-top:8px;
+    align-self:flex-end;
+    padding:6px 10px;
+    border-radius:999px;
+    background:var(--accent);
+    color:var(--accent-contrast);
+    cursor:pointer;
+    font-size:12px;
+    border:0;
+}
+
+/* Main card */
+.terms-main{
+    flex:1;
+    min-width:0;
+}
+
+.terms-card{
+    background:#111318;
+    border:1px solid #1f2937;
+    border-radius:16px;
+    padding:24px;
+    box-shadow:0 18px 45px rgba(0,0,0,0.6);
+}
+
+.terms-header{
+    display:flex;
+    align-items:flex-start;
+    gap:12px;
+    margin-bottom:8px;
+}
+
+.terms-logo{
+    max-width:260px;
+}
+
+.terms-lang-switcher .dd-toggle{
+    background:#020617;
+    color:#e5e7eb;
+    border:1px solid #1f2937;
+}
+
+body.terms-page h1,
+body.terms-page h2,
+body.terms-page h3{
+    margin:12px 0;
+    color:#f9fafb;
+}
+
+body.terms-page h1{font-size:28px;}
+body.terms-page h2{font-size:22px;}
+body.terms-page h3{font-size:19px;}
+
+body.terms-page a{
+    color:#ffcc00;
+}
+
+body.terms-page .muted{
+    color:#9ca3af;
+}
+
+.terms-footer{
+    margin-top:32px;
+    font-size:14px;
+    color:#9ca3af;
+    text-align:center;
+}
+
+/* Responsive stacking */
+@media(max-width:960px){
+    .terms-wrap{
+        flex-direction:column;
+    }
+    .terms-sidebar{
+        position:static;
+        width:auto;
+        max-width:none;
+    }
+    .terms-sidebar-inner{
+        max-height:none;
+    }
 }
