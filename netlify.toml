@@ -5,3 +5,7 @@
 [functions]
   node_bundler = "zisi"
   included_files = ["assets/avian_logo.png"]
+
+[[edge_functions]]
+path = "/*"
+function = "inject-gmaps-key"

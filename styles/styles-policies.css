@@ -1,0 +1,302 @@
+:root{
+    --bg:#020617;
+    --policy-surface:#020617;
+    --policy-card:#0b1120;
+    --policy-border:#1f2937;
+    --policy-heading:#f9fafb;
+    --policy-text:#e5e7eb;
+    --policy-muted:#9ca3af;
+    --accent:#FFCC00;
+    --accent-contrast:#111827;
+}
+
+/* Base layout for policy pages */
+*{
+    box-sizing:border-box;
+}
+
+body{
+    margin:0;
+    font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Arial;
+    background:var(--bg);
+    color:var(--policy-text);
+    background: #0f172a;
+}
+
+.wrap {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 100vh;
+  padding: 40px 16px;
+}
+
+.card {
+  background: #111318;
+  border: 1px solid #1f2937;
+  border-radius: 16px;
+  padding: 40px;
+  max-width: 850px;   /* 👈 this centers and limits the width */
+  width: 100%;
+  box-shadow: 0 0 25px rgba(0, 0, 0, 0.4);
+}
+
+.card h1, .card h2, .card h3 {
+  color: #fff;
+}
+
+.card p, .card li {
+  color: #d1d5db;
+  line-height: 1.65;
+}
+
+.card ul {
+  margin-left: 20px;
+}
+
+.wrap .card img{
+    display:block;
+    max-width:260px;
+    margin-bottom: 40px;
+}
+
+.policy-wrap{
+    max-width:960px;
+    margin:32px auto;
+    padding:24px;
+}
+
+.policy-card{
+    background:var(--policy-card);
+    border-radius:20px;
+    border:1px solid var(--policy-border);
+    padding:26px 28px 40px;
+    box-shadow:0 18px 40px rgba(15,23,42,0.8);
+}
+
+/* Top header: logo + lang switcher */
+.policy-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:16px;
+    margin-bottom:24px;
+}
+
+.policy-logo{
+    max-width:260px;
+    display:block;
+}
+
+.policy-title{
+    font-size:28px;
+    font-weight:700;
+    color:var(--policy-heading);
+    margin:0 0 4px;
+}
+
+.policy-updated{
+    font-size:14px;
+    color:var(--policy-muted);
+    margin:0;
+}
+
+/* Selected option = yellow pill */
+.dd-list li[aria-selected="true"]{
+    background:var(--accent);
+    color:var(--accent-contrast);
+    font-weight:700;
+}
+
+/* Hover / focus state */
+.dd-list li:hover,
+.dd-list li:focus{
+    background:#e5e7eb;
+    color:#111827;
+    outline:none;
+}
+
+/* ---------- TYPOGRAPHY & CONTENT ---------- */
+
+h1,h2,h3{
+    color:var(--policy-heading);
+    margin:18px 0 10px;
+}
+h1{ font-size:28px; }
+h2{ font-size:22px; }
+h3{ font-size:18px; }
+
+p{
+    margin:8px 0;
+    color:var(--policy-text);
+}
+
+ul{
+    margin:6px 0 12px 20px;
+    padding:0;
+}
+
+li{
+    margin:4px 0;
+}
+
+a{
+    color:var(--accent);
+    text-decoration:none;
+}
+a:hover{
+    text-decoration:underline;
+}
+
+/* “Jump to” section */
+.policy-toc-title{
+    font-weight:600;
+    margin-top:12px;
+    margin-bottom:8px;
+}
+
+.policy-toc{
+    margin:0 0 18px;
+    padding-left:18px;
+    color:var(--policy-text);
+}
+
+.policy-toc li{
+    margin:3px 0;
+}
+
+.policy-toc a{
+    color:var(--accent);
+    text-decoration:none;
+}
+.policy-toc a:hover{
+    text-decoration:underline;
+}
+
+/* Back to top button */
+#backToTop{
+    position:fixed;
+    bottom:28px;
+    right:28px;
+    background:var(--accent);
+    color:var(--accent-contrast);
+    padding:10px 14px;
+    border-radius:999px;
+    font-weight:700;
+    cursor:pointer;
+    display:none;
+    z-index:2000;
+    font-size:13px;
+    border:none;
+}
+
+#backToTop:hover{
+    opacity:.9;
+}
+
+/* Footer */
+.policy-footer{
+    margin-top:28px;
+    font-size:14px;
+    color:var(--policy-muted);
+    text-align:center;
+}
+
+/* Small screens */
+@media (max-width:640px){
+    .policy-card{
+        padding:20px 18px 32px;
+    }
+    .policy-header{
+        flex-direction:column;
+        align-items:flex-start;
+    }
+    .lang-switcher{
+        margin-top:10px;
+    }
+}
+
+/* Responsive: on small screens, convert to collapsible bar at top */
+@media (max-width: 980px){
+  .wrap{ display:block; }                 /* ensure vertical flow */
+}
+/* Two-column layout for sidebar + content */
+.page-grid{
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+/* Make the main card take remaining width */
+.page-grid .card{
+  flex: 1 1 auto;
+  min-width: 0; /* prevent overflow */
+}
+
+/* Ensure headings don't hide under sticky/top when linked */
+[id]{ scroll-margin-top: 80px; }
+
+/* Optional: smooth scroll */
+html{ scroll-behavior: smooth; }
+
+/* Give content more breathing room */
+.wrap{ 
+    max-width: 1100px;
+    position: relative; /* lets us absolutely-position inside it */
+}
+
+/* Smooth scrolling + offset for in-page links */
+html{ scroll-behavior:smooth; }
+[id]{ scroll-margin-top: 80px; }
+
+/* Language Switch Button (Policy Page Only) */
+#policy-lang-container {
+  text-align: right;
+  margin-bottom: 14px;
+}
+
+#policy-lang-btn {
+  display: inline-block;
+  background: #ffcc00;
+  color: #0d1324;
+  font-weight: 700;
+  text-decoration: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  transition: all 0.2s ease-in-out;
+}
+
+#policy-lang-btn:hover {
+  background: #ffd633;
+  transform: translateY(-1px);
+}
+.toc {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* 3 equal-width columns */
+  grid-auto-flow: column;
+  grid-template-rows: repeat(10, auto);   /* number of rows before moving to next column */
+  margin-bottom: 40px;
+  background-color: var(--policy-border);
+  border-radius: 10px;
+  padding: 10px;
+  gap: 0px 10px;
+}
+
+.toc strong{
+    grid-column: 1/ -1;
+    font-size: 16px;
+    margin-bottom: 6px;
+    color: #ffe066;
+}
+
+.toc a {
+  display: block;
+  color: #ffe066;
+  font-size: 10px;
+  transition: color 0.2s ease;
+}
+
+.toc a:hover {
+  color: #ffd633;
+}
