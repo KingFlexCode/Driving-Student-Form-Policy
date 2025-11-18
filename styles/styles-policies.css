@@ -251,8 +251,10 @@ html{ scroll-behavior:smooth; }
 
 /* Language Switch Button (Policy Page Only) */
 #policy-lang-container {
-  text-align: right;
-  margin-bottom: 14px;
+    display: block;
+    text-align: right;
+    margin-bottom: 14px;
+
 }
 
 #policy-lang-btn {
