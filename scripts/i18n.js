@@ -43,18 +43,18 @@
 <ul>
   <li>All lessons, packages, deposits, and Services must be paid in full before scheduling.</li>
   <li>Prices follow Avian’s published rates at the time of purchase and may change without notice.</li>
-  <li>Electronic payments (credit/debit/PayPal) incur a 3.5% processing fee.</li>
+  <li>Credit card and PayPal payments incur a 3.5% processing fee.</li>
   <li>Zelle payments incur no additional fees.</li>
   <li>New York State sales tax applies where required.</li>
 </ul>
+
 <p><strong>Validity Period.</strong> All purchases—including lesson packages, deposits, credits, and gift certificates—expire six (6) months from the date of purchase. Expired balances are non-refundable and non-transferable.</p>
-<p><strong>Refunds.</strong> Refunds may be requested within six (6) months of purchase.</p>
-<ul>
-  <li>Completed lessons are deducted at the current single-lesson rate in effect on the date the refund is processed.</li>
-  <li>Refunds are issued to the original payment method within 7–10 business days of approval.</li>
-  <li>No refunds are issued for expired credits, unused time, promotions, or discounted package differences.</li>
-  <li>Avian complies with applicable New York DMV refund regulations for licensed driving schools.</li>
-</ul>
+
+<p><strong>Refund Policy.</strong> A full refund will be issued if requested within seven (7) days of purchase, provided that no services have been used or scheduled. Refund requests made after seven (7) days but within thirty (30) days of purchase will be subject to an administrative fee equal to ten percent (10%) of the total cost or ten dollars ($10), whichever is greater, and any services already used, scheduled, or reserved will be deducted at the school’s current single-service rate.</p>
+
+<p>No refunds will be issued after thirty (30) days from the date of purchase under any circumstances. Refunds, when applicable, will be issued to the original form of payment within 7–10 business days after approval. No refunds will be issued for expired services, unused time after expiration, promotional pricing differences, or discounted package adjustments. All purchases and remaining balances are non-transferable.</p>
+
+<p><strong>By purchasing any service, the student agrees to all refund and expiration terms stated herein.</strong></p>
 
 <h4>5. CANCELLATIONS, RESCHEDULING, &amp; LATENESS</h4>
 <ul>
@@ -200,20 +200,20 @@ Website: aviandrivingschool.com</p>
 
 <h4>4. PAGOS, VALIDEZ, CARGOS Y REEMBOLSOS</h4>
 <ul>
-  <li>Todos los Servicios deben pagarse en su totalidad antes de programarse.</li>
-  <li>Los precios siguen las tarifas publicadas por Avian en el momento de compra y pueden cambiar sin aviso.</li>
-  <li>Los pagos electrónicos (tarjeta/crédito/PayPal) tienen un cargo de procesamiento del 3.5%.</li>
+  <li>Todos los servicios deben pagarse en su totalidad antes de programarse.</li>
+  <li>Los precios siguen las tarifas publicadas por Avian al momento de la compra y pueden cambiar sin previo aviso.</li>
+  <li>Los pagos con tarjeta de crédito y PayPal tienen un cargo de procesamiento del 3.5%.</li>
   <li>Pagos por Zelle no tienen cargos adicionales.</li>
-  <li>Se aplican impuestos estatales de Nueva York cuando corresponda.</li>
+  <li>Se aplican impuestos del Estado de Nueva York cuando corresponda.</li>
 </ul>
-<p><strong>Periodo de Validez.</strong> Todas las compras—paquetes, depósitos, créditos y certificados de regalo—expiran a los seis (6) meses de la fecha de compra. Los saldos vencidos no son reembolsables ni transferibles.</p>
-<p><strong>Reembolsos.</strong> Los reembolsos pueden solicitarse dentro de los seis (6) meses de compra.</p>
-<ul>
-  <li>Las clases completadas se descuentan al precio vigente de lección individual en la fecha del reembolso.</li>
-  <li>Los reembolsos se emiten en 7–10 días hábiles tras la aprobación.</li>
-  <li>No se reembolsan créditos vencidos, tiempo no utilizado, promociones o diferencias de paquetes.</li>
-  <li>Avian cumple con las normas de reembolso del DMV del Estado de Nueva York para escuelas de manejo licenciadas.</li>
-</ul>
+
+<p><strong>Periodo de Validez.</strong> Todas las compras—incluyendo paquetes, depósitos, créditos y certificados de regalo—expiran a los seis (6) meses desde la fecha de compra. Los saldos vencidos no son reembolsables ni transferibles.</p>
+
+<p><strong>Política de Reembolsos.</strong> Se otorgará un reembolso completo si se solicita dentro de los siete (7) días posteriores a la compra, siempre que no se hayan utilizado ni programado servicios. Las solicitudes realizadas después de los siete (7) días pero dentro de los treinta (30) días estarán sujetas a un cargo administrativo equivalente al diez por ciento (10%) del costo total o diez dólares ($10), lo que sea mayor, y se descontará cualquier servicio ya utilizado, programado o reservado según la tarifa vigente.</p>
+
+<p>No se emitirán reembolsos después de treinta (30) días desde la fecha de compra bajo ninguna circunstancia. Los reembolsos, cuando correspondan, se emitirán al método de pago original dentro de 7 a 10 días hábiles después de su aprobación. No se otorgarán reembolsos por servicios vencidos, tiempo no utilizado después de la expiración, diferencias de promociones o ajustes de paquetes con descuento. Todas las compras y saldos restantes no son transferibles.</p>
+
+<p><strong>Al realizar una compra, el estudiante acepta todos los términos de reembolso y expiración establecidos en este documento.</strong></p>
 
 <h4>5. CANCELACIONES, REPROGRAMACIONES Y TARDANZAS</h4>
 <ul>
