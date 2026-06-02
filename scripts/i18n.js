@@ -42,10 +42,9 @@
 <h4>4. PAYMENTS, VALIDITY, FEES &amp; REFUNDS</h4>
 <ul>
   <li>All lessons, packages, deposits, and Services must be paid in full before scheduling.</li>
-  <li>Prices follow Avian’s published rates at the time of purchase and may change without notice.</li>
-  <li>Credit card and PayPal payments incur a 3.5% processing fee.</li>
+  <li>Electronic payments (credit/PayPal) incur a 3.5% processing fee.</li>
   <li>Zelle payments incur no additional fees.</li>
-  <li>New York State sales tax applies where required.</li>
+  <li>Applicable taxes may be added to purchases where required by law</li>
 </ul>
 
 <p><strong>Validity Period.</strong> All purchases—including lesson packages, deposits, credits, and gift certificates—expire six (6) months from the date of purchase. Expired balances are non-refundable and non-transferable.</p>
@@ -72,13 +71,14 @@
 
 <h4>7. ROAD TEST POLICIES</h4>
 <ul>
-  <li>A $135 deposit is required to reserve a vehicle for the DMV test.</li>
-  <li>Students must bring a valid permit, 5-hour certificate, and corrective lenses if required.</li>
+  <li>Full payment of Avian’s current published Road Test Vehicle & Appointment Reservation Fee is required to reserve a vehicle and road test appointment.</li>
+  <li>Students must bring a valid permit, 5-hour certificate, and corrective lenses if needed.</li>
   <li>Invalid or missing documents result in forfeiture.</li>
   <li>Students must report to Avian’s office before the exam; we do not meet directly at the DMV site.</li>
   <li>Additional travel/toll fees may apply for tests outside our area.</li>
+  <li>Road test vehicles may be provided by Avian or by an affiliated, partner, or contracted driving school or service provider based on availability, scheduling, safety, or operational needs.</li>
 </ul>
-<p><strong>No Guarantee.</strong> Avian does not guarantee passing the road test. Results depend on the student’s performance and the DMV examiner’s decision.</p>
+<p><strong>No Guarantee:</strong> Avian does not guarantee passing the road test. Results depend on the student’s performance and the DMV examiner’s decision.</p>
 
 <h4>8. LESSON &amp; PACKAGE POLICIES</h4>
 <ul>
@@ -145,7 +145,8 @@
 <p>Avian enforces a strict zero-tolerance policy regarding harassment, threats, verbal abuse, intimidation, discrimination, or aggressive behavior toward instructors, staff, or other students. Any such behavior may result in immediate termination of Services without refund, and—if necessary—law enforcement intervention.</p>
 
 <h4>20. INSTRUCTOR &amp; VEHICLE ASSIGNMENT</h4>
-<p>Avian may assign any qualified instructor or instructional vehicle based on availability, safety requirements, scheduling logistics, or operational needs. Instructor or vehicle changes may occur at any time and are not grounds for refunds or credits.</p>
+<p>Avian may assign any qualified instructor or instructional vehicle based on availability, safety requirements, scheduling logistics, vehicle access, or operational needs. Instructor or vehicle changes may occur at any time and are not grounds for refunds or credits.</p>
+<p>Avian may, when necessary or appropriate, provide lessons, road test vehicles, instructors, or related services through affiliated, partner, or contracted driving schools, instructors, vehicles, or service providers. Such assignments may be made based on availability, scheduling, safety, vehicle access, operational needs, or business arrangements. Use of an affiliated or partner provider does not change the student’s obligations under these Terms and is not grounds for a refund, credit, cancellation, or dispute.</p>
 
 <h4>21. WEATHER, TRAFFIC &amp; OPERATIONAL CONDITIONS</h4>
 <p>Lessons may be delayed, shortened, or rescheduled due to weather, traffic, emergencies, instructor availability, or operational issues. Avian will make reasonable efforts to minimize disruptions, but no refunds are issued for unforeseen conditions outside our control.</p>
@@ -201,10 +202,9 @@ Website: aviandrivingschool.com</p>
 <h4>4. PAGOS, VALIDEZ, CARGOS Y REEMBOLSOS</h4>
 <ul>
   <li>Todos los servicios deben pagarse en su totalidad antes de programarse.</li>
-  <li>Los precios siguen las tarifas publicadas por Avian al momento de la compra y pueden cambiar sin previo aviso.</li>
   <li>Los pagos con tarjeta de crédito y PayPal tienen un cargo de procesamiento del 3.5%.</li>
   <li>Pagos por Zelle no tienen cargos adicionales.</li>
-  <li>Se aplican impuestos del Estado de Nueva York cuando corresponda.</li>
+  <li>Los impuestos aplicables pueden agregarse a las compras cuando así lo requiera la ley.</li>
 </ul>
 
 <p><strong>Periodo de Validez.</strong> Todas las compras—incluyendo paquetes, depósitos, créditos y certificados de regalo—expiran a los seis (6) meses desde la fecha de compra. Los saldos vencidos no son reembolsables ni transferibles.</p>
@@ -231,13 +231,14 @@ Website: aviandrivingschool.com</p>
 
 <h4>7. POLÍTICAS DEL EXAMEN PRÁCTICO (ROAD TEST)</h4>
 <ul>
-  <li>Se requiere un depósito de $135 para reservar un vehículo para el examen práctico del DMV.</li>
-  <li>El estudiante debe traer permiso válido, certificado de 5 horas y lentes si son requeridos.</li>
-  <li>Falta de documentación válida resulta en pérdida del examen y del depósito.</li>
+  <li>Se requiere un depósito de $135 para reservar un vehículo.</li>
+  <li>Debe traer permiso válido, certificado de 5 horas y lentes correctivos si aplica.</li>
+  <li>Documentos inválidos o ausentes resultan en pérdida de cita y tarifa.</li>
   <li>Los estudiantes deben presentarse en la oficina de Avian antes del examen; no nos reunimos directamente en el sitio del DMV.</li>
-  <li>Pruebas fuera del área pueden requerir cargos adicionales de viaje o peaje.</li>
+  <li>Cargos adicionales por viaje o peajes pueden aplicar para exámenes fuera de nuestra área.</li>
+  <li>Los vehículos para el examen de carretera pueden ser proporcionados por Avian o por una escuela de manejo afiliada, asociada o contratada, o por un proveedor de servicios, según disponibilidad, programación, seguridad o necesidades operativas.</li>
 </ul>
-<p><strong>Sin Garantía.</strong> Avian no garantiza que el estudiante apruebe el examen práctico. Los resultados dependen del desempeño del estudiante y del criterio del examinador del DMV.</p>
+  <p><strong>Sin Garantía:</strong>Avian no garantiza que el estudiante aprobará el examen de carretera. Los resultados dependen del desempeño del estudiante y de la decisión del examinador del DMV.</p>
 
 <h4>8. POLÍTICAS DE LECCIONES Y PAQUETES</h4>
 <ul>
@@ -305,7 +306,8 @@ Website: aviandrivingschool.com</p>
 <p>Dicho comportamiento puede resultar en terminación inmediata sin reembolso y posible intervención legal.</p>
 
 <h4>20. ASIGNACIÓN DE INSTRUCTORES Y VEHÍCULOS</h4>
-<p>Avian puede asignar cualquier instructor o vehículo calificado según disponibilidad, seguridad, logística y necesidades operativas. Los cambios no son motivo de reembolso.</p>
+<p>Avian puede asignar cualquier instructor calificado o vehículo de instrucción según disponibilidad, requisitos de seguridad, logística de programación, acceso a vehículos o necesidades operativas. Los cambios de instructor o vehículo pueden ocurrir en cualquier momento y no son motivo de reembolsos o créditos.</p>
+<p>Avian puede, cuando sea necesario o apropiado, proporcionar clases, vehículos para examen de carretera, instructores o servicios relacionados a través de escuelas de manejo afiliadas, asociadas o contratadas, instructores, vehículos o proveedores de servicios. Dichas asignaciones pueden realizarse según disponibilidad, programación, seguridad, acceso a vehículos, necesidades operativas o acuerdos comerciales. El uso de un proveedor afiliado o asociado no cambia las obligaciones del estudiante bajo estos Términos y no es motivo de reembolso, crédito, cancelación o disputa.</p>
 
 <h4>21. CLIMA, TRÁFICO Y CONDICIONES OPERATIVAS</h4>
 <p>Las lecciones pueden retrasarse, acortarse o reprogramarse debido a clima, tráfico, emergencias o disponibilidad del instructor. No se emiten reembolsos por condiciones fuera del control de Avian.</p>
