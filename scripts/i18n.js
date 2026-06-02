@@ -44,7 +44,7 @@
   <li>All lessons, packages, deposits, and Services must be paid in full before scheduling.</li>
   <li>Electronic payments (credit/PayPal) incur a 3.5% processing fee.</li>
   <li>Zelle payments incur no additional fees.</li>
-  <li>Applicable taxes may be added to purchases where required by law</li>
+  <li>Applicable taxes may be added to purchases where required by law.</li>
 </ul>
 
 <p><strong>Validity Period.</strong> All purchases—including lesson packages, deposits, credits, and gift certificates—expire six (6) months from the date of purchase. Expired balances are non-refundable and non-transferable.</p>
